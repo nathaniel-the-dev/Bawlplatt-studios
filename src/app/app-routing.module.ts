@@ -7,17 +7,18 @@ import { HomePage } from './pages/home/home.page';
 import { AboutPage } from './pages/about/about.page';
 import { ContactPage } from './pages/contact/contact.page';
 import { BookingFormPage } from './bookings/booking-form/booking-form.page';
+import { RequiresUnauthGuard } from './shared/requires-unauth.guard';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
     { path: 'about', component: AboutPage },
     { path: 'contact', component: ContactPage },
 
-    { path: 'login', component: LoginPage },
+    { path: 'login', component: LoginPage, canActivate: [RequiresUnauthGuard] },
 
     { path: 'bookings/new', component: BookingFormPage },
 
-    { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule), canLoad: [RequiresAuthGuard] },
+    { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [RequiresAuthGuard], canLoad: [RequiresAuthGuard] },
 
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundPage }

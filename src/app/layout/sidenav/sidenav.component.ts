@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from 'src/app/auth/user.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
     selector: 'app-sidenav',
@@ -9,13 +9,13 @@ import { UserService } from 'src/app/auth/user.service';
 })
 export class SidenavComponent implements OnInit {
 
-    constructor(private userService: UserService, private router: Router) { }
+    constructor(private authService: AuthService, private router: Router) { }
 
     ngOnInit(): void {
     }
 
     logout(): void {
-        this.userService.logout().subscribe((res) => {
+        this.authService.logout().subscribe((res) => {
             if (res.status === 'success') this.router.navigateByUrl('/login');
         })
     }

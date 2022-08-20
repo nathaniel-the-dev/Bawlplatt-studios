@@ -11,6 +11,7 @@ export class AppComponent implements OnInit {
     constructor(private uiService: UiService, private router: Router) { }
 
     ngOnInit(): void {
+        // Scroll to top on page navigation
         this.router.events.subscribe((e) => {
             if (e instanceof NavigationStart) this.uiService.scrollToTop();
         })

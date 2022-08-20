@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ErrorService } from 'src/app/shared/error.service';
-import { UserService } from '../user.service';
+import { AuthService } from '../auth.service';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.css']
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit, OnDestroy {
     loginForm!: FormGroup;
+    subscriptions: Subscription = new Subscription();
 
-    constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private errorService: ErrorService) { }
+    constructor(private fb: FormBuilder, private router: Router, private authService: AuthService, private errorService: ErrorService) { }
 
     ngOnInit(): void {
         this.loginForm = this.fb.group({
@@ -21,10 +23,16 @@ export class LoginPage implements OnInit {
         });
     }
 
+    ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
     onSubmit(): void {
-        this.userService.login(this.loginForm.value).subscribe((res) => {
+        const loginSub = this.authService.login(this.loginForm.value).subscribe((res) => {
             if (res.status === 'success') this.showConfirmation();
         });
+
+        this.subscriptions.add(loginSub);
     }
 
     showConfirmation(): void {
