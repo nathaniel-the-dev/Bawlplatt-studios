@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Booking } from 'src/app/shared/models/booking';
-import { APIResponse } from 'src/app/shared/models/api-response';
+import { APIResponse, QueryOptions } from 'src/app/shared/models/api-response';
 import { ErrorService } from 'src/app/shared/services/error.service';
 
 @Injectable({
@@ -14,8 +14,27 @@ export class BookingsService {
 
     constructor(private http: HttpClient, private errorService: ErrorService) { }
 
-    getAllBookings(): Observable<APIResponse<Booking[]>> {
-        return this.http.get<APIResponse<Booking[]>>(this.API_URL).pipe(
+    private _createQueryString(opts: QueryOptions): string {
+        const urlQueryString = new URLSearchParams('');
+
+        for (const key in opts) {
+            if (opts.hasOwnProperty(key)) {
+                if (typeof opts[key] === 'object') {
+                    urlQueryString.append(key, opts[key]!.key + '=' + opts[key]!.value);
+                    continue;
+                }
+
+                urlQueryString.append(key, opts[key]);
+            }
+        }
+
+        return urlQueryString.toString();
+    }
+
+    getAllBookings(opts?: QueryOptions): Observable<APIResponse<Booking[]>> {
+        let queryString = (opts) ? `?${this._createQueryString(opts)}` : '';
+
+        return this.http.get<APIResponse<Booking[]>>(this.API_URL + queryString).pipe(
             catchError((err) => this.errorService.handleHTTPError(err))
         );
     }
@@ -34,6 +53,12 @@ export class BookingsService {
 
     updateBooking(data: Booking): Observable<APIResponse<Booking>> {
         return this.http.patch<APIResponse<Booking>>(this.API_URL + "/" + data._id, data).pipe(
+            catchError((err) => this.errorService.handleHTTPError(err))
+        );
+    }
+
+    switchBookingValue(id: string, data: { [field: string]: string | boolean }): Observable<APIResponse<Booking>> {
+        return this.http.patch<APIResponse<Booking>>(this.API_URL + "/" + id, data).pipe(
             catchError((err) => this.errorService.handleHTTPError(err))
         );
     }

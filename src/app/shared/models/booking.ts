@@ -31,6 +31,7 @@ export interface Booking {
     message?: string;
 
     cost: number;
+    completed: boolean;
     payed: boolean;
 
     approved_by?: string | User;

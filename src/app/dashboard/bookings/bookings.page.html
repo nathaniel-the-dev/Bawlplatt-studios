@@ -7,8 +7,10 @@
 
     <ul>
         <li *ngFor="let booking of bookings">
-            <span> {{ booking._id }}</span>
+            <h1>Id: {{ booking._id }}</h1>
 
+            <p>Payed: {{ booking.payed }}</p>
+            <button (click)="toggleBookingValue(booking._id, 'payed')">Mark as payed</button>
             <button [routerLink]="['edit',booking._id]">(edit)</button>
             <button (click)="deleteBooking(booking._id)">(delete)</button>
         </li>
