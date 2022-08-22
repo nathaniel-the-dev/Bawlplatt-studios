@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { UiService } from './shared/ui.service';
+import { UiService } from './shared/services/ui.service';
 
 @Component({
     selector: 'app-root',

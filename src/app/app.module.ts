@@ -1,3 +1,4 @@
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
@@ -13,7 +14,7 @@ import { AboutPage } from './pages/about/about.page';
 import { ContactPage } from './pages/contact/contact.page';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SignupPage } from './auth/signup/signup.page';
-import { AuthInterceptor } from './shared/auth.interceptor';
+import { MakeBookingPage } from './pages/make-booking/make-booking.page';
 
 @NgModule({
     declarations: [
@@ -26,6 +27,7 @@ import { AuthInterceptor } from './shared/auth.interceptor';
         AboutPage,
         ContactPage,
         SignupPage,
+        MakeBookingPage,
     ],
     imports: [
         BrowserModule,

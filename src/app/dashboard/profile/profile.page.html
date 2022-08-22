@@ -1,3 +1,52 @@
 <div>
     <h1>Welcome {{user?.name}}</h1>
+
+    <section>
+        <h2>General Information</h2>
+
+        <form [formGroup]="infoForm" (ngSubmit)="infoForm.valid && onInfoFormSubmit()">
+            <div>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" formControlName="name">
+            </div>
+
+            <div>
+                <label for="email">Email Address</label>
+                <input type="email" name="email" id="email" formControlName="email">
+            </div>
+
+            <button type="submit">Save</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Update Your Password</h2>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="passwordForm.valid && onPasswordFormSubmit()">
+
+            <div>
+                <label for="currentPassword">Current Password</label>
+                <input type="password" name="currentPassword" id="currentPassword" formControlName="currentPassword">
+            </div>
+            <div>
+                <label for="newPassword">New Password</label>
+                <input type="password" name="newPassword" id="newPassword" formControlName="newPassword">
+            </div>
+            <div>
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" name="confirmPassword" id="confirmPassword" formControlName="confirmPassword">
+            </div>
+
+            <button type="submit">Save</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Danger Zone</h2>
+
+        <div class="flex justify-between">
+            <h3>Delete your account</h3>
+            <button class="btn" (click)="confirmAccountDelete()">Delete Account</button>
+        </div>
+    </section>
 </div>

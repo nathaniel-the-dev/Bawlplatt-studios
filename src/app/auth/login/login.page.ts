@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ErrorService } from 'src/app/shared/error.service';
+import { ErrorService } from 'src/app/shared/services/error.service';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -11,16 +11,16 @@ import { AuthService } from '../auth.service';
     styleUrls: ['./login.page.css']
 })
 export class LoginPage implements OnInit, OnDestroy {
-    loginForm!: FormGroup;
-    subscriptions: Subscription = new Subscription();
+    loginForm = this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required]]
+    });
+
+    private subscriptions = new Subscription();
 
     constructor(private fb: FormBuilder, private router: Router, private authService: AuthService, private errorService: ErrorService) { }
 
     ngOnInit(): void {
-        this.loginForm = this.fb.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required]]
-        });
     }
 
     ngOnDestroy(): void {
@@ -38,6 +38,6 @@ export class LoginPage implements OnInit, OnDestroy {
     showConfirmation(): void {
         // TODO Show confirmation animation on form
         // window.alert('Logged in successfully!');
-        this.router.navigateByUrl('/dashboard');
+        this.router.navigateByUrl('/dashboard/bookings');
     }
 }

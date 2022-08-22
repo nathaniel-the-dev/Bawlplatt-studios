@@ -1,3 +1,4 @@
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -8,7 +9,7 @@ import { ProfilePage } from './profile/profile.page';
 import { HistoryPage } from './history/history.page';
 
 import { SidenavComponent } from '../layout/sidenav/sidenav.component';
-
+import { BookingFormPage } from './bookings/booking-form/booking-form.page';
 
 
 @NgModule({
@@ -16,12 +17,14 @@ import { SidenavComponent } from '../layout/sidenav/sidenav.component';
         SidenavComponent,
         DashboardPage,
         BookingsPage,
+        BookingFormPage,
         ProfilePage,
         HistoryPage,
     ],
     imports: [
         CommonModule,
-        DashboardRoutingModule
+        DashboardRoutingModule,
+        ReactiveFormsModule
     ]
 })
 export class DashboardModule { }

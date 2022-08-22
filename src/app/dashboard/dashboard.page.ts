@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UiService } from '../shared/ui.service';
+import { UiService } from '../shared/services/ui.service';
 
 @Component({
     selector: 'app-dashboard',

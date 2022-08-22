@@ -1,10 +1,16 @@
 <div class="container py-20">
-    <h1 class="">Bookings</h1>
+    <div>
+        <h1 class="">Bookings</h1>
 
+        <button routerLink="new">Create a booking</button>
+    </div>
 
     <ul>
         <li *ngFor="let booking of bookings">
-            {{booking.band.band_name}}
+            <span> {{ booking._id }}</span>
+
+            <button [routerLink]="['edit',booking._id]">(edit)</button>
+            <button (click)="deleteBooking(booking._id)">(delete)</button>
         </li>
     </ul>
 </div>

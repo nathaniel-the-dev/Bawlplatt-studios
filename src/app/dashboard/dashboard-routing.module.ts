@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardPage } from './dashboard.page';
-import { BookingFormPage } from '../bookings/booking-form/booking-form.page';
+import { BookingFormPage } from './bookings/booking-form/booking-form.page';
 import { BookingsPage } from './bookings/bookings.page';
 import { HistoryPage } from './history/history.page';
 import { ProfilePage } from './profile/profile.page';
@@ -14,13 +14,14 @@ const routes: Routes = [
             {
                 path: 'bookings',
                 children: [
-                    { path: 'new', component: BookingFormPage, data: { redirectTo: '/dashboard/bookings' } },
-                    { path: 'edit/:id', component: BookingFormPage, data: { redirectTo: '/dashboard/bookings' } },
+                    { path: 'new', component: BookingFormPage },
+                    { path: 'edit/:id', component: BookingFormPage },
                     { path: '', component: BookingsPage },
                 ]
             },
             { path: 'profile', component: ProfilePage },
             { path: 'history', component: HistoryPage },
+
             { path: '', redirectTo: 'bookings', pathMatch: 'full' },
         ]
     }

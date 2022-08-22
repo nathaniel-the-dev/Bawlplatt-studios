@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { APIResponse, Token } from '../shared/api-response';
-import { ErrorService } from '../shared/error.service';
+import { APIResponse, Token } from '../shared/models/api-response';
+import { ErrorService } from '../shared/services/error.service';
 
 @Injectable({
     providedIn: 'root'

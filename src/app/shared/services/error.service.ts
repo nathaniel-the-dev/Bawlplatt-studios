@@ -1,6 +1,6 @@
+import { APIResponse } from './../models/api-response';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { APIResponse } from './api-response';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
