@@ -57,8 +57,8 @@ export class BookingsService {
         );
     }
 
-    switchBookingValue(id: string, data: { [field: string]: string | boolean }): Observable<APIResponse<Booking>> {
-        return this.http.patch<APIResponse<Booking>>(this.API_URL + "/" + id, data).pipe(
+    approveBooking(id: string, data: { completed?: boolean, payed?: boolean }): Observable<APIResponse<Booking>> {
+        return this.http.patch<APIResponse<Booking>>(this.API_URL + "/approve/" + id, data).pipe(
             catchError((err) => this.errorService.handleHTTPError(err))
         );
     }

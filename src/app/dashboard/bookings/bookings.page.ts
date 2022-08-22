@@ -35,11 +35,11 @@ export class BookingsPage implements OnInit, OnDestroy {
         this.subscriptions.add(bookingsSub);
     }
 
-    toggleBookingValue(id: string, field: 'completed' | 'payed', value: boolean | string = true): void {
+    toggleBookingValue(id: string, field: 'completed' | 'payed', value: boolean = true): void {
         const data = {} as any;
         data[field] = value;
 
-        const toggleSub = this.bookingsService.switchBookingValue(id, data).subscribe((res) => {
+        const toggleSub = this.bookingsService.approveBooking(id, data).subscribe((res) => {
             if (res.status === 'success') this.getAllBookings();
         });
         this.subscriptions.add(toggleSub);
