@@ -16,30 +16,30 @@ export class BookingFormPage implements OnInit {
     bookingForm = this.fb.group({
         // Customer type
         customerTypeForm: this.fb.group({
-            customer_type: [null, [Validators.required]]
+            customer_type: [undefined, [Validators.required]]
         }),
 
         // Customer information
         artistForm: this.fb.group({
-            name: [null, Validators.required],
-            email: [null, [Validators.required, Validators.email]],
-            contact_num: [null, Validators.required]
+            name: [undefined, Validators.required],
+            email: [undefined, [Validators.required, Validators.email]],
+            contact_num: [undefined, Validators.required]
         }),
         bandForm: this.fb.group({
-            group_name: [null, Validators.required],
-            group_size: [null, [Validators.required, Validators.min(1)]],
-            lead_name: [null, Validators.required],
-            lead_email: [null, [Validators.required, Validators.email]],
-            lead_contact_num: [null, Validators.required]
+            group_name: [undefined, Validators.required],
+            group_size: [undefined, [Validators.required, Validators.min(1)]],
+            lead_name: [undefined, Validators.required],
+            lead_email: [undefined, [Validators.required, Validators.email]],
+            lead_contact_num: [undefined, Validators.required]
         }),
 
         // Session information
         sessionForm: this.fb.group({
-            num_of_instruments: [null, Validators.required],
-            start_date: [null, Validators.required],
-            start_time: [null, Validators.required],
-            duration: [null, [Validators.required, Validators.max(4)]],
-            message: [null, Validators.maxLength(255)]
+            num_of_instruments: [undefined, Validators.min(0)],
+            start_date: [undefined, Validators.required],
+            start_time: [undefined, Validators.required],
+            duration: [undefined, [Validators.required, Validators.max(4)]],
+            message: [undefined, Validators.maxLength(255)]
         })
     })
     get customerTypeForm(): FormGroup {
