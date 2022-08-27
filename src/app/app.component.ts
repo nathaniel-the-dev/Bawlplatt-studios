@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
+import { ToastService } from './shared/services/toast.service';
 import { UiService } from './shared/services/ui.service';
 
 @Component({

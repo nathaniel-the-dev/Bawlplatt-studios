@@ -22,8 +22,16 @@ export interface QueryOptions {
     [index: string]: any;
 }
 
+
 export interface APIResponse<T = any> {
     status: string;
+    // Data properties
     data?: { [index: string]: T };
-    message?: string;
+
+    // Error properties
+    error?: {
+        type: string;
+        message: string;
+        errors?: { [key: string]: string }
+    }
 }

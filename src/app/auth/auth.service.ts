@@ -57,7 +57,7 @@ export class AuthService {
         this._setToken(token);
     }
 
-    private setAuthSession(res: APIResponse<Token>): void {
+    public setAuthSession(res: APIResponse<Token>): void {
         if (res.status !== 'success' || !res.data) return;
 
         // Set and save the JWT token

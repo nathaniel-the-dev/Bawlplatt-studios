@@ -1,3 +1,26 @@
+@import "toastify-js/src/toastify.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    /* Form Controls */
+    .form-control {
+        @apply grid gap-1;
+    }
+
+    .form-control label {
+        @apply w-fit;
+    }
+    .form-control.required label::after {
+        @apply content-['*'] text-red-500;
+    }
+
+    .form-control input {
+        @apply w-full max-w-xs px-4 py-2 border border-current;
+    }
+    .form-control input.ng-invalid:not(.ng-pristine) {
+        @apply border-red-400;
+    }
+}

@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError } from 'rxjs';
-import { APIResponse } from '../shared/models/api-response';
+import { Observable, catchError, tap } from 'rxjs';
+import { APIResponse, Token } from '../shared/models/api-response';
 import { environment } from 'src/environments/environment';
 import { User } from '../shared/models/user';
 import { ErrorService } from '../shared/services/error.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,7 @@ import { ErrorService } from '../shared/services/error.service';
 export class UserService {
     private API_URL = environment.API_URL + '/users';
 
-    constructor(private errorService: ErrorService, private http: HttpClient) { }
+    constructor(private authService: AuthService, private errorService: ErrorService, private http: HttpClient) { }
 
     getCurrentUser(): Observable<APIResponse<User>> {
         return this.http.get<APIResponse<User>>(this.API_URL + '/profile').pipe(catchError((err) => this.errorService.handleHTTPError(err)));
@@ -26,8 +27,10 @@ export class UserService {
         return this.http.patch<APIResponse<User>>(this.API_URL + '/profile', data).pipe(catchError((err) => this.errorService.handleHTTPError(err)));
     }
 
-    updateCurrentUserPassword(data: any): Observable<APIResponse<User>> {
-        return this.http.patch<APIResponse<User>>(this.API_URL + '/profile/password', data).pipe(catchError((err) => this.errorService.handleHTTPError(err)));
+    updateCurrentUserPassword(data: any): Observable<APIResponse<Token>> {
+        return this.http.patch<APIResponse<Token>>(this.API_URL + '/profile/password', data).pipe(
+            tap((res) => this.authService.setAuthSession(res)),
+            catchError((err) => this.errorService.handleHTTPError(err)));
     }
 
     deleteCurrentUser(): Observable<APIResponse<null>> {

@@ -4,15 +4,30 @@
     <section>
         <h2>General Information</h2>
 
-        <form [formGroup]="infoForm" (ngSubmit)="infoForm.valid && onInfoFormSubmit()">
-            <div>
+        <form [formGroup]="infoForm" (ngSubmit)="infoForm.valid && onInfoFormSubmit()" #formInfo="ngForm">
+            <div class="form-control" [class.required]="infoForm.get('name')?.hasValidator(validators.required)">
                 <label for="name">Name</label>
                 <input type="text" name="name" id="name" formControlName="name">
+
+                <div class="feedback"
+                    *ngIf="(infoForm.controls['name'].dirty || formInfo.submitted) && infoForm.controls['name'].invalid">
+                    <span *ngIf="infoForm.controls['name'].hasError('required')">Please enter your name</span>
+                    <span
+                        *ngIf="infoForm.controls['name'].hasError('async')">{{infoForm.controls['name'].errors!['async']}}</span>
+                </div>
             </div>
 
-            <div>
+            <div class="form-control" [class.required]="infoForm.get('email')?.hasValidator(validators.required)">
                 <label for="email">Email Address</label>
                 <input type="email" name="email" id="email" formControlName="email">
+
+                <div class="feedback"
+                    *ngIf="(infoForm.controls['email'].dirty || formInfo.submitted) && infoForm.controls['email'].invalid">
+                    <span *ngIf="infoForm.controls['email'].hasError('required')">Please provide an email</span>
+                    <span *ngIf="infoForm.controls['email'].hasError('email')">Email is not a valid email address</span>
+                    <span
+                        *ngIf="infoForm.controls['email'].hasError('async')">{{infoForm.controls['email'].errors!['async']}}</span>
+                </div>
             </div>
 
             <button type="submit">Save</button>
@@ -22,19 +37,47 @@
     <section>
         <h2>Update Your Password</h2>
 
-        <form [formGroup]="passwordForm" (ngSubmit)="passwordForm.valid && onPasswordFormSubmit()">
+        <form [formGroup]="passwordForm" (ngSubmit)="passwordForm.valid && onPasswordFormSubmit()" #formPass="ngForm">
 
-            <div>
+            <div class="form-control"
+                [class.required]="passwordForm.get('currentPassword')?.hasValidator(validators.required)">
                 <label for="currentPassword">Current Password</label>
                 <input type="password" name="currentPassword" id="currentPassword" formControlName="currentPassword">
+
+                <div class="feedback"
+                    *ngIf="(passwordForm.controls['currentPassword'].dirty || formPass.submitted) && passwordForm.controls['currentPassword'].invalid">
+                    <span *ngIf="passwordForm.controls['currentPassword'].hasError('required')">Please enter your
+                        password</span>
+                    <span
+                        *ngIf="passwordForm.controls['currentPassword'].hasError('async')">{{passwordForm.controls['currentPassword'].errors!['async']}}</span>
+                </div>
             </div>
-            <div>
-                <label for="newPassword">New Password</label>
-                <input type="password" name="newPassword" id="newPassword" formControlName="newPassword">
+            <div class="form-control"
+                [class.required]="passwordForm.get('password')?.hasValidator(validators.required)">
+                <label for="password">New Password</label>
+                <input type="password" name="password" id="password" formControlName="password">
+
+                <div class="feedback"
+                    *ngIf="(passwordForm.controls['password'].dirty || formPass.submitted) && passwordForm.controls['password'].invalid">
+                    <span *ngIf="passwordForm.controls['password'].hasError('required')">Please enter a
+                        password</span>
+                    <span *ngIf="passwordForm.controls['password'].hasError('minlength')">Password must be atleast 8
+                        characters long</span>
+                    <span
+                        *ngIf="passwordForm.controls['password'].hasError('async')">{{passwordForm.controls['password'].errors!['async']}}</span>
+                </div>
             </div>
-            <div>
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" name="confirmPassword" id="confirmPassword" formControlName="confirmPassword">
+            <div class="form-control" [class.required]="passwordForm.get('confirm')?.hasValidator(validators.required)">
+                <label for="confirm">Confirm Password</label>
+                <input type="password" name="confirm" id="confirm" formControlName="confirm">
+
+                <div class="feedback"
+                    *ngIf="(passwordForm.controls['confirm'].dirty || formPass.submitted) && passwordForm.controls['confirm'].invalid">
+                    <span *ngIf="passwordForm.controls['confirm'].hasError('required')">Please confirm your new
+                        password</span>
+                    <span
+                        *ngIf="passwordForm.controls['confirm'].hasError('async')">{{passwordForm.controls['confirm'].errors!['async']}}</span>
+                </div>
             </div>
 
             <button type="submit">Save</button>

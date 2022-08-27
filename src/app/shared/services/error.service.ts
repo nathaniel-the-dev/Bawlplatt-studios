@@ -1,29 +1,45 @@
+import { FormGroup, ValidationErrors } from '@angular/forms';
 import { APIResponse } from './../models/api-response';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { ToastService } from './toast.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ErrorService {
 
-    constructor(private router: Router) { }
+    constructor(private toastService: ToastService, private router: Router) { }
 
-    handleHTTPError(err: HttpErrorResponse | any): Observable<any> {
-        let error: APIResponse = {
-            status: err.error?.['status'] || 'error',
-            message: err.error?.['message'] || 'Something went wrong'
+    public handleHTTPError(res: HttpErrorResponse | any): Observable<any> {
+        let response: APIResponse = {
+            status: res.error?.status || 'error',
+            error: {
+                type: res.error?.error.type || 'RequestError',
+                message: res.error?.error.message || 'Something went wrong',
+                errors: res.error?.error.type === 'ValidationError' ? res.error.error.errors : undefined
+            }
         }
 
-        if (err instanceof HttpErrorResponse) {
-            // 402 - Unauthorized
-            if (err.status === 401) this.router.navigateByUrl('/login');
+        if (res instanceof HttpErrorResponse) {
+            // 401 - Unauthorized
+            if (res.status === 401) this.router.navigateByUrl('/login');
         }
 
-        console.error(err);
-        return of(error);
+        console.error(res);
+        return of(response);
+    }
+
+    public handleValidationError(err: APIResponse, form: FormGroup): void {
+        let keys = Object.keys(err.error?.errors!);
+
+        keys.forEach(key => {
+            const control = form.get(key);
+            if (control) control.setErrors({ async: err.error?.errors![key] });
+        });
+
     }
 
 }

@@ -1,14 +1,16 @@
 <div class="">
     <h1>Log into your account</h1>
 
-    <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()" #form="ngForm">
         <div class="form-control">
             <label for="email">Email</label>
             <input type="email" name="email" id="email" formControlName="email">
 
-            <div class="feedback" *ngIf="(loginForm.dirty) && loginForm.controls['email'].invalid">
-                <span *ngIf="loginForm.controls['email'].hasError('required')">Please provide an email address</span>
-                <span *ngIf="loginForm.controls['email'].hasError('email')">Email must be a valid email address</span>
+            <div class="feedback" *ngIf="(loginForm.dirty || form.submitted) && loginForm.controls['email'].invalid">
+                <span *ngIf="loginForm.controls['email'].hasError('required')">Please provide an email</span>
+                <span *ngIf="loginForm.controls['email'].hasError('email')">Email is not a valid email address</span>
+                <span
+                    *ngIf="loginForm.controls['email'].hasError('async')">{{loginForm.controls['email'].errors!['async']}}</span>
             </div>
         </div>
 
@@ -16,8 +18,10 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="password" formControlName="password">
 
-            <div class="feedback" *ngIf="(loginForm.dirty) && loginForm.controls['password'].invalid">
+            <div class="feedback" *ngIf="(loginForm.dirty || form.submitted) && loginForm.controls['password'].invalid">
                 <span *ngIf="loginForm.controls['password'].hasError('required')">Please provide an password</span>
+                <span
+                    *ngIf="loginForm.controls['password'].hasError('async')">{{loginForm.controls['password'].errors!['async']}}</span>
             </div>
         </div>
         <p><a href="">Forgot your password?</a></p>

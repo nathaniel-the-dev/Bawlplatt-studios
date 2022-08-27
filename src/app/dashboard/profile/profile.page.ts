@@ -5,6 +5,7 @@ import { User } from 'src/app/shared/models/user';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { ErrorService } from 'src/app/shared/services/error.service';
 
 @Component({
     selector: 'app-profile',
@@ -13,68 +14,74 @@ import { Subscription } from 'rxjs';
 })
 export class ProfilePage implements OnInit, OnDestroy {
     user?: User;
+    validators = Validators;
 
-    infoForm = this.fb.group({
-        name: [null, Validators.required],
-        email: [null, [Validators.required, Validators.email]]
-    });
+    infoForm = this.fb.group(
+        {
+            name: [null, Validators.required],
+            email: [null, [Validators.required, Validators.email]]
+        },
+    );
     onInfoFormSubmit(): void {
         const infoSub = this.userService.updateCurrentUser(this.infoForm.value).subscribe((res) => {
-            if (res.status !== 'success') return;
+            if (res.status === 'success') {
+                this.user = res.data!['user'];
+                this.infoForm.setValue({ name: this.user.name, email: this.user.email });
+                this.infoForm.markAsPristine();
+            }
 
-            this.user = res.data!['user'];
-            this.infoForm.setValue({ name: this.user.name, email: this.user.email });
+            if (res.status === 'fail' && res.error!.type === 'ValidationError') this.errorService.handleValidationError(res, this.infoForm);
+
         });
         this.subscriptions.add(infoSub);
     }
 
-    passwordForm = this.fb.group({
-        currentPassword: [null, Validators.required],
-        newPassword: [null, [Validators.required, Validators.minLength(8)]],
-        confirmPassword: [null, [Validators.required, Validators.minLength(8)]]
-    });
+    passwordForm = this.fb.group(
+        {
+            currentPassword: [null, Validators.required],
+            password: [null, [Validators.required, Validators.minLength(8)]],
+            confirm: [null, [Validators.required]]
+        },
+    );
     onPasswordFormSubmit(): void {
         const passwordSub = this.userService.updateCurrentUserPassword(this.passwordForm.value).subscribe((res) => {
-            if (res.status !== 'success') return;
-
-            const loginSub = this.authService.login({
-                email: this.user!.email,
-                password: this.passwordForm.controls['newPassword'].value
-            }).subscribe((res) => {
-                if (res.status !== 'success') return;
-
-                this.passwordForm.reset()
+            if (res.status === 'success') {
+                this.passwordForm.reset();
+                this.passwordForm.markAsPristine();
                 window.alert('Profile updated!');
-            });
-            this.subscriptions.add(loginSub);
+            }
+
+            if (res.status === 'fail' && res.error!.type === 'ValidationError') this.errorService.handleValidationError(res, this.passwordForm);
         });
         this.subscriptions.add(passwordSub);
     }
 
     confirmAccountDelete(): void {
-        // TODO Request user password for confirmation of delete
+        // TODO Request user password for confirmation in alert dialog
         let password = window.prompt('Enter your password to confirm the delete:');
         if (!password) return;
 
         const verifySub = this.userService.verifyUser({ password }).subscribe((res) => {
-            if (res.status !== 'success') return window.alert(res.message);
+            if (res.status === 'success') {
+                const deleteSub = this.userService.deleteCurrentUser().subscribe((res) => {
+                    if (res !== null) return;
 
-            const deleteSub = this.userService.deleteCurrentUser().subscribe((res) => {
-                if (res !== null) return;
-
-                const loginSub = this.authService.logout().subscribe((res) => {
-                    if (res.status === 'success') this.router.navigateByUrl('/login');
+                    const loginSub = this.authService.logout().subscribe((res) => {
+                        if (res.status === 'success') this.router.navigateByUrl('/login');
+                    });
+                    this.subscriptions.add(loginSub);
                 });
-                this.subscriptions.add(loginSub);
-            });
-            this.subscriptions.add(deleteSub);
+                this.subscriptions.add(deleteSub);
+            }
+
+            if (res.status === 'fail' && res.error!.type === 'ValidationError') { window.alert('Password is incorrect') }
         });
         this.subscriptions.add(verifySub);
     }
 
     private subscriptions = new Subscription();
 
-    constructor(private userService: UserService, private authService: AuthService, private fb: FormBuilder, private router: Router) { }
+    constructor(private userService: UserService, private authService: AuthService, private errorService: ErrorService, private fb: FormBuilder, private router: Router) { }
 
     ngOnInit(): void {
         this.getUserInformation();

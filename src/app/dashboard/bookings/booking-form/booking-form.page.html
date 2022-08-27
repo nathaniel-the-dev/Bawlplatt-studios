@@ -32,17 +32,17 @@
         <!-- Artist Form -->
         <form [formGroup]="artistForm" *ngIf="artistForm.enabled"
             (ngSubmit)="artistForm.valid && onCustomerInfoFormSubmit()">
-            <div>
+            <div class="form-control">
                 <label for="artist_name">Artist Name</label>
                 <input type="text" name="artist_name" id="artist_name" formControlName="name">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="artist_email">Artist Email</label>
                 <input type="email" name="artist_email" id="artist_email" formControlName="email">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="artist_contact_num">Artist Contact #</label>
                 <input type="tel" name="artist_contact_num" id="artist_contact_num" formControlName="contact_num">
             </div>
@@ -52,27 +52,27 @@
 
         <!-- Band Form -->
         <form [formGroup]="bandForm" *ngIf="bandForm.enabled" (ngSubmit)="bandForm && onCustomerInfoFormSubmit()">
-            <div>
+            <div class="form-control">
                 <label for="group_name">Group Name</label>
                 <input type="text" name="group_name" id="group_name" formControlName="group_name">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="group_size">Group Size</label>
                 <input type="number" name="group_size" id="group_size" formControlName="group_size">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="lead_name">Lead Name</label>
                 <input type="text" name="lead_name" id="lead_name" formControlName="lead_name">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="lead_email">Lead Email</label>
                 <input type="email" name="lead_email" id="lead_email" formControlName="lead_email">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="lead_contact_num">Lead Contact #</label>
                 <input type="tel" name="lead_contact_num" id="lead_contact_num" formControlName="lead_contact_num">
             </div>
@@ -86,18 +86,18 @@
         <h1>Session Information</h1>
 
         <form [formGroup]="sessionForm" (ngSubmit)="bookingForm.valid && onSessionFormSubmit()">
-            <div>
+            <div class="form-control">
                 <label for="num_of_instruments">Number of Instruments Required</label>
                 <input type="number" name="num_of_instruments" id="num_of_instruments"
                     formControlName="num_of_instruments">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="start_date">Date of Session</label>
                 <input type="date" name="start_date" id="start_date" formControlName="start_date">
             </div>
 
-            <div>
+            <div class="form-control">
                 <label for="start_date-time">Time of Session</label>
                 <input type="time" name="start_time" id="start_date-time" formControlName="start_time" #time>
             </div>
