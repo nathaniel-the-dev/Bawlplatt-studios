@@ -14,14 +14,11 @@ import { ErrorService } from 'src/app/shared/services/error.service';
 })
 export class ProfilePage implements OnInit, OnDestroy {
     user?: User;
-    validators = Validators;
 
-    infoForm = this.fb.group(
-        {
-            name: [null, Validators.required],
-            email: [null, [Validators.required, Validators.email]]
-        },
-    );
+    infoForm = this.fb.group({
+        name: [null],
+        email: [null]
+    });
     onInfoFormSubmit(): void {
         const infoSub = this.userService.updateCurrentUser(this.infoForm.value).subscribe((res) => {
             if (res.status === 'success') {
@@ -36,13 +33,11 @@ export class ProfilePage implements OnInit, OnDestroy {
         this.subscriptions.add(infoSub);
     }
 
-    passwordForm = this.fb.group(
-        {
-            currentPassword: [null, Validators.required],
-            password: [null, [Validators.required, Validators.minLength(8)]],
-            confirm: [null, [Validators.required]]
-        },
-    );
+    passwordForm = this.fb.group({
+        currentPassword: [null],
+        password: [null],
+        confirm: [null]
+    });
     onPasswordFormSubmit(): void {
         const passwordSub = this.userService.updateCurrentUserPassword(this.passwordForm.value).subscribe((res) => {
             if (res.status === 'success') {

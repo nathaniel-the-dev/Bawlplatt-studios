@@ -10,17 +10,17 @@
         @apply grid gap-1;
     }
 
-    .form-control label {
+    .form-control .label {
         @apply w-fit;
     }
-    .form-control.required label::after {
+    .form-control.required .label::after {
         @apply content-['*'] text-red-500;
     }
 
-    .form-control input {
+    .form-control .input {
         @apply w-full max-w-xs px-4 py-2 border border-current;
     }
-    .form-control input.ng-invalid:not(.ng-pristine) {
+    .form-control .input.ng-invalid:not(.ng-pristine) {
         @apply border-red-400;
     }
 }

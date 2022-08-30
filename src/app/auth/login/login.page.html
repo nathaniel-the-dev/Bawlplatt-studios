@@ -1,27 +1,26 @@
 <div class="">
     <h1>Log into your account</h1>
 
-    <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()" #form="ngForm">
+    <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()">
         <div class="form-control">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" formControlName="email">
+            <label class="label" for="email">Email</label>
+            <input class="input" type="email" name="email" id="email" formControlName="email">
 
-            <div class="feedback" *ngIf="(loginForm.dirty || form.submitted) && loginForm.controls['email'].invalid">
-                <span *ngIf="loginForm.controls['email'].hasError('required')">Please provide an email</span>
-                <span *ngIf="loginForm.controls['email'].hasError('email')">Email is not a valid email address</span>
-                <span
-                    *ngIf="loginForm.controls['email'].hasError('async')">{{loginForm.controls['email'].errors!['async']}}</span>
+            <div class="feedback">
+                <span *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.hasError('async')">
+                    {{loginForm.get('email')?.errors!['async']}}
+                </span>
             </div>
         </div>
 
         <div class="form-control">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" formControlName="password">
+            <label class="label" for="password">Password</label>
+            <input class="input" type="password" name="password" id="password" formControlName="password">
 
-            <div class="feedback" *ngIf="(loginForm.dirty || form.submitted) && loginForm.controls['password'].invalid">
-                <span *ngIf="loginForm.controls['password'].hasError('required')">Please provide an password</span>
-                <span
-                    *ngIf="loginForm.controls['password'].hasError('async')">{{loginForm.controls['password'].errors!['async']}}</span>
+            <div class="feedback">
+                <span *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.hasError('async')">
+                    {{loginForm.get('password')?.errors!['async']}}
+                </span>
             </div>
         </div>
         <p><a href="">Forgot your password?</a></p>

@@ -33,13 +33,13 @@ export class ErrorService {
     }
 
     public handleValidationError(err: APIResponse, form: FormGroup): void {
-        let keys = Object.keys(err.error?.errors!);
+        let error = err.error?.errors!;
+        let keys = Object.keys(error);
 
         keys.forEach(key => {
             const control = form.get(key);
-            if (control) control.setErrors({ async: err.error?.errors![key] });
+            if (control) control.setErrors({ async: error[key] });
         });
-
     }
 
 }

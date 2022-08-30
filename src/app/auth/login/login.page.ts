@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ErrorService } from 'src/app/shared/services/error.service';
@@ -13,8 +13,8 @@ import { AuthService } from '../auth.service';
 })
 export class LoginPage implements OnInit, OnDestroy {
     loginForm = this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required]]
+        email: [''],
+        password: ['']
     });
 
     private subscriptions = new Subscription();

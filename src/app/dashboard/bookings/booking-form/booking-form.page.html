@@ -2,110 +2,181 @@
     <h1>{{ action | titlecase }} A Booking</h1>
     <!-- Add accordion style form -->
 
-    <!-- Customer Type Form -->
-    <section>
-        <h1>Customer Type</h1>
+    <form [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onFormSubmit()" #form="ngForm">
+        <!-- Customer Type Form -->
+        <section>
+            <h1>Customer Type</h1>
 
-        <form [formGroup]="customerTypeForm" (ngSubmit)="customerTypeForm.valid && onCustomerTypeFormSubmit()">
-            <fieldset>
-                <legend>Who are you booking for?</legend>
+            <fieldset class="form-control required">
+                <legend class="label">Who are you booking for?</legend>
 
-                <label for="customer_type-artist">
-                    <input type="radio" name="customer_type" id="customer_type-artist" value="artist"
-                        formControlName="customer_type">
-                    <span>An artist</span>
-                </label>
-                <label for="customer_type-band">
-                    <input type="radio" name="customer_type" id="customer_type-band" value="band"
-                        formControlName="customer_type">
-                    <span>A band</span>
-                </label>
+                <div>
+                    <label for="customer_type-artist">
+                        <input type="radio" name="customer_type" id="customer_type-artist" value="artist"
+                            formControlName="customer_type">
+                        <span>An artist</span>
+                    </label>
+                    <label for="customer_type-band">
+                        <input type="radio" name="customer_type" id="customer_type-band" value="band"
+                            formControlName="customer_type">
+                        <span>A band</span>
+                    </label>
+                </div>
+
+                <div class="feedback">
+                    <span *ngIf="form.submitted && bookingForm.get('customer_type')?.hasError('required')">
+                        Please choose an option
+                    </span>
+                </div>
             </fieldset>
+        </section>
 
-            <button type="submit" [disabled]="customerTypeForm.invalid">Next</button>
-        </form>
-    </section>
+        <section>
+            <h1>Customer Information</h1>
 
-    <section *ngIf="artistForm.enabled || bandForm.enabled">
-        <h1>Customer Information</h1>
+            <!-- Artist Form -->
+            <form [formGroup]="artistForm" *ngIf="artistForm.enabled">
+                <div class="form-control required">
+                    <label class="label" for="artist_name">Artist Name</label>
+                    <input class="input" type="text" name="artist_name" id="artist_name" formControlName="name">
 
-        <!-- Artist Form -->
-        <form [formGroup]="artistForm" *ngIf="artistForm.enabled"
-            (ngSubmit)="artistForm.valid && onCustomerInfoFormSubmit()">
+                    <div class="feedback">
+                        <span *ngIf="artistForm.get('name')?.invalid && artistForm.get('name')?.hasError('async')">
+                            {{artistForm.get('name')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-control required">
+                    <label class="label" for="artist_email">Artist Email</label>
+                    <input class="input" type="email" name="artist_email" id="artist_email" formControlName="email">
+
+                    <div class="feedback">
+                        <span *ngIf="artistForm.get('email')?.invalid && artistForm.get('email')?.hasError('async')">
+                            {{artistForm.get('email')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-control required">
+                    <label class="label" for="artist_contact_num">Artist Contact Number</label>
+                    <input class="input" type="tel" name="artist_contact_num" id="artist_contact_num"
+                        formControlName="contact_num">
+
+                    <div class="feedback">
+                        <span
+                            *ngIf="artistForm.get('contact_num')?.invalid && artistForm.get('contact_num')?.hasError('async')">
+                            {{artistForm.get('contact_num')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Band Form -->
+            <form [formGroup]="bandForm" *ngIf="bandForm.enabled">
+                <div class="form-control required">
+                    <label class="label" for="group_name">Group Name</label>
+                    <input class="input" type="text" name="group_name" id="group_name" formControlName="group_name">
+
+                    <div class="feedback">
+                        <span
+                            *ngIf="bandForm.get('group_name')?.invalid && bandForm.get('group_name')?.hasError('async')">
+                            {{bandForm.get('group_name')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-control required">
+                    <label class="label" for="group_size">Group Size</label>
+                    <input class="input" type="number" name="group_size" id="group_size" formControlName="group_size">
+
+                    <div class="feedback">
+                        <span
+                            *ngIf="bandForm.get('group_size')?.invalid && bandForm.get('group_size')?.hasError('async')">
+                            {{bandForm.get('group_size')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-control required">
+                    <label class="label" for="lead_name">Lead Name</label>
+                    <input class="input" type="text" name="lead_name" id="lead_name" formControlName="lead_name">
+
+                    <div class="feedback">
+                        <span
+                            *ngIf="bandForm.get('lead_name')?.invalid && bandForm.get('lead_name')?.hasError('async')">
+                            {{bandForm.get('lead_name')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-control required">
+                    <label class="label" for="lead_email">Lead Email</label>
+                    <input class="input" type="email" name="lead_email" id="lead_email" formControlName="lead_email">
+
+                    <div class="feedback">
+                        <span
+                            *ngIf="bandForm.get('lead_email')?.invalid && bandForm.get('lead_email')?.hasError('async')">
+                            {{bandForm.get('lead_email')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-control required">
+                    <label class="label" for="lead_contact_num">Lead Contact Number</label>
+                    <input class="input" type="tel" name="lead_contact_num" id="lead_contact_num"
+                        formControlName="lead_contact_num">
+
+                    <div class="feedback">
+                        <span
+                            *ngIf="bandForm.get('lead_contact_num')?.invalid && bandForm.get('lead_contact_num')?.hasError('async')">
+                            {{bandForm.get('lead_contact_num')?.errors!['async']}}
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Session Form -->
+        <section>
+            <h1>Session Information</h1>
+
             <div class="form-control">
-                <label for="artist_name">Artist Name</label>
-                <input type="text" name="artist_name" id="artist_name" formControlName="name">
-            </div>
-
-            <div class="form-control">
-                <label for="artist_email">Artist Email</label>
-                <input type="email" name="artist_email" id="artist_email" formControlName="email">
-            </div>
-
-            <div class="form-control">
-                <label for="artist_contact_num">Artist Contact #</label>
-                <input type="tel" name="artist_contact_num" id="artist_contact_num" formControlName="contact_num">
-            </div>
-
-            <button type="submit" [disabled]="artistForm.invalid">Next</button>
-        </form>
-
-        <!-- Band Form -->
-        <form [formGroup]="bandForm" *ngIf="bandForm.enabled" (ngSubmit)="bandForm && onCustomerInfoFormSubmit()">
-            <div class="form-control">
-                <label for="group_name">Group Name</label>
-                <input type="text" name="group_name" id="group_name" formControlName="group_name">
-            </div>
-
-            <div class="form-control">
-                <label for="group_size">Group Size</label>
-                <input type="number" name="group_size" id="group_size" formControlName="group_size">
-            </div>
-
-            <div class="form-control">
-                <label for="lead_name">Lead Name</label>
-                <input type="text" name="lead_name" id="lead_name" formControlName="lead_name">
-            </div>
-
-            <div class="form-control">
-                <label for="lead_email">Lead Email</label>
-                <input type="email" name="lead_email" id="lead_email" formControlName="lead_email">
-            </div>
-
-            <div class="form-control">
-                <label for="lead_contact_num">Lead Contact #</label>
-                <input type="tel" name="lead_contact_num" id="lead_contact_num" formControlName="lead_contact_num">
-            </div>
-
-            <button type="submit" [disabled]="bandForm.invalid">Next</button>
-        </form>
-    </section>
-
-    <!-- Session Form -->
-    <section *ngIf="sessionForm.enabled">
-        <h1>Session Information</h1>
-
-        <form [formGroup]="sessionForm" (ngSubmit)="bookingForm.valid && onSessionFormSubmit()">
-            <div class="form-control">
-                <label for="num_of_instruments">Number of Instruments Required</label>
-                <input type="number" name="num_of_instruments" id="num_of_instruments"
+                <label class="label" for="num_of_instruments">Number of Instruments</label>
+                <input class="input" type="number" name="num_of_instruments" id="num_of_instruments"
                     formControlName="num_of_instruments">
+
+                <div class="feedback">
+                    <span
+                        *ngIf="bookingForm.get('num_of_instruments')?.invalid && bookingForm.get('num_of_instruments')?.hasError('async')">
+                        {{bookingForm.get('num_of_instruments')?.errors!['async']}}
+                    </span>
+                </div>
             </div>
 
-            <div class="form-control">
-                <label for="start_date">Date of Session</label>
-                <input type="date" name="start_date" id="start_date" formControlName="start_date">
+            <div class="form-control required">
+                <label class="label" for="start_date">Date/Time of Session</label>
+                <input class="input" type="date" name="start_date" id="start_date" formControlName="start_date">
+                <input class="input" type="time" name="start_time" id="start_date-time" formControlName="start_time">
+
+                <div class="feedback">
+                    <span
+                        *ngIf="bookingForm.get('start_date')?.invalid && bookingForm.get('start_date')?.hasError('async')">
+                        {{bookingForm.get('start_date')?.errors!['async']}}
+                    </span>
+                    <span *ngIf="form.submitted && bookingForm.get('start_time')?.hasError('required')">
+                        Please select a time
+                    </span>
+                    <span *ngIf="form.submitted && bookingForm.get('start_time')?.hasError('range')">
+                        Can only book a session between 8:00AM - 8:00PM
+                    </span>
+                </div>
             </div>
 
-            <div class="form-control">
-                <label for="start_date-time">Time of Session</label>
-                <input type="time" name="start_time" id="start_date-time" formControlName="start_time" #time>
-            </div>
+            <fieldset class="form-control required">
+                <legend class="label">Duration</legend>
 
-            <div>
-                <fieldset>
-                    <legend>Duration</legend>
-
+                <div>
                     <label for="duration-1hr">
                         <input type="radio" name="duration" id="duration-1hr" [value]="1" formControlName="duration">
                         <span>1 hr.</span>
@@ -122,17 +193,35 @@
                         <input type="radio" name="duration" id="duration-4hrs" [value]="4" formControlName="duration">
                         <span>4 hrs.</span>
                     </label>
-                </fieldset>
-            </div>
+                </div>
+
+                <div class="feedback">
+                    <span
+                        *ngIf="bookingForm.get('duration')?.invalid && bookingForm.get('duration')?.hasError('async')">
+                        {{bookingForm.get('duration')?.errors!['async']}}
+                    </span>
+                </div>
+            </fieldset>
 
 
-            <div>
-                <label for="message">Message</label>
-                <textarea name="message" id="message" cols="30" rows="5" formControlName="message"></textarea>
+
+            <div class="form-control">
+                <label class="label" for="message">Message</label>
+                <textarea class="input" name="message" id="message" cols="30" rows="5"
+                    formControlName="message"></textarea>
+
+                <div class="feedback">
+                    <span *ngIf="bookingForm.get('message')?.invalid && bookingForm.get('message')?.hasError('async')">
+                        {{bookingForm.get('message')?.errors!['async']}}
+                    </span>
+                </div>
             </div>
 
             <button type="button" routerLink="/dashboard/bookings">Cancel</button>
-            <button type="submit" [disabled]="bookingForm.invalid">Finish</button>
-        </form>
-    </section>
+            <button type="submit">Finish</button>
+            <p *ngIf="(bookingForm.dirty || form.submitted) && bookingForm.invalid">
+                Some fields are invalid. Ensure all fields are correct and try again.
+            </p>
+        </section>
+    </form>
 </div>

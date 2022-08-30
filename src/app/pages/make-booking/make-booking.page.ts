@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { BookingsService } from 'src/app/dashboard/bookings/bookings.service';
 import { Router } from '@angular/router';
 import { Booking } from 'src/app/shared/models/booking';
+import { ErrorService } from 'src/app/shared/services/error.service';
+import { ValidateTime } from 'src/app/shared/validators/time.validator';
 
 @Component({
     selector: 'app-make-booking',
@@ -12,48 +14,38 @@ import { Booking } from 'src/app/shared/models/booking';
 })
 export class MakeBookingPage implements OnInit, OnDestroy {
     bookingForm = this.fb.group({
-        customerTypeForm: this.fb.group({
-            customer_type: [undefined, [Validators.required]],
+        customer_type: [null, [Validators.required]],
+
+        artist: this.fb.group({
+            name: [null, [Validators.required]],
+            email: [null, [Validators.required, Validators.email]],
+            contact_num: [null, [Validators.required, Validators.pattern(/^([0-9]{1,})$/)]]
         }),
 
-        artistForm: this.fb.group({
-            name: [undefined, [Validators.required]],
-            email: [undefined, [Validators.required, Validators.email]],
-            contact_num: [undefined, [Validators.required]]
+        band: this.fb.group({
+            group_name: [null, [Validators.required]],
+            group_size: [null, [Validators.required, Validators.min(1)]],
+            lead_name: [null, [Validators.required]],
+            lead_email: [null, [Validators.required, Validators.email]],
+            lead_contact_num: [null, [Validators.required, Validators.pattern(/^([0-9]{1,})$/)]]
         }),
 
-        bandForm: this.fb.group({
-            group_name: [undefined, [Validators.required]],
-            group_size: [undefined, [Validators.required, Validators.min(1)]],
-            lead_name: [undefined, [Validators.required]],
-            lead_email: [undefined, [Validators.required, Validators.email]],
-            lead_contact_num: [undefined, [Validators.required]]
-        }),
-
-        sessionForm: this.fb.group({
-            num_of_instruments: [undefined, [Validators.min(0)]],
-            start_date: [undefined, Validators.required],
-            start_time: [undefined, Validators.required],
-            duration: [undefined, [Validators.required, Validators.max(4)]],
-            message: [undefined, Validators.maxLength(255)]
-        })
+        num_of_instruments: [null, Validators.min(0)],
+        start_date: [null, Validators.required],
+        start_time: [null, [Validators.required, ValidateTime('08:00', '20:00')]],
+        duration: [null, [Validators.required, Validators.max(4)]],
+        message: [null, Validators.maxLength(255)]
     });
-    get customerTypeForm(): FormGroup {
-        return this.bookingForm.get('customerTypeForm') as FormGroup;
-    }
     get artistForm(): FormGroup {
-        return this.bookingForm.get('artistForm') as FormGroup;
+        return this.bookingForm.get('artist') as FormGroup;
     }
     get bandForm(): FormGroup {
-        return this.bookingForm.get('bandForm') as FormGroup;
-    }
-    get sessionForm(): FormGroup {
-        return this.bookingForm.get('sessionForm') as FormGroup;
+        return this.bookingForm.get('band') as FormGroup;
     }
 
     private subscriptions = new Subscription();
 
-    constructor(private bookingsService: BookingsService, private fb: FormBuilder, private router: Router) { }
+    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private fb: FormBuilder, private router: Router) { }
 
     ngOnInit(): void {
         this._setFormState(this.artistForm, 'disabled');
@@ -81,31 +73,26 @@ export class MakeBookingPage implements OnInit, OnDestroy {
 
     onBookingFormSubmit(): void {
         // Convert separate date and time to one value
-        let start_date = new Date(this.sessionForm.controls['start_date'].value + " " + this.sessionForm.controls['start_time'].value);
+        let start_date = this.bookingForm.controls['start_date'].value && new Date(this.bookingForm.controls['start_date'].value + " " + this.bookingForm.controls['start_time'].value);
 
         // Add the data to the booking
-        const booking =
-            {
-                ...this.customerTypeForm.value,
+        const booking = {
+            ...this.bookingForm.value,
 
-                artist: this.artistForm.enabled ? (this.artistForm.value) : undefined,
-                band: this.bandForm.enabled ? (this.bandForm.value) : undefined,
-
-                ...this.sessionForm.value,
-                start_date: start_date,
-                start_time: undefined
-            } as Booking;
+            start_date: start_date,
+            start_time: undefined
+        } as Booking;
 
         const bookingSub = this.bookingsService.createBooking(booking).subscribe((res) => {
-            if (res.status !== 'success') return;
-
-            this.changeSlide('complete');
+            if (res.status === 'success') this.changeSlide('complete');
+            if (res.status === 'fail' && res.error!.type === 'ValidationError')
+                this.errorService.handleValidationError(res, this.bookingForm);
         });
         this.subscriptions.add(bookingSub);
     }
 
 
     private _setFormState(form: FormGroup, state: 'enabled' | 'disabled'): void {
-        state === 'enabled' ? form.enable() : form.disable();
+        state === 'enabled' ? form.enable({ emitEvent: false }) : form.disable({ emitEvent: false });
     }
 }
