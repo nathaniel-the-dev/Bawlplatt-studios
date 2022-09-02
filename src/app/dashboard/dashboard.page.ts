@@ -1,24 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { UiService } from '../shared/services/ui.service';
+import { Component, OnInit } from '@angular/core';
+
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.page.html',
     styleUrls: ['./dashboard.page.css']
 })
-export class DashboardPage implements OnInit, OnDestroy {
+export class DashboardPage implements OnInit {
 
-    constructor(private route: ActivatedRoute, private uiService: UiService) { }
+    constructor() { }
 
     ngOnInit(): void {
-        this.setHeaderStyle('hidden');
-    }
-    ngOnDestroy(): void {
-        this.setHeaderStyle('full');
     }
 
-    private setHeaderStyle(style: string) {
-        this.uiService.headerStyle.next(style);
-    }
+
 }

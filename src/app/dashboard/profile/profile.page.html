@@ -1,8 +1,8 @@
-<div>
-    <h1>Welcome {{user?.name}}</h1>
+<div class="container py-12">
+    <h1 class="text-h3 mb-12">My Profile</h1>
 
-    <section>
-        <h2>General Information</h2>
+    <section class="mb-24">
+        <h2 class="text-h5 mb-6">General Information</h2>
 
         <form [formGroup]="infoForm" (ngSubmit)="infoForm.valid && onInfoFormSubmit()">
             <div class="form-control required">
@@ -27,12 +27,12 @@
                 </div>
             </div>
 
-            <button type="submit">Save</button>
+            <button class="btn" type="submit">Save</button>
         </form>
     </section>
 
-    <section>
-        <h2>Update Your Password</h2>
+    <section class="mb-24">
+        <h2 class="text-h5 mb-6">Update Your Password</h2>
 
         <form [formGroup]="passwordForm" (ngSubmit)="passwordForm.valid && onPasswordFormSubmit()" #formPass="ngForm">
 
@@ -71,16 +71,16 @@
                 </div>
             </div>
 
-            <button type="submit">Save</button>
+            <button class="btn" type="submit">Save</button>
         </form>
     </section>
 
-    <section>
-        <h2>Danger Zone</h2>
+    <section class="mb-24">
+        <h2 class="text-h5 mb-8">Danger Zone</h2>
 
         <div class="flex justify-between">
             <h3>Delete your account</h3>
-            <button class="btn" (click)="confirmAccountDelete()">Delete Account</button>
+            <button class="btn mr-12" (click)="confirmAccountDelete()">Delete Account</button>
         </div>
     </section>
 </div>

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { APIResponse, Token } from '../shared/models/api-response';
+import { User } from '../shared/models/user';
 import { ErrorService } from '../shared/services/error.service';
 
 @Injectable({
@@ -19,7 +20,7 @@ export class AuthService {
         return !!this._authToken;
     }
 
-    constructor(private errorService: ErrorService, private http: HttpClient) {
+    constructor(private http: HttpClient, private errorService: ErrorService) {
         this.autoLogin();
     }
 
@@ -57,11 +58,11 @@ export class AuthService {
         this._setToken(token);
     }
 
-    public setAuthSession(res: APIResponse<Token>): void {
+    public setAuthSession(res: APIResponse<Token | User>): void {
         if (res.status !== 'success' || !res.data) return;
 
         // Set and save the JWT token
-        const token = res.data['token'];
+        const token = res.data['token'] as Token;
         this._setToken(token);
 
         // Store JWT token in local storage

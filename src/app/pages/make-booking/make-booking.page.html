@@ -1,249 +1,305 @@
-<div class="h-full flex items-center justify-center bg-red-200">
-    <div class="bg-white py-20 px-16 w-full h-3/4 max-w-lg">
+<app-header></app-header>
 
-        <form class="bg-red-50 w-full h-full relative overflow-hidden" [formGroup]="bookingForm"
-            (ngSubmit)="bookingForm.valid && onBookingFormSubmit()">
+<div class="min-h-screen">
+    <div class="py-16">
+        <h1 class="text-h2 mb-8 text-center">Book a session</h1>
 
-            <section class="text-center bg-white absolute inset-0 translate-x-full transition"
-                [ngClass]="{'translate-x-0':activeSlide === 'customerType'}">
-                <h1 class="mb-8">Who are you booking as?</h1>
+        <div class="w-full max-w-xl px-12 py-8 mx-auto bg-gray-800 bg-opacity-50">
+            <form class="" [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onBookingFormSubmit()">
 
-                <div class="flex justify-center gap-8">
-                    <label for="customer_type-artist">
-                        <input type="radio" name="customer_type" id="customer_type-artist" value="artist"
-                            class="peer hidden" formControlName="customer_type">
+                <div class="flex items-center justify-between gap-4 mb-8" *ngIf="currentStep < 4">
+                    <span
+                        class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
+                        [class.bg-bright-red-500]="currentStep >= 1">1</span>
 
-                        <div class="transition peer-checked:-translate-y-8">
-                            <img src="" alt="An artist">
-                            <h3>An Artist</h3>
+                    <hr class="border-bright-red-500 grow border-2">
+
+                    <span
+                        class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
+                        [class.bg-bright-red-500]="currentStep >= 2">2</span>
+
+                    <hr class="border-bright-red-500 grow border-2">
+
+                    <span
+                        class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
+                        [class.bg-bright-red-500]="currentStep >= 3">3</span>
+                </div>
+
+                <div class="min-h-[20rem]">
+                    <section class="" *ngIf="currentStep === 1" @changeSlide>
+                        <h1 class="text-h5 mb-8 text-center">Who are you booking for?</h1>
+
+                        <div class="flex justify-center gap-8">
+                            <label for="customer_type-artist">
+                                <input type="radio" name="customer_type" id="customer_type-artist" value="artist"
+                                    class="peer hidden" formControlName="customer_type">
+
+                                <div class="peer-checked:-translate-y-6 transition">
+                                    <img src="/assets/images/form-artist.jpg" alt="An artist">
+                                    <h3 class="text-center">An Artist</h3>
+                                </div>
+                            </label>
+
+                            <label for="customer_type-band">
+                                <input type="radio" name="customer_type" id="customer_type-band" value="band"
+                                    class="peer hidden" formControlName="customer_type">
+
+                                <div class="peer-checked:-translate-y-6 transition">
+                                    <img src="/assets/images/form-band.jpg" alt="A band">
+                                    <h3 class="text-center">A Band</h3>
+                                </div>
+                            </label>
                         </div>
-                    </label>
 
-                    <label for="customer_type-band">
-                        <input type="radio" name="customer_type" id="customer_type-band" value="band"
-                            class="peer hidden" formControlName="customer_type">
-
-                        <div class="transition peer-checked:-translate-y-8">
-                            <img src="" alt="A band">
-                            <h3>A Band</h3>
+                        <div class="flex justify-end mt-8">
+                            <button type="button" class="btn" [disabled]="bookingForm.controls['customer_type'].invalid"
+                                (click)="changeSlide(1)">Next</button>
                         </div>
-                    </label>
+                    </section>
+
+                    <section class="" formGroupName="artist"
+                        *ngIf="currentStep === 2 && bookingForm.get('customer_type')?.value === 'artist'" @changeSlide>
+                        <h1 class="text-h5 mb-6">About The Artist</h1>
+
+                        <div class="form-control required">
+                            <label class="label" for="name">Name</label>
+                            <input class="input" type="text" name="name" id="name" formControlName="name">
+
+                            <div class="feedback" *ngIf="artistForm.get('name')?.dirty">
+                                <base-error *ngIf="artistForm.get('name')?.hasError('required')">
+                                    Please enter a name
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <label class="label" for="email">Email Address</label>
+                            <input class="input" type="email" name="email" id="email" formControlName="email">
+
+                            <div class="feedback" *ngIf="artistForm.get('email')?.dirty">
+                                <base-error *ngIf="artistForm.get('email')?.hasError('required')">
+                                    Please enter an email address
+                                </base-error>
+                                <base-error *ngIf="artistForm.get('email')?.hasError('email')">
+                                    Not a valid email address
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <label class="label" for="contact_num">Phone Number</label>
+                            <input class="input" type="tel" name="contact_num" id="contact_num"
+                                formControlName="contact_num" appFormatPhone>
+
+                            <div class="feedback" *ngIf="artistForm.get('contact_num')?.dirty">
+                                <base-error *ngIf="artistForm.get('contact_num')?.hasError('required')">
+                                    Please enter a phone number
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-2 mt-8">
+                            <button class="btn btn-outline" type="button" (click)="changeSlide(-1)">Back</button>
+                            <button class="btn" type="button" [disabled]="artistForm.invalid"
+                                (click)="changeSlide(1)">Next</button>
+                        </div>
+                    </section>
+                    <section class="" formGroupName="band"
+                        *ngIf="currentStep === 2 && bookingForm.get('customer_type')?.value === 'band'" @changeSlide>
+                        <h1>About The Band</h1>
+
+                        <div class="form-control required">
+                            <label class="label" for="group_name">Band Name</label>
+                            <input class="input" type="text" name="group_name" id="group_name"
+                                formControlName="group_name">
+
+                            <div class="feedback" *ngIf="bandForm.get('group_name')?.dirty">
+                                <base-error *ngIf="bandForm.get('group_name')?.hasError('required')">
+                                    Please enter a name
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <label class="label" for="group_size">Group Size</label>
+                            <input class="input" type="text" name="group_size" id="group_size"
+                                formControlName="group_size">
+
+                            <div class="feedback" *ngIf="bandForm.get('group_size')?.dirty">
+                                <base-error *ngIf="bandForm.get('group_size')?.hasError('required')">
+                                    Please enter the group size
+                                </base-error>
+                                <base-error *ngIf="bandForm.get('group_size')?.hasError('min')">
+                                    Cannot be less than 1 member
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <label class="label" for="lead_name">Lead Name</label>
+                            <input class="input" type="text" name="lead_name" id="lead_name"
+                                formControlName="lead_name">
+
+                            <div class="feedback" *ngIf="bandForm.get('lead_name')?.dirty">
+                                <base-error *ngIf="bandForm.get('lead_name')?.hasError('required')">
+                                    Please enter a name
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <label class="label" for="lead_email">Lead Email Address</label>
+                            <input class="input" type="email" name="lead_email" id="lead_email"
+                                formControlName="lead_email">
+
+                            <div class="feedback" *ngIf="bandForm.get('lead_email')?.dirty">
+                                <base-error *ngIf="bandForm.get('lead_email')?.hasError('required')">
+                                    Please enter an email address
+                                </base-error>
+                                <base-error *ngIf="bandForm.get('lead_email')?.hasError('email')">
+                                    Not a valid email address
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <label class="label" for="lead_contact_num">Lead Phone Number</label>
+                            <input class="input" type="tel" name="lead_contact_num" id="lead_contact_num"
+                                formControlName="lead_contact_num" appFormatPhone>
+
+                            <div class="feedback" *ngIf="bandForm.get('lead_contact_num')?.dirty">
+                                <base-error *ngIf="bandForm.get('lead_contact_num')?.hasError('required')">
+                                    Please enter a phone number
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-2 mt-8">
+                            <button class="btn btn-outline" type="button" (click)="changeSlide(-1)">Back</button>
+                            <button class="btn" type="button" [disabled]="bandForm.invalid"
+                                (click)="changeSlide(1)">Next</button>
+                        </div>
+                    </section>
+
+
+                    <section class="" *ngIf="currentStep === 3" @changeSlide>
+                        <h1 class="text-h5 mb-6">About The Session</h1>
+
+                        <div class="form-control">
+                            <label class="label" for="num_of_instruments">Instruments Needed</label>
+                            <input class="input" type="number" name="num_of_instruments" id="num_of_instruments"
+                                formControlName="num_of_instruments">
+
+                            <div class="feedback" *ngIf="bookingForm.get('num_of_instruments')?.dirty">
+                                <base-error *ngIf="bookingForm.get('num_of_instruments')?.hasError('min')">
+                                    Cannot have less than 0 instruments
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <label class="label" for="start_date">Start Date/Time</label>
+                            <input class="input" type="date" name="start_date" id="start_date"
+                                formControlName="start_date">
+                            <input class="input" type="time" name="start_time" id="start_time"
+                                formControlName="start_time">
+
+                            <div class="feedback" *ngIf="bookingForm.get('start_date')?.dirty">
+                                <base-error *ngIf="bookingForm.get('start_date')?.hasError('required')">
+                                    Please select a date
+                                </base-error>
+                                <base-error *ngIf="bookingForm.get('start_date')?.hasError('async')">
+                                    {{bookingForm.get('start_date')?.errors!['async']}}
+                                </base-error>
+                            </div>
+                            <div class="feedback" *ngIf="bookingForm.get('start_time')?.dirty">
+                                <base-error *ngIf="bookingForm.get('start_time')?.hasError('range')">
+                                    Can only book between 8:00am - 8:00pm
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control required">
+                            <span class="label">Duration</span>
+
+                            <div class="space-x-2">
+                                <label for="duration-1" class="cursor-pointer">
+                                    <input type="radio" name="duration" id="duration-1" class="peer hidden" [value]="1"
+                                        formControlName="duration">
+                                    <span
+                                        class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">1
+                                        hr.</span>
+                                </label>
+
+                                <label for="duration-2" class="cursor-pointer">
+                                    <input type="radio" name="duration" id="duration-2" class="peer hidden" [value]="2"
+                                        formControlName="duration">
+                                    <span
+                                        class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">2
+                                        hrs.</span>
+                                </label>
+
+                                <label for="duration-3" class="cursor-pointer">
+                                    <input type="radio" name="duration" id="duration-3" class="peer hidden" [value]="3"
+                                        formControlName="duration">
+                                    <span
+                                        class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">3
+                                        hrs.</span>
+                                </label>
+
+                                <label for="duration-4" class="cursor-pointer">
+                                    <input type="radio" name="duration" id="duration-4" class="peer hidden" [value]="4"
+                                        formControlName="duration">
+                                    <span
+                                        class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">
+                                        4 hrs.
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="feedback" *ngIf="bookingForm.get('duration')?.dirty">
+                                <base-error *ngIf="bookingForm.get('duration')?.hasError('required')">
+                                    Please select a time
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="message">Message</label>
+                            <textarea class="input resize-none" name="message" id="message" cols="20" rows="5"
+                                formControlName="message"></textarea>
+
+                            <div class="feedback" *ngIf="bookingForm.get('duration')?.dirty">
+                                <base-error *ngIf="bookingForm.get('duration')?.hasError('maxLength')">
+                                    Cannot exceed more than 255 characters
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-2 mt-8">
+                            <button class="btn btn-outline" type="button" (click)="changeSlide(-1)">Back</button>
+                            <button class="btn" type="submit" [disabled]="bookingForm.invalid">Finish</button>
+                        </div>
+                    </section>
+
+                    <section class="flex items-center justify-center" *ngIf="currentStep === 4" @changeSlide>
+                        <div class="text-center">
+                            <h1 class="text-h4 mb-6">Your session has been booked</h1>
+
+                            <p class="mb-6">For more information, email us at <a
+                                    href="mailto:">bawlplatt@studios.com</a> by or
+                                calling
+                                <a href="tel:+">(876)981-1201</a>
+                            </p>
+
+                            <button class="btn" type="button" routerLink="/home">Okay</button>
+                        </div>
+                    </section>
                 </div>
+            </form>
 
-                <button type="button" class="inline-block mt-6"
-                    [disabled]="bookingForm.controls['customer_type'].invalid"
-                    (click)="changeSlide(bookingForm.controls['customer_type'].value)">Next</button>
-            </section>
-
-            <section class="absolute inset-0 translate-x-full transition"
-                [ngClass]="{'translate-x-0':activeSlide === 'artist'}" formGroupName="artist">
-                <h1>About The Artist</h1>
-
-                <div>
-                    <label for="name">Artist Name</label>
-                    <input type="text" name="name" id="name" formControlName="name">
-
-                    <div class="feedback" *ngIf="artistForm.get('name')?.dirty">
-                        <span *ngIf="artistForm.get('name')?.hasError('required')">
-                            Please enter a name
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="email">Artist Email Address</label>
-                    <input type="email" name="email" id="email" formControlName="email">
-
-                    <div class="feedback" *ngIf="artistForm.get('email')?.dirty">
-                        <span *ngIf="artistForm.get('email')?.hasError('required')">
-                            Please enter an email address
-                        </span>
-                        <span *ngIf="artistForm.get('email')?.hasError('email')">
-                            Not a valid email address
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="contact_num">Artist Phone Number</label>
-                    <input type="tel" name="contact_num" id="contact_num" formControlName="contact_num">
-
-                    <div class="feedback" *ngIf="artistForm.get('contact_num')?.dirty">
-                        <span *ngIf="artistForm.get('contact_num')?.hasError('required')">
-                            Please enter a phone number
-                        </span>
-                        <span *ngIf="artistForm.get('contact_num')?.hasError('pattern')">
-                            Phone number can only contain numbers
-                        </span>
-                    </div>
-                </div>
-
-                <button type="button" (click)="changeSlide('customerType')">Back</button>
-                <button type="button" [disabled]="artistForm.invalid" (click)="changeSlide('session')">Next</button>
-            </section>
-            <section class="absolute inset-0 translate-x-full transition"
-                [ngClass]="{'translate-x-0':activeSlide === 'band'}" formGroupName="band">
-                <h1>About The Band</h1>
-
-                <div>
-                    <label for="group_name">Band Name</label>
-                    <input type="text" name="group_name" id="group_name" formControlName="group_name">
-
-                    <div class="feedback" *ngIf="bandForm.get('group_name')?.dirty">
-                        <span *ngIf="bandForm.get('group_name')?.hasError('required')">
-                            Please enter a name
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="group_size">Group Size</label>
-                    <input type="text" name="group_size" id="group_size" formControlName="group_size">
-
-                    <div class="feedback" *ngIf="bandForm.get('group_size')?.dirty">
-                        <span *ngIf="bandForm.get('group_size')?.hasError('required')">
-                            Please enter the group size
-                        </span>
-                        <span *ngIf="bandForm.get('group_size')?.hasError('min')">
-                            Cannot be less than 1 member
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="lead_name">Leader Name</label>
-                    <input type="text" name="lead_name" id="lead_name" formControlName="lead_name">
-
-                    <div class="feedback" *ngIf="bandForm.get('lead_name')?.dirty">
-                        <span *ngIf="bandForm.get('lead_name')?.hasError('required')">
-                            Please enter a name
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="lead_email">Leader Email Address</label>
-                    <input type="email" name="lead_email" id="lead_email" formControlName="lead_email">
-
-                    <div class="feedback" *ngIf="bandForm.get('lead_email')?.dirty">
-                        <span *ngIf="bandForm.get('lead_email')?.hasError('required')">
-                            Please enter an email address
-                        </span>
-                        <span *ngIf="bandForm.get('lead_email')?.hasError('email')">
-                            Not a valid email address
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="lead_contact_num">Leader Phone Number</label>
-                    <input type="tel" name="lead_contact_num" id="lead_contact_num" formControlName="lead_contact_num">
-
-                    <div class="feedback" *ngIf="bandForm.get('lead_contact_num')?.dirty">
-                        <span *ngIf="bandForm.get('lead_contact_num')?.hasError('required')">
-                            Please enter a phone number
-                        </span>
-                        <span *ngIf="bandForm.get('lead_contact_num')?.hasError('pattern')">
-                            Phone number can only contain numbers
-                        </span>
-                    </div>
-                </div>
-
-                <button type="button" (click)="changeSlide('customerType')">Back</button>
-                <button type="button" [disabled]="bandForm.invalid" (click)="changeSlide('session')">Next</button>
-            </section>
-
-
-            <section class="absolute inset-0 translate-x-full transition"
-                [ngClass]="{'translate-x-0':activeSlide === 'session'}">
-                <h1>About The Session</h1>
-
-                <div>
-                    <label for="num_of_instruments">Instruments Needed</label>
-                    <input type="number" name="num_of_instruments" id="num_of_instruments"
-                        formControlName="num_of_instruments">
-
-                    <div class="feedback" *ngIf="bookingForm.get('num_of_instruments')?.dirty">
-                        <span *ngIf="bookingForm.get('num_of_instruments')?.hasError('min')">
-                            Cannot have less than 0 instruments
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="start_date">Start Date/Time</label>
-                    <input type="date" name="start_date" id="start_date" formControlName="start_date">
-                    <input type="time" name="start_time" id="start_time" formControlName="start_time">
-
-                    <div class="feedback" *ngIf="bookingForm.get('start_date')?.dirty">
-                        <span *ngIf="bookingForm.get('start_date')?.hasError('min')">
-                            Cannot have less than 0 instruments
-                        </span>
-                    </div>
-                </div>
-
-                <div>
-                    <span>How long should the session last?</span>
-
-                    <div class="space-x-2">
-                        <label for="duration-1" class="cursor-pointer">
-                            <input type="radio" name="duration" id="duration-1" class="hidden peer" [value]="1"
-                                formControlName="duration">
-                            <span
-                                class="inline-block py-2 px-4 border border-red-500 text-red-500 transition peer-checked:bg-red-500 peer-checked:text-white">1
-                                hr.</span>
-                        </label>
-
-                        <label for="duration-2" class="cursor-pointer">
-                            <input type="radio" name="duration" id="duration-2" class="hidden peer" [value]="2"
-                                formControlName="duration">
-                            <span
-                                class="inline-block py-2 px-4 border border-red-500 text-red-500 transition peer-checked:bg-red-500 peer-checked:text-white">2
-                                hrs.</span>
-                        </label>
-
-                        <label for="duration-3" class="cursor-pointer">
-                            <input type="radio" name="duration" id="duration-3" class="hidden peer" [value]="3"
-                                formControlName="duration">
-                            <span
-                                class="inline-block py-2 px-4 border border-red-500 text-red-500 transition peer-checked:bg-red-500 peer-checked:text-white">3
-                                hrs.</span>
-                        </label>
-
-                        <label for="duration-4" class="cursor-pointer">
-                            <input type="radio" name="duration" id="duration-4" class="hidden peer" [value]="4"
-                                formControlName="duration">
-                            <span
-                                class="inline-block py-2 px-4 border border-red-500 text-red-500 transition peer-checked:bg-red-500 peer-checked:text-white">
-                                4 hrs.
-                            </span>
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="message">Message</label>
-                    <textarea name="message" id="message" cols="20" rows="5" formControlName="message"></textarea>
-                </div>
-
-                <button type="button" (click)="changeSlide(bookingForm.controls['customer_type'].value)">Back</button>
-                <button type="submit">Finish</button>
-            </section>
-
-            <section class="absolute inset-0 translate-x-full flex items-center justify-center"
-                [ngClass]="{'translate-x-0':activeSlide === 'complete'}">
-
-                <div>
-                    <h1>Your session has been booked</h1>
-
-                    <p>For more information, email us at <a href="mailto:">bawlplattStudios@gmail.com</a> or calling <a
-                            href="tel:+">(876)981-1201</a></p>
-
-                    <button type="button" routerLink="/home">Okay</button>
-                </div>
-
-            </section>
-        </form>
-
+        </div>
     </div>
 </div>
+
+<app-footer></app-footer>

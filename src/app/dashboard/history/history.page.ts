@@ -13,7 +13,7 @@ export class HistoryPage implements OnInit, OnDestroy {
     bookings: Booking[] = [];
 
     filterOpts: QueryOptions = {
-        filter: { key: 'completed', value: 'true' }
+        group: 'complete'
     };
 
     private subscriptions = new Subscription();

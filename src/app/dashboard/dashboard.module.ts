@@ -1,4 +1,4 @@
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -10,6 +10,9 @@ import { HistoryPage } from './history/history.page';
 
 import { SidenavComponent } from '../layout/sidenav/sidenav.component';
 import { BookingFormPage } from './bookings/booking-form/booking-form.page';
+import { FormatDatePipe } from '../shared/pipes/format-date.pipe';
+import { FormatContactNumPipe } from '../shared/pipes/format-contact-num.pipe';
+import { SharedComponentsModule } from '../shared/modules/shared-components/shared-components.module';
 
 
 @NgModule({
@@ -20,11 +23,15 @@ import { BookingFormPage } from './bookings/booking-form/booking-form.page';
         BookingFormPage,
         ProfilePage,
         HistoryPage,
+        FormatDatePipe,
+        FormatContactNumPipe,
     ],
     imports: [
         CommonModule,
         DashboardRoutingModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FormsModule,
+        SharedComponentsModule
     ]
 })
 export class DashboardModule { }

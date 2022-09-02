@@ -5,9 +5,20 @@
 @tailwind utilities;
 
 @layer components {
+    /* Buttons */
+    .btn {
+        @apply bg-bright-red-600 text-center text-white px-6 py-3 rounded inline-flex gap-2 items-center justify-center transition cursor-pointer hover:bg-bright-red-400;
+    }
+    .btn-outline {
+        @apply bg-transparent text-current outline-2 outline-bright-red-500 outline outline-offset-[-2px] hover:bg-gray-600 hover:bg-opacity-25;
+    }
+    .btn:disabled {
+        @apply bg-gray-600 cursor-default;
+    }
+
     /* Form Controls */
     .form-control {
-        @apply grid gap-1;
+        @apply text-white grid gap-1 w-full max-w-xs mb-6 isolate;
     }
 
     .form-control .label {
@@ -18,9 +29,22 @@
     }
 
     .form-control .input {
-        @apply w-full max-w-xs px-4 py-2 border border-current;
+        @apply bg-gray-800 bg-opacity-75 rounded px-6 py-3;
     }
-    .form-control .input.ng-invalid:not(.ng-pristine) {
-        @apply border-red-400;
+
+    .form-control .feedback {
+        @apply text-bright-red-600 text-left relative;
     }
+    .form-control .feedback base-error {
+        @apply absolute top-0 left-0 text-sm -z-10;
+    }
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    appearance: none;
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+    @apply text-white;
 }

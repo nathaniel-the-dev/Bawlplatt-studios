@@ -26,7 +26,6 @@ export interface Booking {
 
     start_date: Date;
     duration: number;
-    end_date: Date;
 
     message?: string;
 
@@ -34,7 +33,7 @@ export interface Booking {
     completed: boolean;
     payed: boolean;
 
-    approved_by?: string | User;
+    approved_by?: User | string;
 
     booked_at: Date;
     last_updated: Date;

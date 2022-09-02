@@ -13,10 +13,15 @@ import { AuthService } from './auth.service';
 export class UserService {
     private API_URL = environment.API_URL + '/users';
 
+    currentUser?: User;
+
     constructor(private authService: AuthService, private errorService: ErrorService, private http: HttpClient) { }
 
     getCurrentUser(): Observable<APIResponse<User>> {
-        return this.http.get<APIResponse<User>>(this.API_URL + '/profile').pipe(catchError((err) => this.errorService.handleHTTPError(err)));
+        return this.http.get<APIResponse<User>>(this.API_URL + '/profile').pipe(
+            tap((res) => {
+                if (res.status === 'success') this.currentUser = res.data!['user'];
+            }), catchError((err) => this.errorService.handleHTTPError(err)));
     };
 
     verifyUser(payload: { password: string }): Observable<APIResponse> {

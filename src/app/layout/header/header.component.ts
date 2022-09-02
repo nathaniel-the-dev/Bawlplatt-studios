@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { UiService } from 'src/app/shared/services/ui.service';
 
 @Component({
     selector: 'app-header',
@@ -7,13 +6,11 @@ import { UiService } from 'src/app/shared/services/ui.service';
     styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-    headerState?: string;
 
-    constructor(private uiService: UiService) {
+    constructor() {
     }
 
     ngOnInit(): void {
-        this.uiService.headerStyle.subscribe((style: string) => this.headerState = style);
     }
 
 }

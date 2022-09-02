@@ -29,7 +29,7 @@ export class BookingFormPage implements OnInit {
             group_name: [null],
             group_size: [null],
             lead_name: [null],
-            lead_email: [null,],
+            lead_email: [null],
             lead_contact_num: [null]
         }),
 
@@ -58,6 +58,15 @@ export class BookingFormPage implements OnInit {
             start_date: start_date,
             start_time: undefined
         });
+
+        if (this.artistForm.enabled) {
+            const number = (this.artistForm.get('contact_num')!.value as string).toString().replace(/\D/g, '').slice(0, 10);
+            this.booking.artist!.contact_num = +number;
+        }
+        if (this.bandForm.enabled) {
+            const number = (this.bandForm.get('lead_contact_num')!.value as string).toString().replace(/\D/g, '').slice(0, 10);
+            this.booking.band!.lead_contact_num = +number;
+        }
 
         // Send the corresponding request based on the action
         if (this.action === 'add') {

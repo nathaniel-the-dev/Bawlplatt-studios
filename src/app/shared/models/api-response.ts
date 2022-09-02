@@ -4,6 +4,8 @@ export interface Token {
 }
 
 export interface QueryOptions {
+    group?: 'complete' | 'incomplete' | 'any' | '';
+
     filter?: {
         key: string;
         value: string;
@@ -16,7 +18,7 @@ export interface QueryOptions {
         value: 'asc' | 'desc';
     }
 
-    page?: string;
+    page?: number;
     limit?: number;
 
     [index: string]: any;

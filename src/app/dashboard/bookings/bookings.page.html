@@ -1,18 +1,181 @@
-<div class="container py-20">
-    <div>
-        <h1 class="">Bookings</h1>
+<div class="container py-12">
+    <!-- Title -->
+    <div class="flex items-center justify-between mb-4">
+        <h1 class="text-h3">Bookings</h1>
 
-        <button routerLink="new">Create a booking</button>
+        <button class="btn" routerLink="new"><i class="text-h6 ai-plus"></i> Create a booking</button>
     </div>
 
-    <ul>
-        <li *ngFor="let booking of bookings">
-            <h1>Id: {{ booking._id }}</h1>
+    <!-- Filtering -->
+    <div class="flex items-center gap-4 mb-8">
+        <form class="relative w-full" (ngSubmit)="search()">
+            <input class="peer text-almost-black w-full px-6 py-2 border-0 rounded" type="text" name="search"
+                id="search" placeholder="Search bookings" [(ngModel)]="searchQuery">
+            <button type="submit"
+                class="peer-focus-visible:opacity-100 text-almost-black text-h6 top-1/2 right-6 absolute transition-opacity -translate-y-1/2 opacity-75">
+                <i class="ai-search"></i>
+            </button>
+        </form>
 
-            <p>Payed: {{ booking.payed }}</p>
-            <button (click)="toggleBookingValue(booking._id, 'payed')">Mark as payed</button>
-            <button [routerLink]="['edit',booking._id]">(edit)</button>
-            <button (click)="deleteBooking(booking._id)">(delete)</button>
-        </li>
-    </ul>
+        <span>
+            <select class="text-almost-black px-4 py-2 border-0 rounded" name="filter" id="filter">
+                <option value="" selected disabled hidden>Filter By</option>
+                <option value="artist">Artist</option>
+                <option value="band">Band</option>
+                <option value="payed">Payed</option>
+            </select>
+        </span>
+        <span>
+            <select class="text-almost-black px-4 py-2 border-0 rounded" name="sort" id="sort">
+                <option value="" selected disabled hidden>Sort By</option>
+                <option value="start_date">Start Date</option>
+                <option value="date_booked">Date Created</option>
+                <option value="last_updated">Last Updated</option>
+            </select>
+        </span>
+    </div>
+
+    <div class="grid grid-rows-[minmax(50vh,_100%),_max-content] gap-8" *ngIf="bookings.length; else notFound">
+        <div>
+            <!-- Table -->
+            <div class="item-list__table mb-2">
+                <span></span>
+                <span>Customer</span>
+                <span>Booked For</span>
+                <span>Duration</span>
+                <span>Cost</span>
+                <span>Payed</span>
+                <span></span>
+            </div>
+            <ul class="space-y-4">
+                <li class="px-4 py-3 transition-all bg-gray-900 rounded"
+                    *ngFor="let booking of bookings; let i = index">
+                    <div class="item-list__table">
+                        <div>
+                            <button class="transition" [class.rotate-180]="selectedListItem === i"
+                                (click)="toggleItemDetails(i)">
+                                <i class="ai-chevron-down"></i>
+                            </button>
+                        </div>
+
+                        <div>
+                            <h2 class="text-h6">{{(booking.artist?.name || booking.band?.group_name) | titlecase}}</h2>
+                            <span class="text-bright-red-500">{{booking.customer_type}}</span>
+                        </div>
+                        <div>
+                            <p>{{booking.start_date | formatDate:'date'}}</p>
+                            <p class="text-sm">{{booking.start_date | formatDate:'time'}}</p>
+                        </div>
+                        <div>
+                            <p>{{booking.duration + 'hr' + (booking.duration <= 1 ? '.' : 's.' )}}</p>
+                        </div>
+                        <div>
+                            <p>{{booking.cost | currency}}</p>
+                        </div>
+
+                        <div>
+                            <i class="ai-check text-h5 text-green-500" *ngIf="booking.payed; else cross"></i>
+                            <ng-template #cross><i class="ai-cross text-h5 text-red-500"></i></ng-template>
+                        </div>
+
+                        <div class="">
+                            <div class="group w-max relative text-left">
+                                <button class="text-h5"><i class="ai-more-vertical-fill"></i></button>
+                                <ul
+                                    class="-top-full group-hover:block absolute left-0 z-10 hidden w-40 bg-gray-700 rounded">
+                                    <li *ngIf="!booking.payed">
+                                        <button class="inline-flex items-center w-full gap-3 px-4 py-3"
+                                            (click)="toggleBookingValue(booking._id, 'payed')">
+                                            Mark as payed
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="inline-flex items-center w-full gap-3 px-4 py-3"
+                                            [routerLink]="['edit',booking._id]">
+                                            <i class="text-h6 ai-edit"></i>
+                                            <span>Edit</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="inline-flex items-center w-full gap-3 px-4 py-3"
+                                            (click)="deleteBooking(booking._id)">
+                                            <i class="text-h6 ai-trash-can"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-list__table overflow-hidden transition-all duration-300"
+                        [ngClass]="{'max-h-0 pt-0':selectedListItem !== i, 'max-h-40 pt-4':selectedListItem === i}">
+                        <div></div>
+                        <div>
+                            <h4 class="mb-4 text-sm">Contact Information</h4>
+
+                            <div class="" *ngIf="!!booking.artist">
+                                <p>{{booking.artist.email}}</p>
+                                <p>{{booking.artist.contact_num | formatContactNum}}</p>
+                            </div>
+
+                            <div class="" *ngIf="!!booking.band">
+                                <p>{{booking.band.group_size | number}} members</p>
+                                <p>{{booking.band.lead_name}}</p>
+                                <p>{{booking.band.lead_email}}</p>
+                                <p>{{booking.band.lead_contact_num | formatContactNum}}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="mb-4 text-sm">Additional Information</h4>
+                            <div>
+                                <p>{{booking.num_of_instruments | number}} instruments</p>
+                                <p class="max-w-prose" *ngIf="booking.message">{{booking.message}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-center gap-4">
+            <button (click)="changePage(-1)" [class.invisible]="page <= 1">
+                <i class="ai-arrow-left"></i>
+            </button>
+            <p>Page {{page}} of {{totalPages}}</p>
+            <button (click)="changePage(1)" [class.invisible]="page >= totalPages">
+                <i class="ai-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- No Bookings Found -->
+    <ng-template #notFound>
+        <div [ngSwitch]="loading">
+            <div *ngSwitchCase="true">
+                (show spinner)
+
+            </div>
+
+            <div class="py-12 text-center" *ngSwitchDefault>
+                <h2 class="text-h4 mb-6">No Bookings Found</h2>
+
+                <div [ngSwitch]="isSearching">
+                    <div *ngSwitchCase="true">
+                        <p class="max-w-prose mx-auto">No bookings for that search term were found. Try searching by a
+                            different name.</p>
+                    </div>
+                    <div *ngSwitchDefault>
+                        <p class="max-w-prose mx-auto mb-4">Bookings will appear here once a customer books a session,
+                            or
+                            you can try adding one yourself.
+                        </p>
+
+                        <a class="btn" routerLink="new">Create</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
 </div>

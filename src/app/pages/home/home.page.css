@@ -1,0 +1,8 @@
+.hero-image {
+    --gradient: hsla(0, 0%, 0%, 0.75);
+
+    background: linear-gradient(to bottom, var(--gradient), var(--gradient)),
+        url("/assets/images/hero-image.png") no-repeat;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

@@ -1,1 +1,80 @@
-<p>about works!</p>
+<app-header></app-header>
+
+<div class="min-h-screen">
+    <div class="relative h-52 w-full bg-[url('/assets/images/about-banner.jpg')] bg-no-repeat bg-cover bg-center">
+        <div class="h-20 absolute inset-0 top-auto bg-gradient-to-b from-[#0a080800] to-almost-black"></div>
+    </div>
+
+    <div class="container py-12">
+        <section class="">
+            <h1 class="text-h1 mb-12 text-center">
+                <span class="border-bright-red-600 inline-block px-12 border-b-4">About Us</span>
+            </h1>
+
+            <div class="max-w-prose mx-auto">
+                <div class="mb-16 space-y-6">
+
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid officiis laborum veritatis id
+                        quidem
+                        voluptate
+                        ipsam praesentium laudantium, molestias recusandae soluta quod doloribus reprehenderit possimus
+                        a
+                        tempora ab
+                        eos! Excepturi.
+                    </p>
+
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid officiis laborum veritatis id
+                        quidem
+                        voluptate
+                        ipsam praesentium laudantium, molestias recusandae soluta quod doloribus reprehenderit possimus
+                        a
+                        tempora ab
+                        eos! Excepturi.
+                    </p>
+
+                    <figure>
+                        <img class="" src="/assets/images/about-pic-1.jpg" alt="">
+                        <figcaption class="mt-1 text-sm text-center">Our lead producer tuning the latest beats
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <div class="mb-8 space-y-6">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid officiis laborum veritatis id
+                        quidem
+                        voluptate
+                        ipsam
+                        praesentium laudantium, molestias recusandae soluta quod doloribus reprehenderit possimus a
+                        tempora
+                        ab
+                        eos!
+                        Excepturi.
+                    </p>
+
+                    <figure>
+                        <img src="/assets/images/about-pic-2.jpg" alt="">
+                        <figcaption class="mt-1 text-sm text-center">Our lead producer tuning the latest beats
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-32">
+            <h1 class="text-h2 mb-12 text-center">The Team</h1>
+
+            <div class="flex flex-wrap justify-center max-w-3xl gap-12 mx-auto">
+                <div class="text-center" *ngFor="let owner of owners">
+                    <img class="aspect-square h-52 inline-block mb-2" [src]="owner.img" [alt]="owner.name">
+                    <h2 class="text-h6">{{owner.name}}</h2>
+                    <p>{{owner.position}}</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<app-footer></app-footer>

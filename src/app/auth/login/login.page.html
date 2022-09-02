@@ -1,32 +1,49 @@
-<div class="">
-    <h1>Log into your account</h1>
+<app-header></app-header>
 
-    <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()">
-        <div class="form-control">
-            <label class="label" for="email">Email</label>
-            <input class="input" type="email" name="email" id="email" formControlName="email">
+<div class="min-h-screen">
+    <div class="h-screen grid place-items-center">
+        <div class="bg-slate-700 mt-4 py-16 px-20 rounded-lg text-center w-full max-w-lg">
+            <h1 class="text-h3 leading-tight mb-6">Log into your account</h1>
 
-            <div class="feedback">
-                <span *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.hasError('async')">
-                    {{loginForm.get('email')?.errors!['async']}}
-                </span>
-            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()">
+                <div class="form-control max-w-full">
+                    <label class="label" for="email">Email</label>
+                    <input class="input" type="email" name="email" id="email" formControlName="email">
+
+                    <div class="feedback">
+                        <base-error
+                            *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.hasError('async')">
+                            {{loginForm.get('email')?.errors!['async']}}
+                        </base-error>
+                    </div>
+                </div>
+
+                <div class="form-control max-w-full">
+                    <div class="flex justify-between items-baseline">
+                        <label class="label" for="password">Password</label>
+
+                        <a class="text-sm text-gray-300 transition hover:text-bright-red-500" routerLink="/">Forgot
+                            password?</a>
+                    </div>
+                    <input class="input" type="password" name="password" id="password" formControlName="password">
+
+                    <div class="feedback">
+                        <base-error
+                            *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.hasError('async')">
+                            {{loginForm.get('password')?.errors!['async']}}
+                        </base-error>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn w-full mb-2 mt-4">Login</button>
+
+                <p class="text-gray-300">Need an account? <a class="text-white transition hover:text-bright-red-500"
+                        routerLink="/">Contact us</a></p>
+            </form>
         </div>
 
-        <div class="form-control">
-            <label class="label" for="password">Password</label>
-            <input class="input" type="password" name="password" id="password" formControlName="password">
-
-            <div class="feedback">
-                <span *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.hasError('async')">
-                    {{loginForm.get('password')?.errors!['async']}}
-                </span>
-            </div>
-        </div>
-        <p><a href="">Forgot your password?</a></p>
-
-        <button type="submit" class="btn">Login</button>
-
-        <p><a href="">Create an account</a></p>
-    </form>
+    </div>
 </div>
+
+<app-footer></app-footer>

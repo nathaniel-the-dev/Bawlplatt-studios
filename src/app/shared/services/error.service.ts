@@ -28,7 +28,6 @@ export class ErrorService {
             if (res.status === 401) this.router.navigateByUrl('/login');
         }
 
-        console.error(res);
         return of(response);
     }
 

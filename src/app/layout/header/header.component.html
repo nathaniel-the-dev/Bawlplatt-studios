@@ -1,13 +1,18 @@
-<header class="py-6" [class.hidden]="headerState === 'hidden'">
+<header class="py-6 fixed inset-0 bottom-auto z-50">
     <div class="container">
-        <nav class="flex items-center justify-between">
-            <a routerLink="/">Bawlplatt Studios</a>
+        <nav class="flex items-center justify-between text-white">
+            <a routerLink="/">
+                <img class="h-[16px] w-[138px]" src="/assets/logo.svg" alt="logo">
+            </a>
 
-            <ul class="hidden gap-4 md:flex">
-                <li><a routerLink="/home">Home</a></li>
-                <li><a routerLink="/about">About</a></li>
-                <li><a routerLink="/contact">Contact Us</a></li>
-                <li><a routerLink="/booking/new">Book Now</a></li>
+            <ul class="gap-6 flex items-center">
+                <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
+                        routerLink="/home">Home</a></li>
+                <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
+                        routerLink="/about">About</a></li>
+                <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
+                        routerLink="/contact">Contact Us</a></li>
+                <li><a class="btn py-2.5 ml-2" routerLink="/booking/new">Book Now</a></li>
             </ul>
         </nav>
     </div>

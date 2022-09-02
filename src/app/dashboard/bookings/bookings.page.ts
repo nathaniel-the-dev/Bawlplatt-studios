@@ -11,10 +11,41 @@ import { BookingsService } from './bookings.service';
 })
 export class BookingsPage implements OnInit, OnDestroy {
     bookings: Booking[] = [];
+    loading: boolean = false;
 
+    // Searching
+    isSearching: boolean = false;
+    searchQuery: string = '';
+    search(): void {
+        this.filterOpts.search = this.searchQuery;
+        this.isSearching = !!this.searchQuery;
+        this.getAllBookings();
+    }
+
+    // Pagination
+    page: number = 1;
+    totalPages: number = 0;
+    changePage(dir: -1 | 1): void {
+        const newPage = this.page + dir;
+        this.page = dir === -1 ? Math.max(0, newPage) : Math.min(this.totalPages, newPage);
+
+        this.filterOpts.page = this.page;
+        this.getAllBookings();
+    }
+
+    // QueryOptions
     filterOpts: QueryOptions = {
-        filter: { key: 'completed', value: 'false' }
+        group: 'incomplete',
+
+        page: 1,
+        limit: 5
     };
+
+    // Accordion options
+    selectedListItem?: number;
+    toggleItemDetails(index: number): void {
+        this.selectedListItem = index !== this.selectedListItem ? index : undefined;
+    }
 
     private subscriptions = new Subscription();
 
@@ -29,8 +60,14 @@ export class BookingsPage implements OnInit, OnDestroy {
     }
 
     private getAllBookings() {
+        this.loading = true;
         const bookingsSub = this.bookingsService.getAllBookings(this.filterOpts).subscribe((res) => {
-            if (res.status === 'success') this.bookings = res.data!['bookings'];
+            if (res.status === 'success') {
+                this.bookings = res.data!['bookings'];
+                this.totalPages = (res.data!['page'] as any).maxNumOfPages;
+            }
+
+            this.loading = false;
         });
         this.subscriptions.add(bookingsSub);
     }
