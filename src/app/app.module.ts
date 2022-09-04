@@ -15,7 +15,6 @@ import { LoginPage } from './auth/login/login.page';
 import { NotFoundPage } from './pages/not-found/not-found.page';
 import { AboutPage } from './pages/about/about.page';
 import { ContactPage } from './pages/contact/contact.page';
-import { SignupPage } from './auth/signup/signup.page';
 import { MakeBookingPage } from './pages/make-booking/make-booking.page';
 
 
@@ -30,8 +29,7 @@ import { MakeBookingPage } from './pages/make-booking/make-booking.page';
         NotFoundPage,
         AboutPage,
         ContactPage,
-        SignupPage,
-        MakeBookingPage
+        MakeBookingPage,
     ],
     imports: [
         BrowserModule,

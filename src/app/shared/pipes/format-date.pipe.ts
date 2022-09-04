@@ -6,8 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FormatDatePipe implements PipeTransform {
 
-    transform(value: Date | string, format: 'date' | 'time'): string {
-        return dayjs(value).format(format === 'date' ? 'MMM. D, YYYY' : 'h:mm A');
+    transform(value: Date | string, type: 'date' | 'time'): string {
+        return dayjs(value).format(type === 'date' ? 'MMM. D, YYYY' : 'h:mm A');
     }
 
 }

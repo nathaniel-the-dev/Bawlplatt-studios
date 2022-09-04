@@ -1,9 +1,9 @@
 <app-header></app-header>
 
-<div class="min-h-screen">
-    <div class="h-screen grid place-items-center">
-        <div class="bg-slate-700 mt-4 py-16 px-20 rounded-lg text-center w-full max-w-lg">
-            <h1 class="text-h3 leading-tight mb-6">Log into your account</h1>
+<div class="min-h-screen bg-[url('/assets/images/login-bg.png')] bg-no-repeat bg-cover">
+    <div class="place-items-center grid h-screen">
+        <div class="w-full max-w-lg px-20 py-16 mt-4 text-center bg-gray-700 rounded-lg">
+            <h1 class="text-h3 mb-6 leading-tight">Log into your account</h1>
 
 
             <form [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()">
@@ -20,11 +20,11 @@
                 </div>
 
                 <div class="form-control max-w-full">
-                    <div class="flex justify-between items-baseline">
+                    <div class="flex items-baseline justify-between">
                         <label class="label" for="password">Password</label>
 
-                        <a class="text-sm text-gray-300 transition hover:text-bright-red-500" routerLink="/">Forgot
-                            password?</a>
+                        <!-- <a class="hover:text-bright-red-500 text-sm text-gray-300 transition" routerLink="/">Forgot
+                            password?</a> -->
                     </div>
                     <input class="input" type="password" name="password" id="password" formControlName="password">
 
@@ -36,10 +36,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn w-full mb-2 mt-4">Login</button>
+                <button type="submit" class="btn w-full mt-4 mb-2">Login</button>
 
-                <p class="text-gray-300">Need an account? <a class="text-white transition hover:text-bright-red-500"
-                        routerLink="/">Contact us</a></p>
+                <p class="text-gray-300">Need an account? <a class="hover:text-bright-red-500 text-white transition"
+                        routerLink="/contact">Contact us</a></p>
             </form>
         </div>
 

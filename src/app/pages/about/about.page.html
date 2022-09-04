@@ -15,48 +15,39 @@
                 <div class="mb-16 space-y-6">
 
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid officiis laborum veritatis id
-                        quidem
-                        voluptate
-                        ipsam praesentium laudantium, molestias recusandae soluta quod doloribus reprehenderit possimus
-                        a
-                        tempora ab
-                        eos! Excepturi.
+                        Located in Jamaica, Bawlplatt Studios is a fast growing music recording studios that offers a
+                        space for musicians and bands to practice their music before their shows or gigs. In addition,
+                        we provides the lastest equipment for the bands to mix their music, and preview their sessions.
                     </p>
 
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid officiis laborum veritatis id
-                        quidem
-                        voluptate
-                        ipsam praesentium laudantium, molestias recusandae soluta quod doloribus reprehenderit possimus
-                        a
-                        tempora ab
-                        eos! Excepturi.
+                        Since our launch in December of 2002, we have made it our mission to improve the quality of
+                        music in Jamaica. Our founder (Liam Hands-Green) is verse in the musical arts himself, and has
+                        always had a passion for it. "Music is the soundtrack to life" is what he always says.
+                    </p>
+                    <p>
+                        Since then, we have hosted over 20 successful musicians and bands. Bawlplatt has been slowly
+                        rising to the number one spot of 'Top Recording Studios' in Jamaica.
                     </p>
 
                     <figure>
-                        <img class="" src="/assets/images/about-pic-1.jpg" alt="">
-                        <figcaption class="mt-1 text-sm text-center">Our lead producer tuning the latest beats
+                        <img class="" src="/assets/images/about-pic-1.jpg" alt="Our lead producer mixing some music">
+                        <figcaption class="mt-1 text-sm text-center">Tuning the latest sounds with our lead producer
                         </figcaption>
                     </figure>
                 </div>
 
                 <div class="mb-8 space-y-6">
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid officiis laborum veritatis id
-                        quidem
-                        voluptate
-                        ipsam
-                        praesentium laudantium, molestias recusandae soluta quod doloribus reprehenderit possimus a
-                        tempora
-                        ab
-                        eos!
-                        Excepturi.
+                        Currently, the studio can only host one band per session. This may change as we have hopes of
+                        expaning in the future. In addition, a session must be booked before hand, that is, it cannot be
+                        booked on the same day as the session, and the session cannot be booked for more than 4 hours.
                     </p>
 
                     <figure>
-                        <img src="/assets/images/about-pic-2.jpg" alt="">
-                        <figcaption class="mt-1 text-sm text-center">Our lead producer tuning the latest beats
+                        <img src="/assets/images/about-pic-2.jpg" alt="One of our recording engineers">
+                        <figcaption class="mt-1 text-sm text-center">One of our recording engineers getting the volume
+                            just right
                         </figcaption>
                     </figure>
                 </div>
@@ -66,10 +57,10 @@
         <section class="py-32">
             <h1 class="text-h2 mb-12 text-center">The Team</h1>
 
-            <div class="flex flex-wrap justify-center max-w-3xl gap-12 mx-auto">
+            <div class="grid grid-cols-3 gap-16">
                 <div class="text-center" *ngFor="let owner of owners">
-                    <img class="aspect-square h-52 inline-block mb-2" [src]="owner.img" [alt]="owner.name">
-                    <h2 class="text-h6">{{owner.name}}</h2>
+                    <img class="aspect-square inline-block h-48 mb-2 rounded" [src]="owner.img" [alt]="owner.name">
+                    <h2 class="text-h6 font-medium">{{owner.name}}</h2>
                     <p>{{owner.position}}</p>
                 </div>
             </div>

@@ -17,15 +17,21 @@ export class ErrorService {
         let response: APIResponse = {
             status: res.error?.status || 'error',
             error: {
-                type: res.error?.error.type || 'RequestError',
-                message: res.error?.error.message || 'Something went wrong',
-                errors: res.error?.error.type === 'ValidationError' ? res.error.error.errors : undefined
+                type: res.error?.error?.type || 'RequestError',
+                message: res.error?.error?.message || 'Something went wrong',
+                errors: res.error?.error?.type === 'ValidationError' ? res.error.error.errors : undefined
             }
         }
 
         if (res instanceof HttpErrorResponse) {
+            // 0 - Unkown error
+            if (res.status === 0)
+                this.toastService.createToast('A Error Occured', 'Something went wrong. Please try again later.', 'error');
+
             // 401 - Unauthorized
             if (res.status === 401) this.router.navigateByUrl('/login');
+        } else {
+            this.toastService.createToast('A Error Occured', 'Something went wrong. Please try again later.', 'error');
         }
 
         return of(response);

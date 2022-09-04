@@ -2,7 +2,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BookingsService } from 'src/app/dashboard/bookings/bookings.service';
-import { Router } from '@angular/router';
 import { Booking } from 'src/app/shared/models/booking';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
@@ -16,14 +15,11 @@ import { animate, style, transition, trigger } from '@angular/animations';
         trigger('changeSlide', [
             transition(':enter', [
                 style({ opacity: 0, transform: 'translateY(2rem)' }),
-                animate('300ms 350ms ease-out', style({ opacity: 1, transform: 'translateY(0rem)' }))
-            ]),
-            transition(':leave', [
-                style({ opacity: 1, transform: 'translateY(0rem)' }),
-                animate('300ms 0s ease-in', style({ opacity: 0, transform: 'translateY(2rem)' }))
+                animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0rem)' }))
             ]),
         ])
     ]
+
 })
 export class MakeBookingPage implements OnInit, OnDestroy {
     currentStep: 1 | 2 | 3 | 4 = 1;

@@ -1,18 +1,18 @@
-<app-header></app-header>
+<app-header [hideOnScroll]="true"></app-header>
 
 <div class="min-h-screen">
-    <section class="hero-image h-screen relative">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
-            <h1 class="text-h1 max-w-lg mx-auto mb-6 leading-tight font-semibold">
+    <section class="hero-image relative h-screen">
+        <div class="top-1/2 left-1/2 absolute text-center text-white -translate-x-1/2 -translate-y-1/2">
+            <h1 class="text-h1 max-w-lg mx-auto mb-6 font-semibold leading-tight">
                 Get your music ready for the <span class="text-bright-red-600">world</span>
             </h1>
 
-            <p class="max-w-[50ch] mx-auto leading-[1.75] text-center mb-8">
+            <p class="max-w-[50ch] mx-auto leading-relaxed text-center mb-8">
                 Work with a group of talented musicians, experienced composers, and record producers to make your music
                 a masterpeice.
             </p>
 
-            <div class="flex gap-4 items-center justify-center">
+            <div class="flex items-center justify-center gap-4">
                 <a class="btn" routerLink="/booking/new">Book a session today</a>
             </div>
         </div>
@@ -22,28 +22,29 @@
 
     <section class="bg-almost-black py-32">
         <div class="container">
-            <h2 class="text-center text-h3 mb-8 font-medium">We Have Worked With</h2>
+            <h2 class="text-h3 mb-8 font-medium text-center">We Have Worked With</h2>
 
-            <div class="flex gap-8 align-baseline justify-center">
-                <img src="" alt="Sony">
-                <img src="" alt="Dolby">
-                <img src="" alt="JBL">
-                <img src="" alt="Tracks and Records">
+            <div class="flex justify-center gap-8 align-baseline">
+                <img class="object-cover h-24" src="/assets/logos/sony-music.png" alt="Sony">
+                <img class="object-cover h-24" src="/assets/logos/dolby.png" alt="Dolby">
+                <img class="object-cover h-24" src="/assets/logos/jbl.png" alt="JBL">
+                <img class="object-cover h-24" src="/assets/logos/tnr.png" alt="Tracks and Records">
             </div>
         </div>
     </section>
 
     <section class="bg-almost-black py-32">
         <div class="container">
-            <h2 class="text-center text-h3 mb-16 font-medium">How we can help you</h2>
+            <h2 class="text-h3 mb-16 font-medium text-center">How we can help you</h2>
 
             <div class="grid grid-cols-2 gap-16 mb-32">
                 <div class="py-12">
-                    <h3 class="text-h4 leading-snug mb-4">Record your music in high quality</h3>
-                    <hr class="border-b-2 border-bright-red-600 mb-6 w-2/3">
-                    <p class="max-w-[50ch]">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestias
-                        molestiae voluptate nesciunt
-                        ea cum repudiandae est, delectus dolor quisquam natus.</p>
+                    <h3 class="text-h4 mb-4 leading-snug">Record your music in high quality</h3>
+                    <hr class="border-bright-red-600 w-2/3 mb-6 border-b-2">
+                    <p class="max-w-[50ch] leading-relaxed">Music is the soundtrack to life, record yours in the highest
+                        qualities using
+                        the latest technologies. Make music other's
+                        can feel.</p>
                 </div>
 
                 <img class="w-full h-[30rem] object-cover" src="/assets/images/home-feature-1.png" alt="">
@@ -51,11 +52,11 @@
 
             <div class="grid grid-cols-2 gap-16 mb-32">
                 <div class="py-12">
-                    <h3 class="text-h4 leading-snug mb-4">Hear it in your own style</h3>
-                    <hr class="border-b-2 border-bright-red-600 mb-6 w-2/3">
-                    <p class="max-w-[50ch]">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestias
-                        molestiae voluptate nesciunt
-                        ea cum repudiandae est, delectus dolor quisquam natus.</p>
+                    <h3 class="text-h4 mb-4 leading-snug">Hear it in your own style</h3>
+                    <hr class="border-bright-red-600 w-2/3 mb-6 border-b-2">
+                    <p class="max-w-[50ch] leading-relaxed">Listen to the playback, add beats and tunes, and mix to
+                        match your style. If
+                        you can imagine it, we can create it.</p>
                 </div>
 
                 <img class="w-full h-[30rem] object-cover -order-1" src="/assets/images/home-feature-2.png" alt="">
@@ -63,11 +64,12 @@
 
             <div class="grid grid-cols-2 gap-16">
                 <div class="py-12">
-                    <h3 class="text-h4 leading-snug mb-4">Meet with the masters</h3>
-                    <hr class="border-b-2 border-bright-red-600 mb-6 w-2/3">
-                    <p class="max-w-[50ch]">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestias
-                        molestiae voluptate nesciunt
-                        ea cum repudiandae est, delectus dolor quisquam natus.</p>
+                    <h3 class="text-h4 mb-4 leading-snug">Meet with the masters</h3>
+                    <hr class="border-bright-red-600 w-2/3 mb-6 border-b-2">
+                    <p class="max-w-[50ch] leading-relaxed">Connect with the professionals. Share your experiences,
+                        music, knowledge,
+                        and inspiration. Make meaningful
+                        connections that can take your to the next step in becoming an expert.</p>
                 </div>
 
                 <img class="w-full h-[30rem] object-cover" src="/assets/images/home-feature-3.jpg" alt="">
@@ -77,37 +79,38 @@
 
     <section class="bg-almost-black py-32">
         <div class="container">
-            <h2 class="text-center text-h3 mb-28 font-medium">What people have said about us</h2>
+            <h2 class="text-h3 mb-28 font-medium text-center">What people have said about us</h2>
 
             <div class="grid grid-cols-3 gap-4 text-center">
-                <div class="relative bg-zinc-900 rounded py-8 px-8 h-full flex flex-col">
-                    <img class="h-20 aspect-square rounded-full absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                <div class="bg-zinc-900 relative flex flex-col h-full px-8 py-8 rounded">
+                    <img class="aspect-square left-1/2 absolute top-0 h-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
                         src="https://randomuser.me/api/portraits/women/22.jpg" alt="Elsie Frazier">
 
-                    <p class="max-w-[50ch] mt-8 mb-6 mx-auto font-medium">"Lorem ipsum dolor, sit amet consectetur
-                        adipisicing elit"</p>
+                    <p class="max-w-[50ch] mt-8 mb-6 mx-auto font-medium">"This is what I've been looking for. I will
+                        refer everyone I know and will definitely be doing business
+                        again!"</p>
 
                     <p class="mt-auto">Elsie Frazier</p>
                     <span class="text-sm text-gray-400">Lead Singer - One World</span>
                 </div>
 
-                <div class="relative bg-zinc-900 rounded py-8 px-8 h-full flex flex-col">
-                    <img class="h-20 aspect-square rounded-full absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                <div class="bg-zinc-900 relative flex flex-col h-full px-8 py-8 rounded">
+                    <img class="aspect-square left-1/2 absolute top-0 h-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
                         src="https://randomuser.me/api/portraits/men/81.jpg" alt="Ben Reynolds">
 
-                    <p class="max-w-[50ch] mt-8 mb-6 mx-auto font-medium">"Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Voluptas, neque"</p>
+                    <p class="max-w-[50ch] mt-8 mb-6 mx-auto font-medium">"It's just amazing. Definitely worth it.
+                        Bawlplatt should be nominated for studio of the year."</p>
 
                     <p class="mt-auto">Ben Reynolds</p>
                     <span class="text-sm text-gray-400">Drummer - Perfecct</span>
                 </div>
 
-                <div class="relative bg-zinc-900 rounded py-8 px-8 h-full flex flex-col">
-                    <img class="h-20 aspect-square rounded-full absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                <div class="bg-zinc-900 relative flex flex-col h-full px-8 py-8 rounded">
+                    <img class="aspect-square left-1/2 absolute top-0 h-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
                         src="https://randomuser.me/api/portraits/men/34.jpg" alt="Edgar Larson">
 
-                    <p class="max-w-[50ch] mt-8 mb-6 mx-auto font-medium">"Lorem, ipsum dolor sit amet consectetur
-                        adipisicing"</p>
+                    <p class="max-w-[50ch] mt-8 mb-6 mx-auto font-medium">"You guys rock! Looking forward to doing
+                        business again. I let my friends know about this"</p>
 
                     <p class="mt-auto">Edgar Larson</p>
                     <span class="text-sm text-gray-400">Lead Singer - One Man Army</span>
@@ -118,12 +121,13 @@
 
     <section class="bg-[url('/assets/images/home-end.png')] bg-no-repeat bg-cover py-12 mt-24">
         <div class="container py-8 text-center bg-almost-black bg-opacity-90 min-h-[50vh] grid place-content-center">
-            <h1 class="text-h3 font-medium mb-2">Book a session today</h1>
+            <h1 class="text-h3 mb-2 font-medium">Book a session today</h1>
 
-            <p class="mx-auto max-w-prose mb-8">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores, sed.
+            <p class="max-w-prose mx-auto mb-8">Through music we are all connected. Let it be your
+                solace; your peace.
             </p>
 
-            <a routerLink="/booking/new" class="btn w-1/2 mx-auto">Book Now</a>
+            <a routerLink="/booking/new" class="btn w-1/3 py-4 mx-auto">Book Today</a>
         </div>
     </section>
 </div>

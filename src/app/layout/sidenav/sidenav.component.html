@@ -24,7 +24,7 @@
         </ul>
 
         <span class="pl-4 inline-flex gap-3 items-center mb-2" *ngIf="user">
-            <img class="h-10 w-10 object-cover rounded-full" [src]="user.photo" [alt]="user.name">
+            <img class="h-10 aspect-square object-cover rounded-full" [src]="user.photo" [alt]="user.name">
             <span class="max-w-[10ch] overflow-hidden">{{user.name.split(' ')[0]}}</span>
         </span>
         <a class="px-4 py-2 rounded inline-flex gap-2 items-center justify-between hover:bg-gray-900"

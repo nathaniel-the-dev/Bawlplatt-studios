@@ -2,9 +2,9 @@
 
 <div class="min-h-screen">
     <div class="py-16">
-        <h1 class="text-h2 mb-8 text-center">Book a session</h1>
+        <h1 class="text-h2 mb-4 text-center">Book a session</h1>
 
-        <div class="w-full max-w-xl px-12 py-8 mx-auto bg-gray-800 bg-opacity-50">
+        <div class="w-full max-w-xl px-12 py-4 mx-auto bg-gray-800 bg-opacity-50">
             <form class="" [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onBookingFormSubmit()">
 
                 <div class="flex items-center justify-between gap-4 mb-8" *ngIf="currentStep < 4">
@@ -25,8 +25,8 @@
                         [class.bg-bright-red-500]="currentStep >= 3">3</span>
                 </div>
 
-                <div class="min-h-[20rem]">
-                    <section class="" *ngIf="currentStep === 1" @changeSlide>
+                <div class="min-h-[25rem] relative">
+                    <section @changeSlide class="slide" *ngIf="currentStep === 1">
                         <h1 class="text-h5 mb-8 text-center">Who are you booking for?</h1>
 
                         <div class="flex justify-center gap-8">
@@ -35,7 +35,7 @@
                                     class="peer hidden" formControlName="customer_type">
 
                                 <div class="peer-checked:-translate-y-6 transition">
-                                    <img src="/assets/images/form-artist.jpg" alt="An artist">
+                                    <img class="rounded-lg" src="/assets/images/form-artist.jpg" alt="An artist">
                                     <h3 class="text-center">An Artist</h3>
                                 </div>
                             </label>
@@ -45,7 +45,7 @@
                                     class="peer hidden" formControlName="customer_type">
 
                                 <div class="peer-checked:-translate-y-6 transition">
-                                    <img src="/assets/images/form-band.jpg" alt="A band">
+                                    <img class="rounded-lg" src="/assets/images/form-band.jpg" alt="A band">
                                     <h3 class="text-center">A Band</h3>
                                 </div>
                             </label>
@@ -57,8 +57,8 @@
                         </div>
                     </section>
 
-                    <section class="" formGroupName="artist"
-                        *ngIf="currentStep === 2 && bookingForm.get('customer_type')?.value === 'artist'" @changeSlide>
+                    <section @changeSlide class="slide" formGroupName="artist"
+                        *ngIf="currentStep === 2 && bookingForm.get('customer_type')?.value === 'artist'">
                         <h1 class="text-h5 mb-6">About The Artist</h1>
 
                         <div class="form-control required">
@@ -104,9 +104,9 @@
                                 (click)="changeSlide(1)">Next</button>
                         </div>
                     </section>
-                    <section class="" formGroupName="band"
-                        *ngIf="currentStep === 2 && bookingForm.get('customer_type')?.value === 'band'" @changeSlide>
-                        <h1>About The Band</h1>
+                    <section @changeSlide class="slide" formGroupName="band"
+                        *ngIf="currentStep === 2 && bookingForm.get('customer_type')?.value === 'band'">
+                        <h1 class="text-h5 mb-6">About The Band</h1>
 
                         <div class="form-control required">
                             <label class="label" for="group_name">Band Name</label>
@@ -134,6 +134,7 @@
                                 </base-error>
                             </div>
                         </div>
+
 
                         <div class="form-control required">
                             <label class="label" for="lead_name">Lead Name</label>
@@ -182,7 +183,7 @@
                     </section>
 
 
-                    <section class="" *ngIf="currentStep === 3" @changeSlide>
+                    <section @changeSlide class="slide" *ngIf="currentStep === 3">
                         <h1 class="text-h5 mb-6">About The Session</h1>
 
                         <div class="form-control">
@@ -282,14 +283,16 @@
                         </div>
                     </section>
 
-                    <section class="flex items-center justify-center" *ngIf="currentStep === 4" @changeSlide>
+                    <section @changeSlide class="slide flex items-center justify-center" *ngIf="currentStep === 4">
                         <div class="text-center">
-                            <h1 class="text-h4 mb-6">Your session has been booked</h1>
+                            <i class="ai-circle-check text-[4.5rem] text-bright-red-300"></i>
 
-                            <p class="mb-6">For more information, email us at <a
-                                    href="mailto:">bawlplatt@studios.com</a> by or
-                                calling
-                                <a href="tel:+">(876)981-1201</a>
+                            <h1 class="text-h4 mt-2 mb-4">Your session has been booked</h1>
+
+                            <p class="mb-8 leading-relaxed">
+                                For more information, email us at <a
+                                    class="text-bright-red-300">bawlplatt@studios.com</a> by or calling <a
+                                    class="text-bright-red-300">(876)981-1201</a>.
                             </p>
 
                             <button class="btn" type="button" routerLink="/home">Okay</button>

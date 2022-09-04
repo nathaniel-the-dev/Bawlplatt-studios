@@ -1,4 +1,4 @@
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from 'src/app/auth/user.service';
 import { User } from 'src/app/shared/models/user';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { ToastService } from 'src/app/shared/services/toast.service';
 
 @Component({
     selector: 'app-profile',
@@ -23,8 +24,12 @@ export class ProfilePage implements OnInit, OnDestroy {
         const infoSub = this.userService.updateCurrentUser(this.infoForm.value).subscribe((res) => {
             if (res.status === 'success') {
                 this.user = res.data!['user'];
+                this.userService.setUpdatedUser(this.user);
+
                 this.infoForm.setValue({ name: this.user.name, email: this.user.email });
                 this.infoForm.markAsPristine();
+
+                this.toastService.createToast('Profile Updated', 'Your profile has been changed successfully');
             }
 
             if (res.status === 'fail' && res.error!.type === 'ValidationError') this.errorService.handleValidationError(res, this.infoForm);
@@ -43,7 +48,7 @@ export class ProfilePage implements OnInit, OnDestroy {
             if (res.status === 'success') {
                 this.passwordForm.reset();
                 this.passwordForm.markAsPristine();
-                window.alert('Profile updated!');
+                this.toastService.createToast('Profile Updated', 'Your password has been changed successfully');
             }
 
             if (res.status === 'fail' && res.error!.type === 'ValidationError') this.errorService.handleValidationError(res, this.passwordForm);
@@ -52,31 +57,35 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
 
     confirmAccountDelete(): void {
-        // TODO Request user password for confirmation in alert dialog
-        let password = window.prompt('Enter your password to confirm the delete:');
-        if (!password) return;
+        this.toastService.openPasswordConfirmModal().then((password) => {
+            console.log(password)
+            if (!password) return;
 
-        const verifySub = this.userService.verifyUser({ password }).subscribe((res) => {
-            if (res.status === 'success') {
-                const deleteSub = this.userService.deleteCurrentUser().subscribe((res) => {
-                    if (res !== null) return;
+            const verifySub = this.userService.verifyUser({ password }).subscribe((res) => {
+                if (res.status === 'success') {
+                    const deleteSub = this.userService.deleteCurrentUser().subscribe((res) => {
+                        if (res !== null) return;
 
-                    const loginSub = this.authService.logout().subscribe((res) => {
-                        if (res.status === 'success') this.router.navigateByUrl('/login');
+                        const loginSub = this.authService.logout().subscribe((res) => {
+                            if (res.status === 'success') this.router.navigateByUrl('/login');
+                        });
+                        this.subscriptions.add(loginSub);
                     });
-                    this.subscriptions.add(loginSub);
-                });
-                this.subscriptions.add(deleteSub);
-            }
+                    this.subscriptions.add(deleteSub);
+                }
 
-            if (res.status === 'fail' && res.error!.type === 'ValidationError') { window.alert('Password is incorrect') }
+                if (res.status === 'fail' && res.error!.type === 'ValidationError') {
+                    this.toastService.createToast('Incorrect Password', 'The password you entered was incorrect', 'error');
+                }
+            });
+            this.subscriptions.add(verifySub);
         });
-        this.subscriptions.add(verifySub);
     }
+
 
     private subscriptions = new Subscription();
 
-    constructor(private userService: UserService, private authService: AuthService, private errorService: ErrorService, private fb: FormBuilder, private router: Router) { }
+    constructor(private userService: UserService, private authService: AuthService, private toastService: ToastService, private errorService: ErrorService, private fb: FormBuilder, private router: Router) { }
 
     ngOnInit(): void {
         this.getUserInformation();

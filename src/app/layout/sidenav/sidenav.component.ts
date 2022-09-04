@@ -16,7 +16,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     private userSubscription?: Subscription;
 
-    constructor(private authService: AuthService, private userService: UserService, private router: Router) { }
+    constructor(private authService: AuthService, private userService: UserService, private router: Router) {
+        const sub = this.userService.updatedUser$.subscribe(user => {
+            this.user = user;
+        });
+        this.userSubscription?.add(sub);
+    }
 
     ngOnInit(): void {
         if (!this.userService.currentUser)

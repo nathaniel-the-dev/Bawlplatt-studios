@@ -6,6 +6,7 @@ import { Booking } from 'src/app/shared/models/booking';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { BookingsService } from '../bookings.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
+import { ToastService } from 'src/app/shared/services/toast.service';
 
 @Component({
     selector: 'app-booking-form',
@@ -13,8 +14,8 @@ import { ValidateTime } from 'src/app/shared/validators/time.validator';
     styleUrls: ['./booking-form.page.css']
 })
 export class BookingFormPage implements OnInit {
-    private booking = {} as Booking;
 
+    private booking = {} as Booking;
     bookingForm = this.fb.group({
         // Customer type
         customer_type: [null, [Validators.required]],
@@ -71,7 +72,11 @@ export class BookingFormPage implements OnInit {
         // Send the corresponding request based on the action
         if (this.action === 'add') {
             const addBookingSub = this.bookingsService.createBooking(this.booking).subscribe((res) => {
-                if (res.status === 'success') this.router.navigateByUrl('/dashboard/bookings');
+                if (res.status === 'success') {
+                    this.router.navigateByUrl('/dashboard/bookings');
+                    this.toastService.createToast('Booking Created', 'A new session was booked successfully');
+
+                }
 
                 if (res.status === 'fail' && res.error!.type === 'ValidationError')
                     this.errorService.handleValidationError(res, this.bookingForm);
@@ -80,7 +85,11 @@ export class BookingFormPage implements OnInit {
             this.subscriptions.add(addBookingSub);
         } else {
             const updateBookingSub = this.bookingsService.updateBooking(this.booking).subscribe((res) => {
-                if (res.status === 'success') this.router.navigateByUrl('/dashboard/bookings');
+                if (res.status === 'success') {
+                    this.router.navigateByUrl('/dashboard/bookings');
+                    this.toastService.createToast('Booking Created', 'A new session was booked successfully');
+
+                }
                 if (res.status === 'fail' && res.error!.type === 'ValidationError')
                     this.errorService.handleValidationError(res, this.bookingForm);
 
@@ -92,7 +101,7 @@ export class BookingFormPage implements OnInit {
     public action: 'add' | 'edit' = 'add';
     private subscriptions = new Subscription();
 
-    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private fb: FormBuilder, private router: Router, private route: ActivatedRoute) { }
+    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private toastService: ToastService, private fb: FormBuilder, private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
         // Set initial form states
@@ -159,8 +168,8 @@ export class BookingFormPage implements OnInit {
         });
 
         if (obj.start_date) {
-            obj.start_date = new Date(obj.start_date).toISOString().split('T')[0];
             obj.start_time = new Date(obj.start_date).toISOString().split('T')[1].slice(0, 5);
+            obj.start_date = new Date(obj.start_date).toISOString().split('T')[0];
         }
 
         form.patchValue(obj);

@@ -8,10 +8,11 @@ import { FormatPhoneDirective } from '../../directives/format-phone.directive';
 @NgModule({
     declarations: [
         ErrorComponent,
-        FormatPhoneDirective
+        FormatPhoneDirective,
+
     ],
     imports: [
-        CommonModule
+        CommonModule,
     ],
     exports: [ErrorComponent, FormatPhoneDirective]
 })

@@ -2,12 +2,54 @@
     <!-- Title -->
     <h1 class="text-h3 mb-8">History</h1>
 
+    <div [ngSwitch]="!!bookings.length">
+        <div *ngSwitchCase="true">
+            <ul class="grid grid-cols-3 gap-8">
+                <li class="group" *ngFor="let booking of bookings">
+                    <div class="bg-gray-800 rounded py-4 px-4 h-full relative">
+                        <h2 class="text-h5 font-medium max-w-[17ch]">{{booking.artist?.name ||
+                            booking.band?.group_name}}</h2>
 
-    <p>Coming Soon</p>
+                        <p class="mt-0.5 mb-2 text-sm">
+                            <span
+                                class="border border-current text-bright-red-300 px-2 rounded-3xl">{{booking.customer_type}}</span>
+                        </p>
 
-    <!-- <ul>
-            <li *ngFor="let booking of bookings">
-                <span>{{booking._id}}</span>
-            </li>
-        </ul> -->
+                        <p>
+                            <i class="ai-clock text-h6"></i>
+                            {{booking.start_date | formatDate: 'date'}} <span class="text-gray-400">{{booking.start_date
+                                | formatDate:
+                                'time'}}</span>
+                        </p>
+
+                        <p>
+                            <i class="ai-watch-device"></i>
+                            {{booking.duration + 'hr' + (booking.duration <= 1 ? '.' : 's.' )}} </p>
+                                <p>
+                                    <i class="ai-money text-h6"></i>
+                                    {{booking.cost | currency}}
+                                </p>
+
+
+                                <button
+                                    class="opacity-0 text-bright-red-500 absolute top-4 right-4 py-1.5 px-2.5 rounded-full transition group-hover:opacity-100 hover:bg-gray-600"
+                                    (click)="deleteBooking(booking)"><i class="ai-trash-can text-h6"></i></button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div *ngSwitchDefault>
+            <div class="text-center py-16">
+                <h2 class="text-h4 mb-4">No Bookings Yet</h2>
+
+                <p class="max-w-prose mx-auto mb-6">
+                    Bookings will appear here once a session is complete. You also can mark sessions as complete from
+                    the
+                    list.
+                </p>
+
+                <a class="btn" routerLink="/dashboard/bookings">View Active Bookings</a>
+            </div>
+        </div>
+    </div>
 </div>

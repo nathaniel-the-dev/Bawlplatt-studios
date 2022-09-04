@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, tap } from 'rxjs';
+import { Observable, catchError, tap, Subject } from 'rxjs';
 import { APIResponse, Token } from '../shared/models/api-response';
 import { environment } from 'src/environments/environment';
 import { User } from '../shared/models/user';
@@ -14,6 +14,11 @@ export class UserService {
     private API_URL = environment.API_URL + '/users';
 
     currentUser?: User;
+    setUpdatedUser(user: User) {
+        this.currentUser = user;
+        this.updatedUser$.next(user);
+    }
+    updatedUser$ = new Subject<User>();
 
     constructor(private authService: AuthService, private errorService: ErrorService, private http: HttpClient) { }
 

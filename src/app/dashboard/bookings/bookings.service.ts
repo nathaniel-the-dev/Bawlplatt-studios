@@ -19,6 +19,8 @@ export class BookingsService {
 
         for (const key in opts) {
             if (opts.hasOwnProperty(key)) {
+                if (!opts[key]) continue;
+
                 if (typeof opts[key] === 'object') {
                     urlQueryString.append(key, opts[key]!.key + '=' + opts[key]!.value);
                     continue;

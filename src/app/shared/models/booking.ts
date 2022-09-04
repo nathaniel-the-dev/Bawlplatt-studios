@@ -33,7 +33,7 @@ export interface Booking {
     completed: boolean;
     payed: boolean;
 
-    approved_by?: User | string;
+    approved_by?: User;
 
     booked_at: Date;
     last_updated: Date;

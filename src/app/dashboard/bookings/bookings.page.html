@@ -18,53 +18,52 @@
         </form>
 
         <span>
-            <select class="text-almost-black px-4 py-2 border-0 rounded" name="filter" id="filter">
+            <select class="text-almost-black px-4 py-2 border-0 rounded" name="filter" id="filter"
+                [(ngModel)]="selectedFilter" (ngModelChange)="filterList()">
                 <option value="" selected disabled hidden>Filter By</option>
-                <option value="artist">Artist</option>
-                <option value="band">Band</option>
-                <option value="payed">Payed</option>
-            </select>
-        </span>
-        <span>
-            <select class="text-almost-black px-4 py-2 border-0 rounded" name="sort" id="sort">
-                <option value="" selected disabled hidden>Sort By</option>
-                <option value="start_date">Start Date</option>
-                <option value="date_booked">Date Created</option>
-                <option value="last_updated">Last Updated</option>
+                <option value="none">None</option>
+                <option value="customer_type=artist">Artist</option>
+                <option value="customer_type=band">Band</option>
+                <option value="payed=true">Payed</option>
+                <option value="payed=false">Not Yet Payed</option>
             </select>
         </span>
     </div>
 
-    <div class="grid grid-rows-[minmax(50vh,_100%),_max-content] gap-8" *ngIf="bookings.length; else notFound">
+    <div class="grid grid-rows-[minmax(25rem,_100%),_max-content] gap-8"
+        *ngIf="bookings.length && !loading; else notFound">
         <div>
             <!-- Table -->
-            <div class="item-list__table mb-2">
+            <div class="item-list__table mb-2 px-4">
                 <span></span>
                 <span>Customer</span>
                 <span>Booked For</span>
                 <span>Duration</span>
                 <span>Cost</span>
+                <span>Booked On</span>
                 <span>Payed</span>
                 <span></span>
             </div>
             <ul class="space-y-4">
-                <li class="px-4 py-3 transition-all bg-gray-900 rounded"
-                    *ngFor="let booking of bookings; let i = index">
-                    <div class="item-list__table">
-                        <div>
-                            <button class="transition" [class.rotate-180]="selectedListItem === i"
+                <li class="px-4 py-3 transition-all bg-gray-800 rounded"
+                    *ngFor="let booking of bookings; let i = index;">
+                    <div class="item-list__table text-white">
+                        <div class="px-2">
+                            <button class=" transition" [class.rotate-180]="selectedListItem === i"
                                 (click)="toggleItemDetails(i)">
-                                <i class="ai-chevron-down"></i>
+                                <i class="text-h5 ai-chevron-down"></i>
                             </button>
                         </div>
 
                         <div>
-                            <h2 class="text-h6">{{(booking.artist?.name || booking.band?.group_name) | titlecase}}</h2>
+                            <h2 class="text-h6 capitalize" [title]="(booking.artist?.name || booking.band?.group_name)">
+                                {{(booking.artist?.name || booking.band?.group_name)}}
+                            </h2>
                             <span class="text-bright-red-500">{{booking.customer_type}}</span>
                         </div>
                         <div>
-                            <p>{{booking.start_date | formatDate:'date'}}</p>
-                            <p class="text-sm">{{booking.start_date | formatDate:'time'}}</p>
+                            <p class="mb-1">{{booking.start_date | formatDate:'date'}}</p>
+                            <p class="text-gray-400">{{booking.start_date | formatDate:'time'}}</p>
                         </div>
                         <div>
                             <p>{{booking.duration + 'hr' + (booking.duration <= 1 ? '.' : 's.' )}}</p>
@@ -72,34 +71,58 @@
                         <div>
                             <p>{{booking.cost | currency}}</p>
                         </div>
-
                         <div>
-                            <i class="ai-check text-h5 text-green-500" *ngIf="booking.payed; else cross"></i>
-                            <ng-template #cross><i class="ai-cross text-h5 text-red-500"></i></ng-template>
+                            <p class="mb-1">{{booking.booked_at | formatDate:'date'}}</p>
+                            <p class="text-gray-400">{{booking.booked_at | formatDate:'time'}}</p>
+                        </div>
+                        <div>
+                            <i class="ai-cross text-h5 text-red-500" *ngIf="!booking.payed; else payed"></i>
+                            <ng-template #payed>
+                                <div class="group flex gap-2">
+                                    <i class="ai-check text-h5 text-green-500"></i>
+                                    <img class="group-hover:opacity-100 opacity-0 h-8 aspect-square object-cover rounded-full transition-opacity"
+                                        [title]="'Approved by: ' + booking.approved_by.name"
+                                        [src]="booking.approved_by.photo" [alt]="booking.approved_by.name"
+                                        *ngIf="booking.approved_by">
+                                </div>
+                            </ng-template>
                         </div>
 
+
                         <div class="">
-                            <div class="group w-max relative text-left">
+                            <div class="group w-max relative text-left ml-12">
                                 <button class="text-h5"><i class="ai-more-vertical-fill"></i></button>
                                 <ul
-                                    class="-top-full group-hover:block absolute left-0 z-10 hidden w-40 bg-gray-700 rounded">
+                                    class="text-left group-hover:block absolute bottom-full right-0 z-10 hidden min-w-[10rem] w-max bg-gray-900 rounded space-y-0.5 p-1">
+                                    <li>
+                                        <button
+                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
+                                            (click)="toggleBookingValue(booking._id, 'completed')">
+                                            <i class="ai-check-box"></i>
+                                            Mark as complete
+                                        </button>
+                                    </li>
                                     <li *ngIf="!booking.payed">
-                                        <button class="inline-flex items-center w-full gap-3 px-4 py-3"
+                                        <button
+                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
                                             (click)="toggleBookingValue(booking._id, 'payed')">
+                                            <i class="ai-money"></i>
                                             Mark as payed
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="inline-flex items-center w-full gap-3 px-4 py-3"
+                                        <button
+                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
                                             [routerLink]="['edit',booking._id]">
-                                            <i class="text-h6 ai-edit"></i>
+                                            <i class="text-base ai-edit"></i>
                                             <span>Edit</span>
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="inline-flex items-center w-full gap-3 px-4 py-3"
+                                        <button
+                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
                                             (click)="deleteBooking(booking._id)">
-                                            <i class="text-h6 ai-trash-can"></i>
+                                            <i class="text-base ai-trash-can"></i>
                                             <span>Delete</span>
                                         </button>
                                     </li>
@@ -111,25 +134,25 @@
                         [ngClass]="{'max-h-0 pt-0':selectedListItem !== i, 'max-h-40 pt-4':selectedListItem === i}">
                         <div></div>
                         <div>
-                            <h4 class="mb-4 text-sm">Contact Information</h4>
+                            <h4 class="mb-4 text-sm underline underline-offset-4">Contact Information</h4>
 
-                            <div class="" *ngIf="!!booking.artist">
-                                <p>{{booking.artist.email}}</p>
-                                <p>{{booking.artist.contact_num | formatContactNum}}</p>
+                            <div class="space-y-1" *ngIf="!!booking.artist">
+                                <p><i class="ai-envelope"></i> {{booking.artist.email}}</p>
+                                <p><i class="ai-phone"></i> {{booking.artist.contact_num | formatContactNum}}</p>
                             </div>
 
-                            <div class="" *ngIf="!!booking.band">
-                                <p>{{booking.band.group_size | number}} members</p>
-                                <p>{{booking.band.lead_name}}</p>
-                                <p>{{booking.band.lead_email}}</p>
-                                <p>{{booking.band.lead_contact_num | formatContactNum}}</p>
+                            <div class="space-y-1" *ngIf="!!booking.band">
+                                <p><i class="ai-people-group"></i> {{booking.band.group_size | number}} members</p>
+                                <p><i class="ai-person"></i> {{booking.band.lead_name}}</p>
+                                <p><i class="ai-envelope"></i> {{booking.band.lead_email}}</p>
+                                <p><i class="ai-phone"></i> {{booking.band.lead_contact_num | formatContactNum}}</p>
                             </div>
                         </div>
 
-                        <div>
-                            <h4 class="mb-4 text-sm">Additional Information</h4>
-                            <div>
-                                <p>{{booking.num_of_instruments | number}} instruments</p>
+                        <div class="col-span-4">
+                            <h4 class="mb-4 text-sm underline underline-offset-4">Additional Information</h4>
+                            <div class=" space-y-1">
+                                <p><i class="ai-music-note"></i> {{booking.num_of_instruments | number}} instruments</p>
                                 <p class="max-w-prose" *ngIf="booking.message">{{booking.message}}</p>
                             </div>
                         </div>
@@ -140,11 +163,13 @@
 
         <!-- Pagination -->
         <div class="flex items-center justify-center gap-4">
-            <button (click)="changePage(-1)" [class.invisible]="page <= 1">
+            <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(-1)"
+                [class.invisible]="page <= 1">
                 <i class="ai-arrow-left"></i>
             </button>
             <p>Page {{page}} of {{totalPages}}</p>
-            <button (click)="changePage(1)" [class.invisible]="page >= totalPages">
+            <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(1)"
+                [class.invisible]="page >= totalPages">
                 <i class="ai-arrow-right"></i>
             </button>
         </div>
@@ -154,8 +179,11 @@
     <ng-template #notFound>
         <div [ngSwitch]="loading">
             <div *ngSwitchCase="true">
-                (show spinner)
-
+                <div class="grid place-items-center h-80">
+                    <div style="border-top-color:transparent"
+                        class="w-20 aspect-square border-4 border-bright-red-400 border-dashed rounded-full animate-spin">
+                    </div>
+                </div>
             </div>
 
             <div class="py-12 text-center" *ngSwitchDefault>
