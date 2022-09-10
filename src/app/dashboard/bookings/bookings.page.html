@@ -25,7 +25,7 @@
                 <option value="customer_type=artist">Artist</option>
                 <option value="customer_type=band">Band</option>
                 <option value="payed=true">Paid</option>
-                <option value="payed=false">Not Yet Payed</option>
+                <option value="payed=false">Not Yet Paid</option>
             </select>
         </span>
     </div>
@@ -34,14 +34,14 @@
         *ngIf="bookings.length && !loading; else notFound">
         <div>
             <!-- Table -->
-            <div class="item-list__table mb-2 px-4">
+            <div class="item-list__table px-4 mb-2">
                 <span></span>
                 <span>Customer</span>
                 <span>Booked For</span>
                 <span>Duration</span>
                 <span>Cost</span>
                 <span>Booked On</span>
-                <span>Payed</span>
+                <span>Paid</span>
                 <span></span>
             </div>
             <ul class="space-y-4">
@@ -80,7 +80,7 @@
                             <ng-template #payed>
                                 <div class="group flex gap-2">
                                     <i class="ai-check text-h5 text-green-500"></i>
-                                    <img class="group-hover:opacity-100 opacity-0 h-8 aspect-square object-cover rounded-full transition-opacity"
+                                    <img class="group-hover:opacity-100 aspect-square object-cover h-8 transition-opacity rounded-full opacity-0"
                                         [title]="'Approved by: ' + booking.approved_by.name"
                                         [src]="booking.approved_by.photo" [alt]="booking.approved_by.name"
                                         *ngIf="booking.approved_by">
@@ -90,13 +90,13 @@
 
 
                         <div class="">
-                            <div class="group w-max relative text-left ml-12">
+                            <div class="group w-max relative ml-12 text-left">
                                 <button class="text-h5"><i class="ai-more-vertical-fill"></i></button>
                                 <ul
-                                    class="text-left group-hover:block absolute bottom-full right-0 z-10 hidden min-w-[10rem] w-max bg-gray-900 rounded space-y-0.5 p-1">
+                                    class="group-hover:block text-left absolute bottom-full right-0 z-10 hidden min-w-[10rem] w-max bg-gray-900 rounded space-y-0.5 p-1">
                                     <li>
                                         <button
-                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
+                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
                                             (click)="toggleBookingValue(booking._id, 'completed')">
                                             <i class="ai-check-box"></i>
                                             Mark as complete
@@ -104,7 +104,7 @@
                                     </li>
                                     <li *ngIf="!booking.payed">
                                         <button
-                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
+                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
                                             (click)="toggleBookingValue(booking._id, 'payed')">
                                             <i class="ai-money"></i>
                                             Mark as paid
@@ -112,17 +112,17 @@
                                     </li>
                                     <li>
                                         <button
-                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
+                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
                                             [routerLink]="['edit',booking._id]">
-                                            <i class="text-base ai-edit"></i>
+                                            <i class="ai-edit text-base"></i>
                                             <span>Edit</span>
                                         </button>
                                     </li>
                                     <li>
                                         <button
-                                            class="hover:bg-almost-black bg-opacity-50 rounded inline-flex items-center w-full gap-3 px-4 py-3"
+                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
                                             (click)="deleteBooking(booking._id)">
-                                            <i class="text-base ai-trash-can"></i>
+                                            <i class="ai-trash-can text-base"></i>
                                             <span>Delete</span>
                                         </button>
                                     </li>
@@ -134,7 +134,7 @@
                         [ngClass]="{'max-h-0 pt-0':selectedListItem !== i, 'max-h-40 pt-4':selectedListItem === i}">
                         <div></div>
                         <div>
-                            <h4 class="mb-4 text-sm underline underline-offset-4">Contact Information</h4>
+                            <h4 class="underline-offset-4 mb-4 text-sm underline">Contact Information</h4>
 
                             <div class="space-y-1" *ngIf="!!booking.artist">
                                 <p><i class="ai-envelope"></i> {{booking.artist.email}}</p>
@@ -150,7 +150,7 @@
                         </div>
 
                         <div class="col-span-4">
-                            <h4 class="mb-4 text-sm underline underline-offset-4">Additional Information</h4>
+                            <h4 class="underline-offset-4 mb-4 text-sm underline">Additional Information</h4>
                             <div class=" space-y-1">
                                 <p><i class="ai-music-note"></i> {{booking.num_of_instruments | number}} instruments</p>
                                 <p class="max-w-prose" *ngIf="booking.message">{{booking.message}}</p>
@@ -179,9 +179,9 @@
     <ng-template #notFound>
         <div [ngSwitch]="loading">
             <div *ngSwitchCase="true">
-                <div class="grid place-items-center h-80">
+                <div class="place-items-center h-80 grid">
                     <div style="border-top-color:transparent"
-                        class="w-20 aspect-square border-4 border-bright-red-400 border-dashed rounded-full animate-spin">
+                        class="aspect-square border-bright-red-400 animate-spin w-20 border-4 border-dashed rounded-full">
                     </div>
                 </div>
             </div>

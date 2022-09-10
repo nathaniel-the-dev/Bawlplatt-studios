@@ -24,8 +24,8 @@ export class AuthService {
         this.autoLogin();
     }
 
-    login(creds: { email: string, password: string }): Observable<APIResponse<string>> {
-        return this.http.post<APIResponse>(this.API_URL + '/login', creds).pipe(
+    login(creds: { email: string, password: string }): Observable<APIResponse<Token | User>> {
+        return this.http.post<APIResponse<Token | User>>(this.API_URL + '/login', creds).pipe(
             tap((res) => this.setAuthSession(res)),
             catchError((err) => this.errorService.handleHTTPError(err)),
         );

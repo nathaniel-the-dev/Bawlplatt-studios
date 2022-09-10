@@ -1,3 +1,4 @@
+
 export interface Token {
     value: string;
     expires: Date;
@@ -24,9 +25,9 @@ export interface QueryOptions {
     [index: string]: any;
 }
 
-
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
     status: string;
+
     // Data properties
     data?: { [index: string]: T };
 
@@ -37,3 +38,4 @@ export interface APIResponse<T = any> {
         errors?: { [key: string]: string }
     }
 }
+
