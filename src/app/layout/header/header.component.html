@@ -5,7 +5,7 @@
                 <img class="h-[16px] w-[138px]" src="/assets/logo.svg" alt="logo">
             </a>
 
-            <ul class="flex items-center gap-6">
+            <ul class="max-lg:hidden flex items-center gap-6">
                 <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
                         routerLink="/home">Home</a></li>
                 <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
@@ -14,6 +14,28 @@
                         routerLink="/contact">Contact Us</a></li>
                 <li><a class="btn py-2.5 ml-2" routerLink="/booking/new">Book Now</a></li>
             </ul>
+
+            <button class="lg:hidden scale-125" (click)="toggleMenu()">
+                <i class="ai-three-line-horizontal"></i>
+            </button>
         </nav>
     </div>
 </header>
+
+<div class="lg:hidden text-almost-black fixed top-0 right-0 z-30 h-full px-12 py-16 transition-transform bg-white"
+    [class.translate-x-full]="!showMenu">
+    <button class="top-6 right-6 absolute scale-125" (click)="toggleMenu()">
+        <i class="ai-cross"></i>
+    </button>
+
+    <ul class="grid gap-6">
+        <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
+                routerLink="/home">Home</a>
+        </li>
+        <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
+                routerLink="/about">About</a></li>
+        <li><a class="hover:underline decoration-bright-red-500 underline-offset-4 decoration-2"
+                routerLink="/contact">Contact Us</a></li>
+        <li><a class="btn py-2.5 ml-2" routerLink="/booking/new">Book Now</a></li>
+    </ul>
+</div>

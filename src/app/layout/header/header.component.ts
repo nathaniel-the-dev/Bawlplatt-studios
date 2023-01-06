@@ -10,6 +10,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     @ViewChild('header') header!: ElementRef<HTMLElement>;
 
     private prevScrollPosition: number = 0;
+    public showMenu = false;
 
     constructor() {
     }
@@ -19,6 +20,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         if (this.hideOnScroll) window.addEventListener('scroll', this.hideHeader.bind(this), { passive: true });
+    }
+
+    toggleMenu() {
+        this.showMenu = !this.showMenu;
     }
 
     hideHeader(ev: Event) {

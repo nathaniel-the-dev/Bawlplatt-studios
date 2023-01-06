@@ -1,15 +1,15 @@
 <app-header [hideOnScroll]="true"></app-header>
 
 <div class="min-h-screen">
-    <section class="hero-image relative h-screen">
+    <section class="hero-image relative min-h-screen">
         <div class="top-1/2 left-1/2 absolute text-center text-white -translate-x-1/2 -translate-y-1/2">
-            <h1 class="text-h1 max-w-lg mx-auto mb-6 font-semibold leading-tight">
+            <h1 class="lg:text-h1 text-h2 lg:max-w-lg mx-auto mb-6 font-semibold leading-tight">
                 Get your music ready for the <span class="text-bright-red-600">world</span>
             </h1>
 
-            <p class="max-w-[50ch] mx-auto leading-relaxed text-center mb-8">
+            <p class="lg:max-w-[50ch] mx-auto leading-relaxed text-center mb-8">
                 Work with a group of talented musicians, experienced composers, and record producers to make your music
-                a masterpeice.
+                a masterpiece.
             </p>
 
             <div class="flex items-center justify-center gap-4">
@@ -24,7 +24,7 @@
         <div class="container">
             <h2 class="text-h3 mb-8 font-medium text-center">We Have Worked With</h2>
 
-            <div class="flex justify-center gap-8 align-baseline">
+            <div class="flex flex-wrap justify-center gap-8 align-baseline">
                 <img class="object-cover h-24" src="/assets/logos/sony-music.png" alt="Sony">
                 <img class="object-cover h-24" src="/assets/logos/dolby.png" alt="Dolby">
                 <img class="object-cover h-24" src="/assets/logos/jbl.png" alt="JBL">
@@ -37,7 +37,7 @@
         <div class="container">
             <h2 class="text-h3 mb-16 font-medium text-center">How we can help you</h2>
 
-            <div class="grid grid-cols-2 gap-16 mb-32">
+            <div class="lg:grid-cols-2 grid gap-16 mb-32">
                 <div class="py-12">
                     <h3 class="text-h4 mb-4 leading-snug">Record your music in high quality</h3>
                     <hr class="border-bright-red-600 w-2/3 mb-6 border-b-2">
@@ -47,10 +47,11 @@
                         can feel.</p>
                 </div>
 
-                <img class="w-full h-[30rem] object-cover" src="/assets/images/home-feature-1.png" alt="">
+                <img class="w-full h-[30rem] object-cover max-lg:-order-1" src="/assets/images/home-feature-1.png"
+                    alt="">
             </div>
 
-            <div class="grid grid-cols-2 gap-16 mb-32">
+            <div class="lg:grid-cols-2 grid gap-16 mb-32">
                 <div class="py-12">
                     <h3 class="text-h4 mb-4 leading-snug">Hear it in your own style</h3>
                     <hr class="border-bright-red-600 w-2/3 mb-6 border-b-2">
@@ -62,7 +63,7 @@
                 <img class="w-full h-[30rem] object-cover -order-1" src="/assets/images/home-feature-2.png" alt="">
             </div>
 
-            <div class="grid grid-cols-2 gap-16">
+            <div class="lg:grid-cols-2 grid gap-16">
                 <div class="py-12">
                     <h3 class="text-h4 mb-4 leading-snug">Meet with the masters</h3>
                     <hr class="border-bright-red-600 w-2/3 mb-6 border-b-2">
@@ -72,7 +73,8 @@
                         connections that can take your to the next step in becoming an expert.</p>
                 </div>
 
-                <img class="w-full h-[30rem] object-cover" src="/assets/images/home-feature-3.jpg" alt="">
+                <img class="w-full h-[30rem] object-cover max-lg:-order-1" src="/assets/images/home-feature-3.jpg"
+                    alt="">
             </div>
         </div>
     </section>
@@ -81,7 +83,7 @@
         <div class="container">
             <h2 class="text-h3 mb-28 font-medium text-center">What people have said about us</h2>
 
-            <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="lg:grid-cols-3 grid gap-4 text-center">
                 <div class="bg-zinc-900 relative flex flex-col h-full px-8 py-8 rounded">
                     <img class="aspect-square left-1/2 absolute top-0 h-20 -translate-x-1/2 -translate-y-1/2 rounded-full"
                         src="https://randomuser.me/api/portraits/women/22.jpg" alt="Elsie Frazier">
