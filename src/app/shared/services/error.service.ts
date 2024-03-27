@@ -1,4 +1,4 @@
-import { FormGroup, ValidationErrors } from '@angular/forms';
+import { UntypedFormGroup, ValidationErrors } from '@angular/forms';
 import { APIResponse } from './../models/api-response';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -37,7 +37,7 @@ export class ErrorService {
         return of(response);
     }
 
-    public handleValidationError(err: APIResponse, form: FormGroup): void {
+    public handleValidationError(err: APIResponse, form: UntypedFormGroup): void {
         let error = err.error?.errors!;
         let keys = Object.keys(error);
 

@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BookingsService } from 'src/app/dashboard/bookings/bookings.service';
@@ -50,16 +50,16 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         duration: [null, [Validators.required, Validators.max(4)]],
         message: [null, Validators.maxLength(255)]
     });
-    get artistForm(): FormGroup {
-        return this.bookingForm.get('artist') as FormGroup;
+    get artistForm(): UntypedFormGroup {
+        return this.bookingForm.get('artist') as UntypedFormGroup;
     }
-    get bandForm(): FormGroup {
-        return this.bookingForm.get('band') as FormGroup;
+    get bandForm(): UntypedFormGroup {
+        return this.bookingForm.get('band') as UntypedFormGroup;
     }
 
     private subscriptions = new Subscription();
 
-    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private fb: FormBuilder) { }
+    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private fb: UntypedFormBuilder) { }
 
     ngOnInit(): void {
         this._setFormState(this.artistForm, 'disabled');
@@ -113,7 +113,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     }
 
 
-    private _setFormState(form: FormGroup, state: 'enabled' | 'disabled'): void {
+    private _setFormState(form: UntypedFormGroup, state: 'enabled' | 'disabled'): void {
         state === 'enabled' ? form.enable({ emitEvent: false }) : form.disable({ emitEvent: false });
     }
 }

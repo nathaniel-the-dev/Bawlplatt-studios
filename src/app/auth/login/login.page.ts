@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ErrorService } from 'src/app/shared/services/error.service';
@@ -19,7 +19,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
     private subscriptions = new Subscription();
 
-    constructor(private fb: FormBuilder, private router: Router, private authService: AuthService, private errorService: ErrorService) { }
+    constructor(private fb: UntypedFormBuilder, private router: Router, private authService: AuthService, private errorService: ErrorService) { }
 
     ngOnInit(): void {
     }

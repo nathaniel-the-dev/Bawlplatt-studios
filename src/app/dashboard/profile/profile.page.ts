@@ -1,4 +1,4 @@
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from 'src/app/auth/user.service';
 import { User } from 'src/app/shared/models/user';
@@ -85,7 +85,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
     private subscriptions = new Subscription();
 
-    constructor(private userService: UserService, private authService: AuthService, private toastService: ToastService, private errorService: ErrorService, private fb: FormBuilder, private router: Router) { }
+    constructor(private userService: UserService, private authService: AuthService, private toastService: ToastService, private errorService: ErrorService, private fb: UntypedFormBuilder, private router: Router) { }
 
     ngOnInit(): void {
         this.getUserInformation();

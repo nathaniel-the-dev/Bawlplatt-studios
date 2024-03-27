@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Booking } from 'src/app/shared/models/booking';
@@ -41,11 +41,11 @@ export class BookingFormPage implements OnInit {
         duration: [null],
         message: [null]
     });
-    get artistForm(): FormGroup {
-        return this.bookingForm.get('artist') as FormGroup;
+    get artistForm(): UntypedFormGroup {
+        return this.bookingForm.get('artist') as UntypedFormGroup;
     }
-    get bandForm(): FormGroup {
-        return this.bookingForm.get('band') as FormGroup;
+    get bandForm(): UntypedFormGroup {
+        return this.bookingForm.get('band') as UntypedFormGroup;
     }
 
     onFormSubmit(): void {
@@ -101,7 +101,7 @@ export class BookingFormPage implements OnInit {
     public action: 'add' | 'edit' = 'add';
     private subscriptions = new Subscription();
 
-    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private toastService: ToastService, private fb: FormBuilder, private router: Router, private route: ActivatedRoute) { }
+    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private toastService: ToastService, private fb: UntypedFormBuilder, private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
         // Set initial form states
@@ -155,10 +155,10 @@ export class BookingFormPage implements OnInit {
         this.subscriptions.add(bookingSub);
     }
 
-    private _setFormState(form: FormGroup, state: "enabled" | 'disabled') {
+    private _setFormState(form: UntypedFormGroup, state: "enabled" | 'disabled') {
         state === 'enabled' ? form.enable({ emitEvent: false }) : form.disable({ emitEvent: false });
     }
-    private _populateValues(form: FormGroup, data: any) {
+    private _populateValues(form: UntypedFormGroup, data: any) {
         const keys = Object.keys(data);
         const obj: any = {};
 
