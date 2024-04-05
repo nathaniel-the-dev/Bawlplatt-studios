@@ -29,7 +29,8 @@
                             "src/_redirects"
                         ],
                         "styles": ["src/styles.css"],
-                        "scripts": []
+                        "scripts": [],
+                        "allowedCommonJsDependencies": ["dayjs", "sweetalert2"]
                     },
                     "configurations": {
                         "production": {

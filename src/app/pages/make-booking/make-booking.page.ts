@@ -1,11 +1,15 @@
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    Validators,
+} from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { BookingsService } from 'src/app/dashboard/bookings/bookings.service';
-import { Booking } from 'src/app/shared/models/booking';
+import { Booking } from 'src/app/admin/shared/models/booking';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { BookingsService } from 'src/app/shared/services/bookings.service';
 
 @Component({
     selector: 'app-make-booking',
@@ -15,11 +19,13 @@ import { animate, style, transition, trigger } from '@angular/animations';
         trigger('changeSlide', [
             transition(':enter', [
                 style({ opacity: 0, transform: 'translateY(2rem)' }),
-                animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0rem)' }))
+                animate(
+                    '300ms ease-out',
+                    style({ opacity: 1, transform: 'translateY(0rem)' })
+                ),
             ]),
-        ])
-    ]
-
+        ]),
+    ],
 })
 export class MakeBookingPage implements OnInit, OnDestroy {
     currentStep: 1 | 2 | 3 | 4 = 1;
@@ -33,7 +39,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         artist: this.fb.group({
             name: [null, [Validators.required]],
             email: [null, [Validators.required, Validators.email]],
-            contact_num: [null, [Validators.required]]
+            contact_num: [null, [Validators.required]],
         }),
 
         band: this.fb.group({
@@ -41,14 +47,17 @@ export class MakeBookingPage implements OnInit, OnDestroy {
             group_size: [null, [Validators.required, Validators.min(1)]],
             lead_name: [null, [Validators.required]],
             lead_email: [null, [Validators.required, Validators.email]],
-            lead_contact_num: [null, [Validators.required]]
+            lead_contact_num: [null, [Validators.required]],
         }),
 
         num_of_instruments: [null, Validators.min(0)],
         start_date: [null, Validators.required],
-        start_time: [null, [Validators.required, ValidateTime('08:00', '20:00')]],
+        start_time: [
+            null,
+            [Validators.required, ValidateTime('08:00', '20:00')],
+        ],
         duration: [null, [Validators.required, Validators.max(4)]],
-        message: [null, Validators.maxLength(255)]
+        message: [null, Validators.maxLength(255)],
     });
     get artistForm(): UntypedFormGroup {
         return this.bookingForm.get('artist') as UntypedFormGroup;
@@ -59,7 +68,11 @@ export class MakeBookingPage implements OnInit, OnDestroy {
 
     private subscriptions = new Subscription();
 
-    constructor(private bookingsService: BookingsService, private errorService: ErrorService, private fb: UntypedFormBuilder) { }
+    constructor(
+        private bookingsService: BookingsService,
+        private errorService: ErrorService,
+        private fb: UntypedFormBuilder
+    ) {}
 
     ngOnInit(): void {
         this._setFormState(this.artistForm, 'disabled');
@@ -85,35 +98,59 @@ export class MakeBookingPage implements OnInit, OnDestroy {
 
     onBookingFormSubmit(): void {
         // Convert separate date and time to one value
-        let start_date = this.bookingForm.controls['start_date'].value && new Date(this.bookingForm.controls['start_date'].value + " " + this.bookingForm.controls['start_time'].value);
+        let start_date =
+            this.bookingForm.controls['start_date'].value &&
+            new Date(
+                this.bookingForm.controls['start_date'].value +
+                    ' ' +
+                    this.bookingForm.controls['start_time'].value
+            );
 
         // Add the data to the booking
         const booking = {
             ...this.bookingForm.value,
 
             start_date: start_date,
-            start_time: undefined
+            start_time: undefined,
         } as Booking;
 
         if (booking.artist) {
-            const number = (this.artistForm.get('contact_num')!.value as string).replace(/\D/g, '').slice(0, 10);
+            const number = (this.artistForm.get('contact_num')!.value as string)
+                .replace(/\D/g, '')
+                .slice(0, 10);
             booking.artist.contact_num = +number;
         }
         if (booking.band) {
-            const number = (this.bandForm.get('lead_contact_num')!.value as string).replace(/\D/g, '').slice(0, 10);
+            const number = (
+                this.bandForm.get('lead_contact_num')!.value as string
+            )
+                .replace(/\D/g, '')
+                .slice(0, 10);
             booking.band.lead_contact_num = +number;
         }
 
-        const bookingSub = this.bookingsService.createBooking(booking).subscribe((res) => {
-            if (res.status === 'success') this.changeSlide(1);
-            if (res.status === 'fail' && res.error!.type === 'ValidationError')
-                this.errorService.handleValidationError(res, this.bookingForm);
-        });
+        const bookingSub = this.bookingsService
+            .createBooking(booking)
+            .subscribe((res) => {
+                if (res.status === 'success') this.changeSlide(1);
+                if (
+                    res.status === 'fail' &&
+                    res.error!.type === 'ValidationError'
+                )
+                    this.errorService.handleValidationError(
+                        res,
+                        this.bookingForm
+                    );
+            });
         this.subscriptions.add(bookingSub);
     }
 
-
-    private _setFormState(form: UntypedFormGroup, state: 'enabled' | 'disabled'): void {
-        state === 'enabled' ? form.enable({ emitEvent: false }) : form.disable({ emitEvent: false });
+    private _setFormState(
+        form: UntypedFormGroup,
+        state: 'enabled' | 'disabled'
+    ): void {
+        state === 'enabled'
+            ? form.enable({ emitEvent: false })
+            : form.disable({ emitEvent: false });
     }
 }

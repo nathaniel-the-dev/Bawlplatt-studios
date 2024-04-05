@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { APIResponse, Token } from '../shared/models/api-response';
-import { User } from '../shared/models/user';
-import { ErrorService } from '../shared/services/error.service';
+import { APIResponse, Token } from '../models/api-response';
+import { User } from '../models/user';
+import { ErrorService } from 'src/app/shared/services/error.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class AuthService {
     private API_URL = environment.API_URL + '/users';
@@ -24,24 +24,33 @@ export class AuthService {
         this.autoLogin();
     }
 
-    login(creds: { email: string, password: string }): Observable<APIResponse<Token | User>> {
-        return this.http.post<APIResponse<Token | User>>(this.API_URL + '/login', creds).pipe(
-            tap((res) => this.setAuthSession(res)),
-            catchError((err) => this.errorService.handleHTTPError(err)),
-        );
+    login(creds: {
+        email: string;
+        password: string;
+    }): Observable<APIResponse<Token | User>> {
+        return this.http
+            .post<APIResponse<Token | User>>(this.API_URL + '/login', creds)
+            .pipe(
+                tap((res) => this.setAuthSession(res)),
+                catchError((err) => this.errorService.handleHTTPError(err))
+            );
     }
 
     logout(): Observable<APIResponse> {
         return this.http.get<APIResponse>(this.API_URL + '/logout').pipe(
-            tap((res) => (res.status === 'success') && this.clearAuthSession()),
-            catchError((err) => this.errorService.handleHTTPError(err)),
+            tap((res) => res.status === 'success' && this.clearAuthSession()),
+            catchError((err) => this.errorService.handleHTTPError(err))
         );
     }
 
     private _getAuthTokenFromStorage(): Token | null {
         let token: string | null = localStorage.getItem('auth_token');
 
-        return token ? JSON.parse(token, (key, val) => (key === 'expires') ? new Date(val) : val) as Token : null;
+        return token
+            ? (JSON.parse(token, (key, val) =>
+                  key === 'expires' ? new Date(val) : val
+              ) as Token)
+            : null;
     }
 
     private _setToken(token: Token) {
@@ -52,7 +61,8 @@ export class AuthService {
         const token = this._getAuthTokenFromStorage();
 
         // Check if token is present and has not expired
-        if (!token || Date.now() > token.expires.getTime()) return this.clearAuthSession();
+        if (!token || Date.now() > token.expires.getTime())
+            return this.clearAuthSession();
 
         // Set token and start session timer
         this._setToken(token);
