@@ -41,7 +41,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-./Sitemap.md
+Sitemap.md
 *.env
 
 src/environments/
