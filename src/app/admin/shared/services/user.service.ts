@@ -11,7 +11,7 @@ import { ErrorService } from 'src/app/shared/services/error.service';
     providedIn: 'root',
 })
 export class UserService {
-    private API_URL = environment.API_URL + '/users';
+    private API_URL = '/users';
 
     currentUser?: User;
     setUpdatedUser(user: User) {

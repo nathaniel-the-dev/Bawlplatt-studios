@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { QueryOptions } from 'src/app/admin/shared/models/api-response';
 import { Booking } from 'src/app/admin/shared/models/booking';
+import { ApiService } from 'src/app/shared/services/api.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
-import { BookingsService } from '../../../shared/services/bookings.service';
 
 @Component({
     selector: 'app-bookings',
@@ -78,7 +78,7 @@ export class BookingsPage implements OnInit, OnDestroy {
     private subscriptions = new Subscription();
 
     constructor(
-        private bookingsService: BookingsService,
+        private apiService: ApiService,
         private toastService: ToastService
     ) {}
 
@@ -90,20 +90,23 @@ export class BookingsPage implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    private getAllBookings() {
+    private async getAllBookings() {
         this.loading = true;
-        const bookingsSub = this.bookingsService
-            .getAllBookings(this.filterOpts)
-            .subscribe((res) => {
-                this.loading = false;
 
-                if (res.status === 'success') {
-                    this.bookings = res.data!['bookings'];
-                    this.totalPages = (res.data!['page'] as any).maxNumOfPages;
-                    this.page = (res.data!['page'] as any).current;
-                }
-            });
-        this.subscriptions.add(bookingsSub);
+        const data = await this.apiService.sendRequest({
+            table: 'bookings',
+            method: 'select',
+            data: this.filterOpts,
+        });
+
+        this.loading = false;
+
+        if (data) {
+            console.log(data);
+            // this.bookings = res.data!['bookings'];
+            // this.totalPages = (res.data!['page'] as any).maxNumOfPages;
+            // this.page = (res.data!['page'] as any).current;
+        }
     }
 
     toggleBookingValue(
@@ -114,12 +117,12 @@ export class BookingsPage implements OnInit, OnDestroy {
         const data = {} as any;
         data[field] = value;
 
-        const toggleSub = this.bookingsService
-            .approveBooking(id, data)
-            .subscribe((res) => {
-                if (res.status === 'success') this.getAllBookings();
-            });
-        this.subscriptions.add(toggleSub);
+        // const toggleSub = this.apiService
+        //     .approveBooking(id, data)
+        //     .subscribe((res) => {
+        //         if (res.status === 'success') this.getAllBookings();
+        //     });
+        // this.subscriptions.add(toggleSub);
     }
 
     deleteBooking(id: string): void {
@@ -128,15 +131,15 @@ export class BookingsPage implements OnInit, OnDestroy {
             .then((confirmation: boolean) => {
                 if (!confirmation) return;
 
-                const deleteSub = this.bookingsService
-                    .deleteBooking(id)
-                    .subscribe((res) => {
-                        if (res === null) {
-                            this.getAllBookings();
-                            this.selectedListItem = undefined;
-                        }
-                    });
-                this.subscriptions.add(deleteSub);
+                // const deleteSub = this.apiService
+                //     .deleteBooking(id)
+                //     .subscribe((res) => {
+                //         if (res === null) {
+                //             this.getAllBookings();
+                //             this.selectedListItem = undefined;
+                //         }
+                //     });
+                // this.subscriptions.add(deleteSub);
             });
     }
 }

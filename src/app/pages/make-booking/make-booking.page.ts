@@ -9,7 +9,7 @@ import { Booking } from 'src/app/admin/shared/models/booking';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { BookingsService } from 'src/app/shared/services/bookings.service';
+import { ApiService } from 'src/app/shared/services/api.service';
 
 @Component({
     selector: 'app-make-booking',
@@ -69,7 +69,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     private subscriptions = new Subscription();
 
     constructor(
-        private bookingsService: BookingsService,
+        private apiService: ApiService,
         private errorService: ErrorService,
         private fb: UntypedFormBuilder
     ) {}
@@ -129,20 +129,20 @@ export class MakeBookingPage implements OnInit, OnDestroy {
             booking.band.lead_contact_num = +number;
         }
 
-        const bookingSub = this.bookingsService
-            .createBooking(booking)
-            .subscribe((res) => {
-                if (res.status === 'success') this.changeSlide(1);
-                if (
-                    res.status === 'fail' &&
-                    res.error!.type === 'ValidationError'
-                )
-                    this.errorService.handleValidationError(
-                        res,
-                        this.bookingForm
-                    );
-            });
-        this.subscriptions.add(bookingSub);
+        // const bookingSub = this.apiService
+        //     .createBooking(booking)
+        //     .subscribe((res) => {
+        //         if (res.status === 'success') this.changeSlide(1);
+        //         if (
+        //             res.status === 'fail' &&
+        //             res.error!.type === 'ValidationError'
+        //         )
+        //             this.errorService.handleValidationError(
+        //                 res,
+        //                 this.bookingForm
+        //             );
+        //     });
+        // this.subscriptions.add(bookingSub);
     }
 
     private _setFormState(

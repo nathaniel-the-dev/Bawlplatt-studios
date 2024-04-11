@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 
 ./Sitemap.md
+*.env
+
+src/environments/

@@ -10,7 +10,7 @@ import { Booking } from 'src/app/admin/shared/models/booking';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { ToastService } from 'src/app/shared/services/toast.service';
-import { BookingsService } from 'src/app/shared/services/bookings.service';
+import { ApiService } from 'src/app/shared/services/api.service';
 
 @Component({
     selector: 'app-booking-form',
@@ -90,57 +90,57 @@ export class BookingFormPage implements OnInit {
         }
 
         // Send the corresponding request based on the action
-        if (this.action === 'add') {
-            const addBookingSub = this.bookingsService
-                .createBooking(this.booking)
-                .subscribe((res) => {
-                    if (res.status === 'success') {
-                        this.router.navigateByUrl('/dashboard/bookings');
-                        this.toastService.createToast(
-                            'Booking Created',
-                            'A new session was booked successfully'
-                        );
-                    }
+        // if (this.action === 'add') {
+        //     const addBookingSub = this.apiService
+        //         .createBooking(this.booking)
+        //         .subscribe((res) => {
+        //             if (res.status === 'success') {
+        //                 this.router.navigateByUrl('/dashboard/bookings');
+        //                 this.toastService.createToast(
+        //                     'Booking Created',
+        //                     'A new session was booked successfully'
+        //                 );
+        //             }
 
-                    if (
-                        res.status === 'fail' &&
-                        res.error!.type === 'ValidationError'
-                    )
-                        this.errorService.handleValidationError(
-                            res,
-                            this.bookingForm
-                        );
-                });
-            this.subscriptions.add(addBookingSub);
-        } else {
-            const updateBookingSub = this.bookingsService
-                .updateBooking(this.booking)
-                .subscribe((res) => {
-                    if (res.status === 'success') {
-                        this.router.navigateByUrl('/dashboard/bookings');
-                        this.toastService.createToast(
-                            'Booking Created',
-                            'A new session was booked successfully'
-                        );
-                    }
-                    if (
-                        res.status === 'fail' &&
-                        res.error!.type === 'ValidationError'
-                    )
-                        this.errorService.handleValidationError(
-                            res,
-                            this.bookingForm
-                        );
-                });
-            this.subscriptions.add(updateBookingSub);
-        }
+        //             if (
+        //                 res.status === 'fail' &&
+        //                 res.error!.type === 'ValidationError'
+        //             )
+        //                 this.errorService.handleValidationError(
+        //                     res,
+        //                     this.bookingForm
+        //                 );
+        //         });
+        //     this.subscriptions.add(addBookingSub);
+        // } else {
+        //     const updateBookingSub = this.apiService
+        //         .updateBooking(this.booking)
+        //         .subscribe((res) => {
+        //             if (res.status === 'success') {
+        //                 this.router.navigateByUrl('/dashboard/bookings');
+        //                 this.toastService.createToast(
+        //                     'Booking Created',
+        //                     'A new session was booked successfully'
+        //                 );
+        //             }
+        //             if (
+        //                 res.status === 'fail' &&
+        //                 res.error!.type === 'ValidationError'
+        //             )
+        //                 this.errorService.handleValidationError(
+        //                     res,
+        //                     this.bookingForm
+        //                 );
+        //         });
+        //     this.subscriptions.add(updateBookingSub);
+        // }
     }
 
     public action: 'add' | 'edit' = 'add';
     private subscriptions = new Subscription();
 
     constructor(
-        private bookingsService: BookingsService,
+        private apiService: ApiService,
         private errorService: ErrorService,
         private toastService: ToastService,
         private fb: UntypedFormBuilder,
@@ -174,29 +174,24 @@ export class BookingFormPage implements OnInit {
 
     private getBookingFromParams(id: string) {
         // Get booking data
-        const bookingSub = this.bookingsService
-            .getBookingById(id)
-            .subscribe((res) => {
-                // Populate fields with provided data and enable required forms
-                this.booking = res.data!['booking'];
-
-                if (this.booking.customer_type === 'artist') {
-                    this._populateValues(this.artistForm, this.booking.artist);
-                    this._setFormState(this.artistForm, 'enabled');
-                }
-
-                if (this.booking.customer_type === 'band') {
-                    this._populateValues(this.bandForm, this.booking.band);
-                    this._setFormState(this.bandForm, 'enabled');
-                }
-
-                this._populateValues(this.bookingForm, this.booking);
-
-                // Switch action to 'edit'
-                this.action = 'edit';
-            });
-
-        this.subscriptions.add(bookingSub);
+        // const bookingSub = this.apiService
+        //     .getBookingById(id)
+        //     .subscribe((res) => {
+        //         // Populate fields with provided data and enable required forms
+        //         this.booking = res.data!['booking'];
+        //         if (this.booking.customer_type === 'artist') {
+        //             this._populateValues(this.artistForm, this.booking.artist);
+        //             this._setFormState(this.artistForm, 'enabled');
+        //         }
+        //         if (this.booking.customer_type === 'band') {
+        //             this._populateValues(this.bandForm, this.booking.band);
+        //             this._setFormState(this.bandForm, 'enabled');
+        //         }
+        //         this._populateValues(this.bookingForm, this.booking);
+        //         // Switch action to 'edit'
+        //         this.action = 'edit';
+        //     });
+        // this.subscriptions.add(bookingSub);
     }
 
     private _setFormState(

@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { QueryOptions } from 'src/app/admin/shared/models/api-response';
 import { Booking } from 'src/app/admin/shared/models/booking';
+import { ApiService } from 'src/app/shared/services/api.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
-import { BookingsService } from 'src/app/shared/services/bookings.service';
 
 @Component({
     selector: 'app-history',
@@ -25,7 +25,7 @@ export class HistoryPage implements OnInit, OnDestroy {
     private subscriptions = new Subscription();
 
     constructor(
-        private bookingsService: BookingsService,
+        private apiService: ApiService,
         private toastService: ToastService
     ) {}
 
@@ -37,13 +37,13 @@ export class HistoryPage implements OnInit, OnDestroy {
     }
 
     private getCompleteBookings(): void {
-        const bookingSub = this.bookingsService
-            .getAllBookings(this.filterOpts)
-            .subscribe((res) => {
-                if (res.status !== 'success') return;
-                this.bookings = res.data!['bookings'];
-            });
-        this.subscriptions.add(bookingSub);
+        // const bookingSub = this.apiService
+        //     .getAllBookings(this.filterOpts)
+        //     .subscribe((res) => {
+        //         if (res.status !== 'success') return;
+        //         this.bookings = res.data!['bookings'];
+        //     });
+        // this.subscriptions.add(bookingSub);
     }
 
     deleteBooking(booking: Booking): void {
@@ -52,12 +52,12 @@ export class HistoryPage implements OnInit, OnDestroy {
             .then((confirmation: boolean) => {
                 if (!confirmation) return;
 
-                const sub = this.bookingsService
-                    .deleteBooking(booking._id)
-                    .subscribe((res) => {
-                        if (res === null) this.getCompleteBookings();
-                    });
-                this.subscriptions.add(sub);
+                // const sub = this.apiService
+                //     .deleteBooking(booking._id)
+                //     .subscribe((res) => {
+                //         if (res === null) this.getCompleteBookings();
+                //     });
+                // this.subscriptions.add(sub);
             });
     }
 }
