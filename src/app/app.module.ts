@@ -1,5 +1,4 @@
 import { SharedComponentsModule } from './shared/shared-components.module';
-import { AuthInterceptor } from './admin/shared/interceptors/auth.interceptor';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

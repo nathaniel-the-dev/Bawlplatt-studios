@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import supabase from '../utils/supabase';
-import { BehaviorSubject } from 'rxjs';
+import { SupabaseClient, User, createClient } from '@supabase/supabase-js';
+import { environment } from 'src/environments/environment';
 
 interface RequestOptions {
     table: string;
@@ -8,23 +8,39 @@ interface RequestOptions {
     data: any;
 }
 
+interface APIResponse {
+    status: string;
+    data: any;
+    error: any;
+}
+
 @Injectable({
     providedIn: 'root',
 })
 export class ApiService {
-    public status$ = new BehaviorSubject<string>('pending');
+    private supabase: SupabaseClient;
 
-    constructor() {}
+    public user: User | null = null;
+
+    constructor() {
+        this.supabase = createClient(
+            environment.SUPABASE_URL,
+            environment.SUPABASE_KEY
+        );
+
+        this.supabase.auth.getUser().then(({ data: { user } }) => {
+            this.user = user;
+        });
+    }
 
     private handleErrors(err: any) {
         console.log(err);
     }
 
-    async sendRequest(opts: RequestOptions): Promise<any> {
-        const query = supabase.from(opts.table);
+    async sendRequest(opts: RequestOptions): Promise<APIResponse> {
+        const query = this.supabase.from(opts.table);
 
-        this.status$.next('loading');
-        const { data, error, statusText } = await (() => {
+        const { statusText, data, error } = await (() => {
             switch (opts.method) {
                 case 'select':
                     return query.select('*');
@@ -39,10 +55,38 @@ export class ApiService {
 
         if (error) {
             this.handleErrors(error);
-            this.status$.next('error');
         }
 
-        this.status$.next('success');
-        return data;
+        return {
+            status: statusText,
+            data,
+            error,
+        };
+    }
+
+    // Auth
+
+    async login(creds: {
+        email: string;
+        password: string;
+    }): Promise<APIResponse> {
+        const { data, error } = await this.supabase.auth.signInWithPassword(
+            creds
+        );
+
+        // TODO: Handle errors and log them in locally
+        if (error) {
+            return { status: 'error', data: null, error };
+        }
+
+        return { status: 'success', data, error: null };
+    }
+
+    async logout(): Promise<boolean> {
+        const { error } = await this.supabase.auth.signOut();
+
+        if (error) this.handleErrors(error);
+
+        return !!error;
     }
 }

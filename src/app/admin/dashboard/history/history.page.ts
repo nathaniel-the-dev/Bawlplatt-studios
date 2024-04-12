@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { QueryOptions } from 'src/app/admin/shared/models/api-response';
-import { Booking } from 'src/app/admin/shared/models/booking';
+import { Booking } from 'src/app/shared/models/booking';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 
@@ -13,7 +12,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 export class HistoryPage implements OnInit, OnDestroy {
     bookings: Booking[] = [];
 
-    filterOpts: QueryOptions = {
+    filterOpts = {
         group: 'complete',
 
         sort: {

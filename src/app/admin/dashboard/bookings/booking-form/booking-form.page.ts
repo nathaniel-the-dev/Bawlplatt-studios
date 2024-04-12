@@ -6,7 +6,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Booking } from 'src/app/admin/shared/models/booking';
+import { Booking } from 'src/app/shared/models/booking';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { ToastService } from 'src/app/shared/services/toast.service';

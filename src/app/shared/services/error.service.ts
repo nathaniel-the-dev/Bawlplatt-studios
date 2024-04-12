@@ -1,5 +1,4 @@
-import { UntypedFormGroup, ValidationErrors } from '@angular/forms';
-import { APIResponse } from '../../admin/shared/models/api-response';
+import { UntypedFormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -13,7 +12,7 @@ export class ErrorService {
     constructor(private toastService: ToastService, private router: Router) {}
 
     public handleHTTPError(res: HttpErrorResponse | any): Observable<any> {
-        let response: APIResponse = {
+        let response = {
             status: res.error?.status || 'error',
             error: {
                 type: res.error?.error?.type || 'RequestError',
@@ -35,10 +34,10 @@ export class ErrorService {
                 );
 
             // 401 - Unauthorized
-            if (res.status === 401) this.router.navigateByUrl('/login');
+            if (res.status === 401) this.router.navigateByUrl('/admin/login');
         } else {
             this.toastService.createToast(
-                'A Error Occured',
+                'A Error Occurred',
                 'Something went wrong. Please try again later.',
                 'error'
             );
@@ -47,10 +46,7 @@ export class ErrorService {
         return of(response);
     }
 
-    public handleValidationError(
-        err: APIResponse,
-        form: UntypedFormGroup
-    ): void {
+    public handleValidationError(err: any, form: UntypedFormGroup): void {
         let error = err.error?.errors!;
         let keys = Object.keys(error);
 

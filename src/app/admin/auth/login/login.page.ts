@@ -1,14 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
+import {
+    FormsModule,
+    ReactiveFormsModule,
+    UntypedFormBuilder,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ErrorComponent } from 'src/app/shared/components/error/error.component';
+import { FooterComponent } from 'src/app/shared/components/footer/footer.component';
+import { HeaderComponent } from 'src/app/shared/components/header/header.component';
+import { ApiService } from 'src/app/shared/services/api.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { AuthService } from '../../shared/services/auth.service';
+import { SharedComponentsModule } from 'src/app/shared/shared-components.module';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.css'],
+    imports: [
+        CommonModule,
+        FooterComponent,
+        HeaderComponent,
+        SharedComponentsModule,
+        ReactiveFormsModule,
+    ],
+    standalone: true,
 })
 export class LoginPage implements OnInit, OnDestroy {
     loginForm = this.fb.group({
@@ -19,9 +36,9 @@ export class LoginPage implements OnInit, OnDestroy {
     private subscriptions = new Subscription();
 
     constructor(
+        private apiService: ApiService,
         private fb: UntypedFormBuilder,
         private router: Router,
-        private authService: AuthService,
         private errorService: ErrorService
     ) {}
 
@@ -31,22 +48,10 @@ export class LoginPage implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    onSubmit(): void {
-        const loginSub = this.authService
-            .login(this.loginForm.value)
-            .subscribe((res) => {
-                if (res.status === 'success') this.showConfirmation();
-                if (
-                    res.status === 'fail' &&
-                    res.error!.type === 'ValidationError'
-                )
-                    this.errorService.handleValidationError(
-                        res,
-                        this.loginForm
-                    );
-            });
+    async onSubmit() {
+        const res = await this.apiService.login(this.loginForm.value);
 
-        this.subscriptions.add(loginSub);
+        if (res.status === 'success') this.showConfirmation();
     }
 
     showConfirmation(): void {

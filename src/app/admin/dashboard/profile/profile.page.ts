@@ -1,12 +1,11 @@
 import { UntypedFormBuilder } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { User } from 'src/app/admin/shared/models/user';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
-import { AuthService } from '../../shared/services/auth.service';
-import { UserService } from '../../shared/services/user.service';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { User } from '@supabase/supabase-js';
 
 @Component({
     selector: 'app-profile',
@@ -14,7 +13,7 @@ import { UserService } from '../../shared/services/user.service';
     styleUrls: ['./profile.page.css'],
 })
 export class ProfilePage implements OnInit, OnDestroy {
-    user?: User;
+    user: User | null = null;
 
     infoForm = this.fb.group({
         name: [null],
@@ -30,8 +29,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     private subscriptions = new Subscription();
 
     constructor(
-        private userService: UserService,
-        private authService: AuthService,
+        private apiService: ApiService,
         private toastService: ToastService,
         private errorService: ErrorService,
         private fb: UntypedFormBuilder,
@@ -46,109 +44,60 @@ export class ProfilePage implements OnInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    onInfoFormSubmit(): void {
-        const infoSub = this.userService
-            .updateCurrentUser(this.infoForm.value)
-            .subscribe((res) => {
-                if (res.status === 'success') {
-                    this.user = res.data!['user'];
-                    this.userService.setUpdatedUser(this.user);
+    async onInfoFormSubmit() {
+        const res = await this.apiService.sendRequest({
+            table: 'users',
+            method: 'update',
+            data: this.infoForm.value,
+        });
 
-                    this.infoForm.setValue({
-                        name: this.user.name,
-                        email: this.user.email,
-                    });
-                    this.infoForm.markAsPristine();
+        if (!res.error) {
+            this.infoForm.markAsPristine();
 
-                    this.toastService.createToast(
-                        'Profile Updated',
-                        'Your profile has been changed successfully'
-                    );
-                }
-
-                if (
-                    res.status === 'fail' &&
-                    res.error!.type === 'ValidationError'
-                )
-                    this.errorService.handleValidationError(res, this.infoForm);
-            });
-        this.subscriptions.add(infoSub);
+            this.toastService.createToast(
+                'Profile Updated',
+                'Your profile has been changed successfully'
+            );
+        } else {
+            this.errorService.handleValidationError(res, this.infoForm);
+        }
     }
 
-    onPasswordFormSubmit(): void {
-        const passwordSub = this.userService
-            .updateCurrentUserPassword(this.passwordForm.value)
-            .subscribe((res) => {
-                if (res.status === 'success') {
-                    this.passwordForm.reset();
-                    this.passwordForm.markAsPristine();
-                    this.toastService.createToast(
-                        'Profile Updated',
-                        'Your password has been changed successfully'
-                    );
-                }
+    async onPasswordFormSubmit() {
+        // Verify password
 
-                if (
-                    res.status === 'fail' &&
-                    res.error!.type === 'ValidationError'
-                )
-                    this.errorService.handleValidationError(
-                        res,
-                        this.passwordForm
-                    );
-            });
-        this.subscriptions.add(passwordSub);
+        // Update password
+
+        this.passwordForm.reset();
+        this.passwordForm.markAsPristine();
+        this.toastService.createToast(
+            'Profile Updated',
+            'Your password has been changed successfully'
+        );
     }
 
-    confirmAccountDelete(): void {
+    async confirmAccountDelete() {
         this.toastService.openPasswordConfirmModal().then((password) => {
-            console.log(password);
             if (!password) return;
 
-            const verifySub = this.userService
-                .verifyUser({ password })
-                .subscribe((res) => {
-                    if (res.status === 'success') {
-                        const deleteSub = this.userService
-                            .deleteCurrentUser()
-                            .subscribe((res) => {
-                                if (res !== null) return;
+            // Verify password
 
-                                const loginSub = this.authService
-                                    .logout()
-                                    .subscribe((res) => {
-                                        if (res.status === 'success')
-                                            this.router.navigateByUrl('/login');
-                                    });
-                                this.subscriptions.add(loginSub);
-                            });
-                        this.subscriptions.add(deleteSub);
-                    }
+            // Delete user (if verified)
 
-                    if (
-                        res.status === 'fail' &&
-                        res.error!.type === 'ValidationError'
-                    ) {
-                        this.toastService.createToast(
-                            'Incorrect Password',
-                            'The password you entered was incorrect',
-                            'error'
-                        );
-                    }
-                });
-            this.subscriptions.add(verifySub);
+            //   this.toastService.createToast(
+            //       'Incorrect Password',
+            //       'The password you entered was incorrect',
+            //       'error'
+            //   );
         });
     }
 
-    private getUserInformation(): void {
-        this.userService.getCurrentUser().subscribe((res) => {
-            if (res.status !== 'success') return;
+    private async getUserInformation() {
+        this.user = this.apiService.user!;
 
-            this.user = res.data!['user'];
-            this.infoForm.setValue({
-                name: this.user.name,
-                email: this.user.email,
-            });
+        this.infoForm.setValue({
+            name: this.user.user_metadata['first_name'],
+            email: this.user.email,
         });
     }
 }

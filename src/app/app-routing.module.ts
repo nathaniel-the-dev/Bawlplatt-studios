@@ -12,6 +12,12 @@ const routes: Routes = [
     { path: 'contact', component: ContactPage },
     { path: 'booking/new', component: MakeBookingPage },
 
+    {
+        path: 'admin',
+        loadChildren: () =>
+            import('./admin/admin.module').then((m) => m.AdminModule),
+    },
+
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundPage },
 ];

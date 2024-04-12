@@ -5,7 +5,7 @@ import {
 } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Booking } from 'src/app/admin/shared/models/booking';
+import { Booking } from 'src/app/shared/models/booking';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { animate, style, transition, trigger } from '@angular/animations';

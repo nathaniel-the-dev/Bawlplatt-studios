@@ -1,43 +1,54 @@
-import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import {
+    Component,
+    Input,
+    AfterViewInit,
+    ViewChild,
+    ElementRef,
+} from '@angular/core';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
-    styleUrls: ['./header.component.css']
+    styleUrls: ['./header.component.css'],
+    standalone: true,
 })
-export class HeaderComponent implements OnInit, AfterViewInit {
+export class HeaderComponent implements AfterViewInit {
     @Input() hideOnScroll: boolean = false;
     @ViewChild('header') header!: ElementRef<HTMLElement>;
 
     private prevScrollPosition: number = 0;
     public showMenu = false;
 
-    constructor() {
-    }
-
-    ngOnInit(): void {
-    }
+    constructor() {}
 
     ngAfterViewInit(): void {
-        if (this.hideOnScroll) window.addEventListener('scroll', this.hideHeader.bind(this), { passive: true });
+        if (this.hideOnScroll)
+            window.addEventListener('scroll', this.hideHeader.bind(this), {
+                passive: true,
+            });
     }
 
     toggleMenu() {
         this.showMenu = !this.showMenu;
     }
 
-    hideHeader(ev: Event) {
+    hideHeader() {
         window.requestAnimationFrame(() => {
             const currentPosition = window.scrollY;
 
-            if (currentPosition > this.prevScrollPosition && !this.header.nativeElement.classList.contains('hide'))
+            if (
+                currentPosition > this.prevScrollPosition &&
+                !this.header.nativeElement.classList.contains('hide')
+            )
                 this.header.nativeElement.classList.add('hide');
 
-            if (currentPosition < this.prevScrollPosition && this.header.nativeElement.classList.contains('hide'))
+            if (
+                currentPosition < this.prevScrollPosition &&
+                this.header.nativeElement.classList.contains('hide')
+            )
                 this.header.nativeElement.classList.remove('hide');
 
             this.prevScrollPosition = currentPosition;
-        })
+        });
     }
-
 }

@@ -1,24 +1,37 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
 import { LoginPage } from './auth/login/login.page';
-import { RequiresAuthGuard } from './shared/guards/requires-auth.guard';
-import { RequiresUnauthGuard } from './shared/guards/requires-unauth.guard';
+import { BookingFormPage } from './dashboard/bookings/booking-form/booking-form.page';
+import { BookingsPage } from './dashboard/bookings/bookings.page';
+import { DashboardPage } from './dashboard/dashboard.page';
+import { HistoryPage } from './dashboard/history/history.page';
+import { ProfilePage } from './dashboard/profile/profile.page';
 
 const routes: Route[] = [
-    { path: 'login', component: LoginPage, canActivate: [RequiresUnauthGuard] },
+    { path: 'login', component: LoginPage },
+
     {
-        path: 'dashboard',
-        loadChildren: () =>
-            import('./dashboard/dashboard.module').then(
-                (m) => m.DashboardModule
-            ),
-        canActivate: [RequiresAuthGuard],
-        canLoad: [RequiresAuthGuard],
+        path: '',
+        component: DashboardPage,
+        children: [
+            {
+                path: 'bookings',
+                children: [
+                    { path: 'new', component: BookingFormPage },
+                    { path: 'edit/:id', component: BookingFormPage },
+                    { path: '', component: BookingsPage },
+                ],
+            },
+            { path: 'profile', component: ProfilePage },
+            { path: 'history', component: HistoryPage },
+
+            { path: '', redirectTo: 'bookings', pathMatch: 'full' },
+        ],
     },
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forChild(routes)],
     exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AdminRoutingModule {}

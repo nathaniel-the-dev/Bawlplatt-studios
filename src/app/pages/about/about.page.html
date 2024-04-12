@@ -40,7 +40,8 @@
                 <div class="mb-8 space-y-6">
                     <p>
                         Currently, the studio can only host one band per session. This may change as we have hopes of
-                        expaning in the future. In addition, a session must be booked before hand, that is, it cannot be
+                        expanding in the future. In addition, a session must be booked before hand, that is, it cannot
+                        be
                         booked on the same day as the session, and the session cannot be booked for more than 4 hours.
                     </p>
 
@@ -57,7 +58,7 @@
         <section class="py-32">
             <h1 class="text-h2 mb-12 text-center">The Team</h1>
 
-            <div class="grid grid-cols-3 gap-16">
+            <div class="md:grid-cols-2 xl:grid-cols-3 grid grid-cols-1 gap-16">
                 <div class="text-center" *ngFor="let owner of owners">
                     <img class="aspect-square inline-block h-48 mb-2 rounded" [src]="owner.img" [alt]="owner.name">
                     <h2 class="text-h6 font-medium">{{owner.name}}</h2>
