@@ -1,49 +1,48 @@
 import { Injectable } from '@angular/core';
-import { SupabaseClient, User, createClient } from '@supabase/supabase-js';
+import { User, createClient } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
+import { RequestOptions, APIResponse } from '../models/api';
+import localforage from 'localforage';
 
-interface RequestOptions {
-    table: string;
-    method: 'select' | 'insert' | 'update' | 'delete';
-    data: any;
-}
+localforage.config({
+    driver: localforage.INDEXEDDB
+});
 
-interface APIResponse {
-    status: string;
-    data: any;
-    error: any;
-}
+const supabase = createClient(
+    environment.SUPABASE_URL,
+    environment.SUPABASE_KEY,
+    {
+        auth: {
+            storage: {
+                  getItem: (key)=>localforage.getItem(key),
+                  setItem:(key, value)=> {localforage.setItem(key, value)},
+                  removeItem: (key) =>localforage.removeItem(key)
+            },
+        },
+    }
+);
 
 @Injectable({
     providedIn: 'root',
 })
 export class ApiService {
-    private supabase: SupabaseClient;
-
     public user: User | null = null;
 
-    constructor() {
-        this.supabase = createClient(
-            environment.SUPABASE_URL,
-            environment.SUPABASE_KEY
-        );
-
-        this.supabase.auth.getUser().then(({ data: { user } }) => {
-            this.user = user;
-        });
-    }
+    constructor() {}
 
     private handleErrors(err: any) {
-        console.log(err);
+        console.error(err);
     }
 
     async sendRequest(opts: RequestOptions): Promise<APIResponse> {
-        const query = this.supabase.from(opts.table);
+        const query = supabase.from(opts.table);
 
-        const { statusText, data, error } = await (() => {
+        const { status, statusText, data, error } = await (() => {
             switch (opts.method) {
                 case 'select':
-                    return query.select('*');
+                    return query
+                        .select('*')
+                        .order('created_at', { ascending: false });
                 case 'insert':
                     return query.insert(opts.data);
                 case 'update':
@@ -58,35 +57,57 @@ export class ApiService {
         }
 
         return {
-            status: statusText,
+            status: statusText || this.mapCodeToStatus(status),
             data,
             error,
         };
     }
 
-    // Auth
+    private mapCodeToStatus(code: number): string {
+        const statusCode = code.toString();
 
+        if (statusCode.startsWith('2')) return 'success';
+        if (statusCode.startsWith('3')) return 'success';
+
+        if (statusCode.startsWith('4')) return 'error';
+        if (statusCode.startsWith('5')) return 'error';
+
+        return '';
+    }
+
+    // Auth
     async login(creds: {
         email: string;
         password: string;
     }): Promise<APIResponse> {
-        const { data, error } = await this.supabase.auth.signInWithPassword(
-            creds
-        );
+        const { data, error } = await supabase.auth.signInWithPassword(creds);
 
-        // TODO: Handle errors and log them in locally
         if (error) {
-            return { status: 'error', data: null, error };
+            return {
+                status: 'error',
+                data: null,
+                error,
+            };
         }
 
+        this.user = data.user;
         return { status: 'success', data, error: null };
     }
 
-    async logout(): Promise<boolean> {
-        const { error } = await this.supabase.auth.signOut();
+    async getCurrentUser() {
+        return (await supabase.auth.getUser()).data.user;
+    }
 
+    async autoLogin(){
+        this.user  = await this.getCurrentUser();
+    }
+
+    async logout(): Promise<boolean> {
+        const { error } = await supabase.auth.signOut();
         if (error) this.handleErrors(error);
 
-        return !!error;
+        this.user = null;
+
+        return Boolean(error);
     }
 }

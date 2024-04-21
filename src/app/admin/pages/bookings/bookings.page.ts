@@ -9,7 +9,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
     templateUrl: './bookings.page.html',
     styleUrls: ['./bookings.page.css'],
 })
-export class BookingsPage implements OnInit, OnDestroy {
+export class BookingsPage implements OnInit {
     bookings: Booking[] = [];
     loading: boolean = false;
 
@@ -74,8 +74,6 @@ export class BookingsPage implements OnInit, OnDestroy {
             index !== this.selectedListItem ? index : undefined;
     }
 
-    private subscriptions = new Subscription();
-
     constructor(
         private apiService: ApiService,
         private toastService: ToastService
@@ -83,10 +81,6 @@ export class BookingsPage implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getAllBookings();
-    }
-
-    ngOnDestroy(): void {
-        this.subscriptions.unsubscribe();
     }
 
     private async getAllBookings() {
@@ -100,7 +94,7 @@ export class BookingsPage implements OnInit, OnDestroy {
 
         this.loading = false;
 
-        if (data) {
+        if (data.status === 'success') {
             console.log(data);
             // this.bookings = res.data!['bookings'];
             // this.totalPages = (res.data!['page'] as any).maxNumOfPages;

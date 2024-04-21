@@ -22,6 +22,7 @@
         "@supabase/supabase-js": "^2.42.3",
         "dayjs": "^1.11.5",
         "dotenv": "^16.4.5",
+        "localforage": "^1.10.0",
         "rxjs": "~7.5.0",
         "simple-notify": "^0.5.5",
         "sweetalert2": "^11.10.7",

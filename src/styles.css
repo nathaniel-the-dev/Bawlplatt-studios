@@ -7,7 +7,7 @@
 @layer components {
     /* Buttons */
     .btn {
-        @apply bg-bright-red-600 hover:bg-bright-red-400 inline-flex items-center justify-center gap-2 px-6 py-3 text-center text-white transition rounded cursor-pointer;
+        @apply bg-bright-red-600 hover:bg-bright-red-400 inline-flex items-center justify-center gap-2 px-4 py-3 tracking-wide text-center text-white transition rounded cursor-pointer;
     }
     .btn-outline {
         @apply bg-transparent text-current outline-2 outline-bright-red-500 outline outline-offset-[-2px] hover:bg-gray-600 hover:bg-opacity-25;
