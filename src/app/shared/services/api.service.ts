@@ -41,7 +41,7 @@ export class ApiService {
             switch (opts.method) {
                 case 'select':
                     return query
-                        .select('*')
+                        .select(opts.sql || '*')
                         .order('created_at', { ascending: false });
                 case 'insert':
                     return query.insert(opts.data);

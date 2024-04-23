@@ -32,20 +32,20 @@
 
     <div class="grid grid-rows-[minmax(25rem,_100%),_max-content] gap-8"
         *ngIf="bookings.length && !loading; else notFound">
-        <div>
+        <div role="table">
             <!-- Table -->
-            <div class="item-list__table px-4 mb-2">
-                <span></span>
-                <span>Customer</span>
-                <span>Booked For</span>
-                <span>Duration</span>
-                <span>Cost</span>
-                <span>Booked On</span>
-                <span>Paid</span>
-                <span></span>
+            <div class="item-list__table px-4 mb-2" role="row">
+                <span role="columnheader"></span>
+                <span role="columnheader">Customer</span>
+                <span role="columnheader">Booked For</span>
+                <span role="columnheader">Duration</span>
+                <span role="columnheader">Cost</span>
+                <span role="columnheader">Booked On</span>
+                <span role="columnheader">Paid</span>
+                <span role="columnheader"></span>
             </div>
-            <ul class="space-y-4">
-                <li class="px-4 py-3 transition-all bg-gray-800 rounded"
+            <div class="space-y-4" role="rowgroup">
+                <div role="row" class="px-4 py-3 transition-all bg-gray-800 rounded"
                     *ngFor="let booking of bookings; let i = index;">
                     <div class="item-list__table text-white">
                         <div class="px-2">
@@ -96,7 +96,7 @@
                                     class="group-hover:block text-left absolute bottom-full right-0 z-10 hidden min-w-[10rem] w-max bg-gray-900 rounded space-y-0.5 p-1">
                                     <li>
                                         <button
-                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
+                                            class="hover:bg-almost-black inline-flex items-center w-full gap-3 px-4 py-3 transition bg-opacity-50 rounded"
                                             (click)="toggleBookingValue(booking._id, 'completed')">
                                             <i class="ai-check-box"></i>
                                             Mark as complete
@@ -104,7 +104,7 @@
                                     </li>
                                     <li *ngIf="!booking.payed">
                                         <button
-                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
+                                            class="hover:bg-almost-black inline-flex items-center w-full gap-3 px-4 py-3 transition bg-opacity-50 rounded"
                                             (click)="toggleBookingValue(booking._id, 'payed')">
                                             <i class="ai-money"></i>
                                             Mark as paid
@@ -112,7 +112,7 @@
                                     </li>
                                     <li>
                                         <button
-                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
+                                            class="hover:bg-almost-black inline-flex items-center w-full gap-3 px-4 py-3 transition bg-opacity-50 rounded"
                                             [routerLink]="['edit',booking._id]">
                                             <i class="ai-edit text-base"></i>
                                             <span>Edit</span>
@@ -120,7 +120,7 @@
                                     </li>
                                     <li>
                                         <button
-                                            class="hover:bg-almost-black transition inline-flex items-center w-full gap-3 px-4 py-3 bg-opacity-50 rounded"
+                                            class="hover:bg-almost-black inline-flex items-center w-full gap-3 px-4 py-3 transition bg-opacity-50 rounded"
                                             (click)="deleteBooking(booking._id)">
                                             <i class="ai-trash-can text-base"></i>
                                             <span>Delete</span>
@@ -157,8 +157,8 @@
                             </div>
                         </div>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Pagination -->

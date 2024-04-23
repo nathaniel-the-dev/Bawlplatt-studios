@@ -1,9 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component,  OnInit } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/shared/services/api.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 
 @Component({
     selector: 'app-login',
@@ -42,7 +40,7 @@ export class LoginPage implements OnInit {
     showConfirmation(): void {
         setTimeout(() => {
             this.router.navigateByUrl('/admin');
-        }, 1000);
+        }, 800);
     }
 
     hideError() {

@@ -16,6 +16,7 @@ import { UserFormPage } from './pages/users/user-form/user-form.page';
 import { CalendarPage } from './pages/calendar/calendar.page';
 import { ReportsPage } from './pages/reports/reports.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
+import { TransactionsPage } from './pages/transactions/transactions.page';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { DashboardPage } from './pages/dashboard/dashboard.page';
         CalendarPage,
         ReportsPage,
         DashboardPage,
+        TransactionsPage,
     ],
     imports: [
         CommonModule,

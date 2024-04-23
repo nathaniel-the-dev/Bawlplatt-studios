@@ -86,7 +86,8 @@ export class BookingsPage implements OnInit {
     private async getAllBookings() {
         this.loading = true;
 
-        const data = await this.apiService.sendRequest({
+        const res = await this.apiService.sendRequest({
+            sql: '*, customer_type(name), transactions[',
             table: 'bookings',
             method: 'select',
             data: this.filterOpts,
@@ -94,9 +95,9 @@ export class BookingsPage implements OnInit {
 
         this.loading = false;
 
-        if (data.status === 'success') {
-            console.log(data);
-            // this.bookings = res.data!['bookings'];
+        if (res.status === 'success') {
+            console.log(res);
+            this.bookings = res.data;
             // this.totalPages = (res.data!['page'] as any).maxNumOfPages;
             // this.page = (res.data!['page'] as any).current;
         }

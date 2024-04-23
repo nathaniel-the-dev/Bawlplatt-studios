@@ -1,42 +1,21 @@
-import { User } from "./user";
-
-interface Band {
-    group_name: string;
-    group_size: number;
-
-    lead_name: string;
-    lead_email: string;
-    lead_contact_num: number;
-}
-
-interface Artist {
-    name: string;
-    email: string;
-    contact_num: number;
-}
+import { User } from './user';
 
 export interface Booking {
-    _id: string;
+    id: number;
 
-    band?: Band;
-    artist?: Artist;
-    customer_type: 'band' | 'artist';
+    customer_type?: { name: 'band' | 'artist' };
+    status: string;
 
-    num_of_instruments: number;
+    date_booked: Date;
+    time_booked: Date;
+    duration_in_minutes: number;
 
-    start_date: Date;
-    duration: number;
+    num_of_musicians: number;
+    equipment_needed: any;
+    additional_requirements?: string;
 
-    message?: string;
-
-    cost: number;
-    completed: boolean;
-    payed: boolean;
-
+    booked_by?: User;
     approved_by?: User;
 
-    booked_at: Date;
-    last_updated: Date;
-
-    [key: string]: any | undefined;
+    created_at: Date;
 }
