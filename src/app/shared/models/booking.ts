@@ -17,5 +17,7 @@ export interface Booking {
     booked_by?: User;
     approved_by?: User;
 
+    transaction: any;
+
     created_at: Date;
 }

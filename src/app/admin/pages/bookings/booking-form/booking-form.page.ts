@@ -77,7 +77,7 @@ export class BookingFormPage implements OnInit {
                 .toString()
                 .replace(/\D/g, '')
                 .slice(0, 10);
-            this.booking.artist!.contact_num = +number;
+            // this.booking.booked_by!.contact_num = +number;
         }
         if (this.bandForm.enabled) {
             const number = (
@@ -86,7 +86,7 @@ export class BookingFormPage implements OnInit {
                 .toString()
                 .replace(/\D/g, '')
                 .slice(0, 10);
-            this.booking.band!.lead_contact_num = +number;
+            // this.booking.booked_by!.contact_num = +number;
         }
 
         // Send the corresponding request based on the action

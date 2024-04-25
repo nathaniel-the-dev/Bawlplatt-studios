@@ -114,21 +114,6 @@ export class MakeBookingPage implements OnInit, OnDestroy {
             start_time: undefined,
         } as Booking;
 
-        if (booking.artist) {
-            const number = (this.artistForm.get('contact_num')!.value as string)
-                .replace(/\D/g, '')
-                .slice(0, 10);
-            booking.artist.contact_num = +number;
-        }
-        if (booking.band) {
-            const number = (
-                this.bandForm.get('lead_contact_num')!.value as string
-            )
-                .replace(/\D/g, '')
-                .slice(0, 10);
-            booking.band.lead_contact_num = +number;
-        }
-
         // const bookingSub = this.apiService
         //     .createBooking(booking)
         //     .subscribe((res) => {

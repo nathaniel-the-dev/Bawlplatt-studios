@@ -87,7 +87,7 @@ export class BookingsPage implements OnInit {
         this.loading = true;
 
         const res = await this.apiService.sendRequest({
-            sql: '*, customer_type(name), transactions[',
+            sql: '*, customer_type(name)',
             table: 'bookings',
             method: 'select',
             data: this.filterOpts,

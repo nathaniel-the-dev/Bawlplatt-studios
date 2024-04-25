@@ -6,28 +6,29 @@
         <div *ngSwitchCase="true">
             <ul class="grid grid-cols-3 gap-8">
                 <li class="group" *ngFor="let booking of bookings">
-                    <div class="bg-gray-800 rounded py-4 px-4 h-full relative">
-                        <h2 class="text-h5 font-medium max-w-[17ch]">{{booking.artist?.name ||
-                            booking.band?.group_name}}</h2>
+                    <div class="relative h-full px-4 py-4 bg-gray-800 rounded">
+                        <h2 class="text-h5 font-medium max-w-[17ch]">{{booking.customer_type?.name}}</h2>
 
                         <p class="mt-0.5 mb-2 text-sm">
                             <span
-                                class="border border-current text-bright-red-300 px-2 rounded-3xl">{{booking.customer_type}}</span>
+                                class="text-bright-red-300 rounded-3xl px-2 border border-current">{{booking.customer_type}}</span>
                         </p>
 
                         <p>
                             <i class="ai-clock text-h6"></i>
-                            {{booking.start_date | formatDate: 'date'}} <span class="text-gray-400">{{booking.start_date
+                            {{booking.date_booked | formatDate: 'date'}} <span
+                                class="text-gray-400">{{booking.time_booked
                                 | formatDate:
                                 'time'}}</span>
                         </p>
 
                         <p>
                             <i class="ai-watch-device"></i>
-                            {{booking.duration + 'hr' + (booking.duration <= 1 ? '.' : 's.' )}} </p>
+                            {{booking.duration_in_minutes + 'hr' + (booking.duration_in_minutes <= 1 ? '.' : 's.' )}}
+                                </p>
                                 <p>
                                     <i class="ai-money text-h6"></i>
-                                    {{booking.cost | currency}}
+                                    {{booking.transaction.amount | currency}}
                                 </p>
 
 
@@ -39,7 +40,7 @@
             </ul>
         </div>
         <div *ngSwitchDefault>
-            <div class="text-center py-16">
+            <div class="py-16 text-center">
                 <h2 class="text-h4 mb-4">No Bookings Yet</h2>
 
                 <p class="max-w-prose mx-auto mb-6">
