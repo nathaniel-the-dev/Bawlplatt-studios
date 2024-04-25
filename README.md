@@ -2,7 +2,7 @@
 
 ## About
 
-Bawlplatt Studios is a music rehearsal studio based in Kingston, Jamaica. The owners have been using the traditional method of booking sessions (using pen and paper) and are looking for a more modern and efficient way to manage the booking process.
+Bawlplatt Studios is a music rehearsal studio based in urban Jamaica. The owners have been using the traditional method of booking sessions (pen and paper) and are looking for a more modern and efficient way to manage the booking process.
 
 ## Features
 
@@ -16,7 +16,7 @@ Bawlplatt Studios is a music rehearsal studio based in Kingston, Jamaica. The ow
 -   **Calendar Integration**: The system can integrate with popular calendars like Google Calendar or Apple Calendar, allowing users to add the booked sessions directly to their calendars.
 -   **Email Integration**: The system can integrate with popular email clients like Gmail or Microsoft Outlook, allowing admin staff members to send emails to users when new sessions are booked.
 
-## Installation
+## Preview
 
 Visit [https://bawlplattstudios.com/](https://bawlplattstudios.com/) to see the live demo.
 

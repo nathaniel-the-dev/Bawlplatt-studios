@@ -1,8 +1,8 @@
 export interface RequestOptions {
     table: string;
     method: 'select' | 'insert' | 'update' | 'delete';
-    data: any;
-    sql?:string;
+    data?: Record<string, any>;
+    sql?: string;
 }
 
 export interface APIResponse {

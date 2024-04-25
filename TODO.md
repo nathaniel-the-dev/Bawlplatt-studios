@@ -5,9 +5,8 @@
 ### Auth
 
 -   Complete login features
-    -   [ ] Error handling
-    -   [ ] Rate-limiting
--   [ ] Route protection / Access management
+    -   [x] Error handling
+-   [x] Route protection / Access management
 -   [ ] Forgot password / password reset
 
 ### Dashboard
@@ -39,9 +38,12 @@
     -   [ ] Export to CSV
 
 -   User profile
+
     -   [ ] Edit profile
     -   [ ] Change password
     -   [ ] Delete account
+
+-   [] Notifications/Audit???
 
 ## Website
 
@@ -49,7 +51,10 @@
 -   [ ] About Us
 -   [ ] Contact Us
 
--   [ ] Login / Register
+-   Login / Register
+
+    -   [ ] Verify OTP
+
 -   [ ] My Bookings
 -   [ ] Profile
 

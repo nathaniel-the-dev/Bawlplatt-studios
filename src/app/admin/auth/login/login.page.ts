@@ -1,6 +1,7 @@
-import { Component,  OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/shared/services/api.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { ApiService } from 'src/app/shared/services/api.service';
     styleUrls: ['./login.page.css'],
 })
 export class LoginPage implements OnInit {
-    loginForm = this.fb.group({
+    form = this.fb.group({
         email: [''],
         password: [''],
     });
@@ -22,25 +23,38 @@ export class LoginPage implements OnInit {
         private router: Router
     ) {}
 
-    ngOnInit(): void {}
+    private subscription = new Subscription();
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    ngOnInit(): void {
+        this.subscription.add(
+            this.form.valueChanges.subscribe(() => {
+                this.hideError();
+            })
+        );
+    }
 
     async onSubmit() {
         this.status = 'loading';
-        const res = await this.apiService.login(this.loginForm.value);
+        const { error } =
+            await this.apiService.supabase.auth.signInWithPassword(
+                this.form.value
+            );
 
-        if (res.status === 'success') {
-            this.status = 'success';
-            this.showConfirmation();
-        } else {
+        if (error) {
             this.status = 'error';
-            this.renderError(res.error);
+            this.renderError(error);
+            return;
         }
-    }
 
-    showConfirmation(): void {
+        // Show confirmation
+        this.status = 'success';
         setTimeout(() => {
             this.router.navigateByUrl('/admin');
-        }, 800);
+        }, 600);
     }
 
     hideError() {

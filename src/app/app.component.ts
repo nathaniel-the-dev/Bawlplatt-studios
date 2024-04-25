@@ -9,8 +9,5 @@ import { ApiService } from './shared/services/api.service';
 export class AppComponent implements OnInit {
     constructor(private apiService: ApiService) {}
 
-    ngOnInit(): void {
-        // Auto log user in
-        this.apiService.autoLogin();
-    }
+    ngOnInit(): void {}
 }

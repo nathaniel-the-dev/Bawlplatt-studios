@@ -18,6 +18,7 @@ const routes: Routes = [
             import('./admin/admin.module').then((m) => m.AdminModule),
     },
 
+    { path: 'not-allowed', component: NotFoundPage },
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundPage },
 ];

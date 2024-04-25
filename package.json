@@ -19,7 +19,7 @@
         "@angular/platform-browser": "~15.2.10",
         "@angular/platform-browser-dynamic": "~15.2.10",
         "@angular/router": "~15.2.10",
-        "@supabase/supabase-js": "^2.42.3",
+        "@supabase/supabase-js": "^2.42.7",
         "dayjs": "^1.11.5",
         "dotenv": "^16.4.5",
         "localforage": "^1.10.0",
@@ -51,7 +51,7 @@
     },
     "overrides": {
         "@supabase/supabase-js": {
-            "@supabase/gotrue-js": "2.61.0"
+            "@supabase/auth-js": "2.61.0"
         }
     }
 }

@@ -1,14 +1,20 @@
 <app-header></app-header>
 
-<div
-    class="min-h-screen bg-[url('https://cdn.discordapp.com/attachments/917063897889009744/1015841084267577424/5-51197_wallpaper-wiki-music-note-photo-free-download-music.png')] bg-no-repeat bg-cover">
+<div class="min-h-screen">
     <div class="place-items-center grid h-screen">
-        <div class="w-full max-w-xl p-16 text-center bg-gray-800 rounded-lg">
-            <h1 class="text-h2 mb-6 leading-tight">Page Not Found</h1>
+        <div class="w-full max-w-xl px-16 pb-16 pt-8 text-center bg-gray-800 rounded-lg">
+            <div class="text-center text-[5rem] text-bright-red-600">
+                <i class="ai-triangle-alert-fill"></i>
+            </div>
+
+            <h1 class="text-h2 font-medium mb-6 leading-tight">Page Not Found</h1>
 
             <p class="mb-8">Sorry but the page you were looking for doesn't seem to exist.</p>
 
-            <a routerLink="/home" class="btn">Back to homepage</a>
+            <div class="flex items-center justify-center gap-4">
+                <button class="btn btn-outline" *ngIf="canGoBack" (click)="back()">Back</button>
+                <a routerLink="/home" class="btn">Start from home</a>
+            </div>
         </div>
     </div>
 </div>

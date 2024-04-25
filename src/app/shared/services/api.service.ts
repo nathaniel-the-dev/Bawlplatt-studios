@@ -5,7 +5,7 @@ import { RequestOptions, APIResponse } from '../models/api';
 import localforage from 'localforage';
 
 localforage.config({
-    driver: localforage.INDEXEDDB
+    driver: localforage.INDEXEDDB,
 });
 
 const supabase = createClient(
@@ -14,21 +14,55 @@ const supabase = createClient(
     {
         auth: {
             storage: {
-                  getItem: (key)=>localforage.getItem(key),
-                  setItem:(key, value)=> {localforage.setItem(key, value)},
-                  removeItem: (key) =>localforage.removeItem(key)
+                getItem: (key) => localforage.getItem(key),
+                setItem: (key, value) => {
+                    localforage.setItem(key, value);
+                },
+                removeItem: (key) => localforage.removeItem(key),
             },
         },
     }
 );
+let authSubscription: any = null;
 
 @Injectable({
     providedIn: 'root',
 })
 export class ApiService {
     public user: User | null = null;
+    public supabase = supabase;
 
-    constructor() {}
+    constructor() {
+        // Ensure auth subscription is initialized once (Singleton)
+        if (!authSubscription) {
+            const {
+                data: { subscription },
+            } = supabase.auth.onAuthStateChange((e, session) => {
+                setTimeout(async () => {
+                    let user = session?.user;
+
+                    // Store user profile data only on initial session and user updates
+                    if (user && e === 'INITIAL_SESSION') {
+                        const meta_data = await this.getUserMetaData(user.id);
+                        if (meta_data) {
+                            const res = await supabase.auth.updateUser({
+                                data: {
+                                    id: meta_data.id,
+                                    name: meta_data.name,
+                                    roles: meta_data.roles,
+                                    contact_num: meta_data.contact_num,
+                                },
+                            });
+                            user = res.data.user || user;
+                        }
+                    }
+
+                    this.user = user || null;
+                }, 0);
+            });
+            authSubscription = subscription;
+        }
+    }
 
     private handleErrors(err: any) {
         console.error(err);
@@ -40,15 +74,22 @@ export class ApiService {
         const { status, statusText, data, error } = await (() => {
             switch (opts.method) {
                 case 'select':
-                    return query
-                        .select(opts.sql || '*')
-                        .order('created_at', { ascending: false });
+                    if (opts.data?.['where']) {
+                        return query
+                            .select(opts.sql || '*')
+                            .filter(
+                                opts.data?.['where'].field,
+                                'eq',
+                                opts.data?.['where'].value
+                            );
+                    }
+                    return query.select(opts.sql || '*');
                 case 'insert':
                     return query.insert(opts.data);
                 case 'update':
                     return query.update(opts.data);
                 case 'delete':
-                    return query.delete().eq('id', opts.data.id);
+                    return query.delete().eq('id', opts.data?.['id']);
             }
         })();
 
@@ -66,48 +107,48 @@ export class ApiService {
     private mapCodeToStatus(code: number): string {
         const statusCode = code.toString();
 
-        if (statusCode.startsWith('2')) return 'success';
-        if (statusCode.startsWith('3')) return 'success';
-
-        if (statusCode.startsWith('4')) return 'error';
-        if (statusCode.startsWith('5')) return 'error';
-
-        return '';
-    }
-
-    // Auth
-    async login(creds: {
-        email: string;
-        password: string;
-    }): Promise<APIResponse> {
-        const { data, error } = await supabase.auth.signInWithPassword(creds);
-
-        if (error) {
-            return {
-                status: 'error',
-                data: null,
-                error,
-            };
+        switch (true) {
+            case statusCode.startsWith('1'):
+            case statusCode.startsWith('2'):
+            case statusCode.startsWith('3'):
+                return 'success';
+            case statusCode.startsWith('4'):
+            case statusCode.startsWith('5'):
+                return 'error';
+            default:
+                return '';
         }
-
-        this.user = data.user;
-        return { status: 'success', data, error: null };
     }
 
-    async getCurrentUser() {
-        return (await supabase.auth.getUser()).data.user;
+    /**
+     * Retrieves the current user from the Supabase authentication service.
+     *
+     * @return {Promise<User | null>} The current user object.
+     */
+    async getCurrentUser(fromSession?: boolean): Promise<User | null> {
+        return !fromSession
+            ? (await supabase.auth.getUser()).data.user
+            : (await supabase.auth.getSession()).data.session?.user || null;
     }
 
-    async autoLogin(){
-        this.user  = await this.getCurrentUser();
+    async getUserMetaData(user_id: string) {
+        const profile = await this.sendRequest({
+            method: 'select',
+            table: 'profiles',
+            sql: '*, roles(title)',
+            data: {
+                where: {
+                    field: 'uuid',
+                    value: user_id,
+                },
+            },
+        });
+        return profile.data?.[0];
     }
 
     async logout(): Promise<boolean> {
         const { error } = await supabase.auth.signOut();
         if (error) this.handleErrors(error);
-
-        this.user = null;
-
         return Boolean(error);
     }
 }
