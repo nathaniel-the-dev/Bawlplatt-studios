@@ -1,6 +1,4 @@
-<div class="container py-12">
-    <!-- Title -->
-    <h1 class="text-h3 mb-8">History</h1>
+<main-dashboard-layout title="History">
 
     <div [ngSwitch]="!!bookings.length">
         <div *ngSwitchCase="true">
@@ -53,4 +51,4 @@
             </div>
         </div>
     </div>
-</div>
+</main-dashboard-layout>
