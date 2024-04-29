@@ -38,6 +38,13 @@
     .form-control .feedback base-error {
         @apply -z-10 absolute top-0 left-0 text-sm;
     }
+
+    .breadcrumbs {
+        @apply flex items-center gap-2 mb-4 text-gray-400;
+    }
+    .breadcrumbs a {
+        @apply hover:underline hover:text-gray-100 transition;
+    }
 }
 
 input[type="number"]::-webkit-inner-spin-button,

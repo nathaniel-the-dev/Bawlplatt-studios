@@ -43,7 +43,9 @@
     -   [ ] Change password
     -   [ ] Delete account
 
--   [] Notifications/Audit???
+-   Audit
+    -   [ ] View the audit logs
+    -   [ ] View details
 
 ## Website
 

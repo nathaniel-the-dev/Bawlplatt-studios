@@ -19,6 +19,7 @@ import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { TransactionsPage } from './pages/transactions/transactions.page';
 import { AuditPage } from './pages/audit/audit.page';
 import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page';
+import { MainLayout } from './layouts/main/main.layout';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page'
         TransactionsPage,
         AuditPage,
         ForgotPasswordPage,
+        MainLayout,
     ],
     imports: [
         CommonModule,

@@ -14,6 +14,7 @@ import { TransactionsPage } from './pages/transactions/transactions.page';
 import { ReportsPage } from './pages/reports/reports.page';
 import { AuditPage } from './pages/audit/audit.page';
 import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page';
+import { DashboardPage } from './pages/dashboard/dashboard.page';
 
 const routes: Route[] = [
     { path: 'login', component: LoginPage },
@@ -24,6 +25,7 @@ const routes: Route[] = [
         path: '',
         component: DashboardLayoutPage,
         children: [
+            { path: 'dashboard', component: DashboardPage },
             {
                 path: 'bookings',
                 children: [
@@ -73,7 +75,7 @@ const routes: Route[] = [
                 component: ProfilePage,
             },
 
-            { path: '', redirectTo: 'bookings', pathMatch: 'full' },
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
         canActivate: [AuthRequiredGuard, HasPermissionGuard('admin', 'staff')],
     },

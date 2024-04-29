@@ -1,7 +1,11 @@
-<div class="container px-20 py-12">
-    <h1 class="text-h3 mb-8 font-medium">{{ action | titlecase }} A Booking</h1>
-    <!-- Add accordion style form -->
+<main-dashboard-layout title="{{ action | titlecase }} A Booking">
+    <div class="breadcrumbs">
+        <a routerLink="../">Bookings</a>
+        <i class="ai-chevron-right-small"></i>
+        <a routerLink="./">New</a>
+    </div>
 
+    <!-- Add accordion style form -->
     <form [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onFormSubmit()" #form="ngForm">
         <!-- Customer Type Form -->
         <section>
@@ -277,4 +281,5 @@
             </div>
         </section>
     </form>
-</div>
+
+</main-dashboard-layout>
