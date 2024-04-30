@@ -48,13 +48,36 @@
                 <div role="row" class="px-4 py-3 transition-all bg-gray-800 rounded"
                     *ngFor="let booking of bookings; let i = index;">
                     <div class="item-list__table text-white">
-                        <div>
+                        <div role="row">
                             <p class="text-xl capitalize">
                                 {{ booking.customer_type?.name }}
                             </p>
                             <p>{{ booking.booked_by?.name }}</p>
                         </div>
-
+                        <div role="row">
+                            <p>
+                                {{booking.date_booked | formatDate: 'date'}}
+                            </p>
+                            <p>
+                                {{booking.time_booked}}
+                            </p>
+                        </div>
+                        <div role="row">
+                            {{booking.duration_in_minutes + ' mins.'}}
+                        </div>
+                        <div role="row">
+                            {{booking.transaction?.amount | currency}}
+                        </div>
+                        <div role="row">
+                            {{booking.created_at | formatDate: 'date'}}
+                        </div>
+                        <div role="row">
+                            {{booking.status | titlecase}}
+                        </div>
+                        <div role="row">
+                            {{booking.approved_by?.name}}
+                        </div>
+                        <div role="row"></div>
                     </div>
                 </div>
             </div>

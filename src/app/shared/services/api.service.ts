@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User, createClient } from '@supabase/supabase-js';
+import { AuthUser, createClient } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
 import { RequestOptions, APIResponse } from '../models/api';
 import localforage from 'localforage';
@@ -14,11 +14,11 @@ const supabase = createClient(
     {
         auth: {
             storage: {
-                getItem: (key) => localforage.getItem(key),
-                setItem: (key, value) => {
+                getItem: (key:string) => localforage.getItem(key),
+                setItem: (key:string, value:any) => {
                     localforage.setItem(key, value);
                 },
-                removeItem: (key) => localforage.removeItem(key),
+                removeItem: (key:string) => localforage.removeItem(key),
             },
         },
     }
@@ -29,7 +29,7 @@ let authSubscription: any = null;
     providedIn: 'root',
 })
 export class ApiService {
-    public user: User | null = null;
+    public user: AuthUser | null = null;
     public supabase = supabase;
 
     constructor() {
@@ -125,7 +125,7 @@ export class ApiService {
      *
      * @return {Promise<User | null>} The current user object.
      */
-    async getCurrentUser(fromSession?: boolean): Promise<User | null> {
+    async getCurrentUser(fromSession?: boolean): Promise<AuthUser | null> {
         return !fromSession
             ? (await supabase.auth.getUser()).data.user
             : (await supabase.auth.getSession()).data.session?.user || null;

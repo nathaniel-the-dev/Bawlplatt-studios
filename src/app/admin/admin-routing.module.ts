@@ -14,11 +14,12 @@ import { TransactionsPage } from './pages/transactions/transactions.page';
 import { ReportsPage } from './pages/reports/reports.page';
 import { AuditPage } from './pages/audit/audit.page';
 import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page';
+import { ResetPasswordPage } from './auth/reset-password/reset-password.page';
 
 const routes: Route[] = [
     { path: 'login', component: LoginPage },
     { path: 'forgot-password', component: ForgotPasswordPage },
-    { path: 'reset-password', component: ForgotPasswordPage },
+    { path: 'reset-password', component: ResetPasswordPage },
 
     {
         path: '',

@@ -10,10 +10,12 @@ import { ApiService } from './services/api.service';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { RouterModule } from '@angular/router';
+import { ConfirmPasswordValidatorDirective } from './directives/confirm-password.directive';
 
 const declarations = [
     ErrorComponent,
     FormatPhoneDirective,
+    ConfirmPasswordValidatorDirective,
     FormatContactNumPipe,
     FormatDatePipe,
 

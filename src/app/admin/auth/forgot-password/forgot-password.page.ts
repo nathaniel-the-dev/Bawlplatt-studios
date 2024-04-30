@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/shared/services/api.service';
 
@@ -15,6 +14,8 @@ export class ForgotPasswordPage {
     });
     status: 'success' | 'error' | 'loading' | '' = '';
     error = '';
+
+    showConfirmation = false;
 
     constructor(
         private apiService: ApiService,
@@ -37,7 +38,7 @@ export class ForgotPasswordPage {
 
     async onSubmit() {
         this.status = 'loading';
-        const { data, error } =
+        const { error } =
             await this.apiService.supabase.auth.resetPasswordForEmail(
                 this.form.value.email,
                 {
@@ -55,7 +56,15 @@ export class ForgotPasswordPage {
                 this.status = '';
             }, 600);
             this.hideError();
+            this.showConfirmation = true;
         }
+    }
+
+    resetForm() {
+        this.form.reset();
+        this.status = '';
+        this.error = '';
+        this.showConfirmation = false;
     }
 
     hideError() {
@@ -63,7 +72,7 @@ export class ForgotPasswordPage {
     }
 
     renderError(err: any) {
-        if (err.message.startsWith('Could not parse request body as JSON:')) {
+        if (err.message.startsWith('Could not parse request')) {
             this.error = 'Invalid email address';
         } else {
             this.error = err.message;
