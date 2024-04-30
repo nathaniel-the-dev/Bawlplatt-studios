@@ -7,7 +7,7 @@
 -   Complete login features
     -   [x] Error handling
 -   [x] Route protection / Access management
--   [ ] Forgot password / password reset
+-   [ ] Forgot password / password reset (make sure page is redirect only accessible)
 
 ### Dashboard
 
