@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AuthUser, createClient } from '@supabase/supabase-js';
+import { AuthUser, createClient, User } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
 import { RequestOptions, APIResponse } from '../models/api';
 import localforage from 'localforage';
+import { BehaviorSubject } from 'rxjs';
 
 localforage.config({
     driver: localforage.INDEXEDDB,
@@ -14,11 +15,11 @@ const supabase = createClient(
     {
         auth: {
             storage: {
-                getItem: (key:string) => localforage.getItem(key),
-                setItem: (key:string, value:any) => {
+                getItem: (key: string) => localforage.getItem(key),
+                setItem: (key: string, value: any) => {
                     localforage.setItem(key, value);
                 },
-                removeItem: (key:string) => localforage.removeItem(key),
+                removeItem: (key: string) => localforage.removeItem(key),
             },
         },
     }
@@ -29,7 +30,9 @@ let authSubscription: any = null;
     providedIn: 'root',
 })
 export class ApiService {
-    public user: AuthUser | null = null;
+    public user: User | null = null;
+    public user$ = new BehaviorSubject<typeof this.user>(null);
+
     public supabase = supabase;
 
     constructor() {
@@ -58,6 +61,7 @@ export class ApiService {
                     }
 
                     this.user = user || null;
+                    this.user$.next(this.user);
                 }, 0);
             });
             authSubscription = subscription;

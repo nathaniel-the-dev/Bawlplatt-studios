@@ -15,6 +15,8 @@ import { ReportsPage } from './pages/reports/reports.page';
 import { AuditPage } from './pages/audit/audit.page';
 import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page';
 import { ResetPasswordPage } from './auth/reset-password/reset-password.page';
+import { DashboardPage } from './pages/dashboard/dashboard.page';
+import { BookingDetailsPage } from './pages/bookings/booking-details/booking-details.page';
 
 const routes: Route[] = [
     { path: 'login', component: LoginPage },
@@ -26,6 +28,11 @@ const routes: Route[] = [
         component: DashboardLayoutPage,
         children: [
             {
+                path: 'dashboard',
+                component: DashboardPage,
+                canActivate: [HasPermissionGuard('admin', 'staff')],
+            },
+            {
                 path: 'bookings',
                 children: [
                     {
@@ -33,17 +40,20 @@ const routes: Route[] = [
                         component: BookingFormPage,
                     },
                     { path: 'edit/:id', component: BookingFormPage },
+                    { path: ':id', component: BookingDetailsPage },
                     { path: '', component: BookingsPage },
                 ],
+                canActivate: [HasPermissionGuard('admin', 'staff')],
             },
             {
                 path: 'calendar',
                 component: CalendarPage,
+                canActivate: [HasPermissionGuard('admin', 'staff')],
             },
             {
                 path: 'history',
                 component: HistoryPage,
-                canActivate: [HasPermissionGuard('staff')],
+                canActivate: [HasPermissionGuard('admin', 'staff')],
             },
             {
                 path: 'users',
@@ -58,23 +68,25 @@ const routes: Route[] = [
             {
                 path: 'transactions',
                 component: TransactionsPage,
+                canActivate: [HasPermissionGuard('admin', 'staff')],
             },
             {
                 path: 'reports',
                 component: ReportsPage,
-                canActivate: [HasPermissionGuard('admin')],
+                canActivate: [HasPermissionGuard('admin', 'staff')],
             },
             {
-                path: 'audit_log',
+                path: 'audit-log',
                 component: AuditPage,
                 canActivate: [HasPermissionGuard('admin')],
             },
             {
                 path: 'profile',
                 component: ProfilePage,
+                canActivate: [HasPermissionGuard('admin')],
             },
 
-            { path: '', redirectTo: 'bookings', pathMatch: 'full' },
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
         canActivate: [AuthRequiredGuard, HasPermissionGuard('admin', 'staff')],
     },

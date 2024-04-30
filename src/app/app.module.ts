@@ -13,6 +13,8 @@ import { AboutPage } from './pages/about/about.page';
 import { ContactPage } from './pages/contact/contact.page';
 import { MakeBookingPage } from './pages/make-booking/make-booking.page';
 import { AdminModule } from './admin/admin.module';
+import { ApiService } from './shared/services/api.service';
+import { ToastService } from './shared/services/toast.service';
 
 @NgModule({
     declarations: [
@@ -34,7 +36,7 @@ import { AdminModule } from './admin/admin.module';
         AdminModule,
         SharedComponentsModule,
     ],
-    providers: [],
+    providers: [ApiService, ToastService],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

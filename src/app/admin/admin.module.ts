@@ -20,6 +20,7 @@ import { TransactionsPage } from './pages/transactions/transactions.page';
 import { AuditPage } from './pages/audit/audit.page';
 import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page';
 import { ResetPasswordPage } from './auth/reset-password/reset-password.page';
+import { MainLayout } from './layouts/main/main.layout';
 
 @NgModule({
     declarations: [
@@ -42,6 +43,7 @@ import { ResetPasswordPage } from './auth/reset-password/reset-password.page';
         AuditPage,
         ForgotPasswordPage,
         ResetPasswordPage,
+        MainLayout,
     ],
     imports: [
         CommonModule,

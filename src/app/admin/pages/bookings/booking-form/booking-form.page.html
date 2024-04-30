@@ -1,13 +1,17 @@
-<div class="container px-20 py-12">
-    <h1 class="text-h3 mb-8 font-medium">{{ action | titlecase }} A Booking</h1>
-    <!-- Add accordion style form -->
+<main-dashboard-layout title="{{ action | titlecase }} A Booking">
+    <div class="breadcrumbs">
+        <a routerLink="../">Bookings</a>
+        <i class="ai-chevron-right-small"></i>
+        <a routerLink="./">New</a>
+    </div>
 
+    <!-- Add accordion style form -->
     <form [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onFormSubmit()" #form="ngForm">
         <!-- Customer Type Form -->
         <section>
-            <h2 class="text-h5 cursor-pointer">1. Customer Type</h2>
+            <h2 class="text-h5 cursor-pointer mb-4">1. Customer Type</h2>
 
-            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4">
+            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4 ml-1">
                 <div class="overflow-hidden transition-[max-height]">
                     <fieldset class="form-control required">
                         <legend class="label mb-2">Who are you booking for?</legend>
@@ -40,13 +44,12 @@
                     </fieldset>
                 </div>
             </div>
-
         </section>
 
         <section>
             <h2 class="text-h5">2. Customer Information</h2>
 
-            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4">
+            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4 ml-1">
                 <div [ngSwitch]="true">
                     <div *ngSwitchCase="artistForm.enabled">
                         <!-- Artist Form -->
@@ -172,7 +175,7 @@
         <section>
             <h2 class="text-h5">3. Session Information</h2>
 
-            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height]"
+            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1"
                 data-expanded="true">
                 <div class="form-control">
                     <label class="label" for="num_of_instruments">Number of Instruments</label>
@@ -277,4 +280,5 @@
             </div>
         </section>
     </form>
-</div>
+
+</main-dashboard-layout>

@@ -6,29 +6,23 @@
 
 
         <ul class="flex flex-col mb-auto space-y-2">
-            <li><a class="hover:bg-gray-900 inline-flex items-center w-full gap-3 px-8 py-2 rounded"
-                    routerLink="bookings" routerLinkActive="bg-bright-red-500">
-                    <i class="text-h5 ai-book-open"></i>
-                    Bookings
-                </a></li>
-            <li><a class="hover:bg-gray-900 inline-flex items-center w-full gap-3 px-8 py-2 rounded"
-                    routerLink="history" routerLinkActive="bg-bright-red-500">
-                    <i class="text-h5 ai-clock"></i>
-                    History
-                </a></li>
-            <li><a class="hover:bg-gray-900 inline-flex items-center w-full gap-3 px-8 py-2 rounded"
-                    routerLink="profile" routerLinkActive="bg-bright-red-500">
-                    <i class="text-h5 ai-person"></i>
-                    Profile
-                </a></li>
+            <ng-container *ngFor="let item of menuItems">
+                <li *ngIf="item.roles.includes(user?.user_metadata['roles']?.title )"><a
+                        class="hover:bg-gray-900 flex items-center w-full gap-3 px-6 py-1.5 rounded transition-colors"
+                        [routerLink]="item.path" routerLinkActive="!bg-bright-red-500">
+                        <i class="text-h5 {{item.icon}}"></i>
+                        {{item.name}}
+                    </a></li>
+            </ng-container>
         </ul>
 
-        <span class="inline-flex items-center gap-3 pl-4 mb-2" *ngIf="user">
-            <img class="aspect-square object-cover h-10 rounded-full" [src]="user.user_metadata['photo']"
-                [alt]="user.user_metadata['first_name']">
-            <span class="max-w-[10ch] overflow-hidden">{{user.user_metadata['first_name']}}</span>
-        </span>
-        <a class="hover:bg-gray-900 inline-flex items-center justify-between gap-2 px-4 py-2 rounded"
+        <a class="hover:bg-gray-900 flex items-center w-full gap-3 px-4 py-1.5 rounded" routerLink="profile"
+            routerLinkActive="!bg-bright-red-500" *ngIf="user">
+            <img class="aspect-square object-cover h-10 rounded-full" [src]="profileImage"
+                [alt]="user.user_metadata['name']">
+            <span class="max-w-[10ch] overflow-hidden">{{user.user_metadata['name']}}</span>
+        </a>
+        <a class="hover:bg-gray-900 inline-flex items-center justify-between gap-2 px-4 py-2 rounded mt-2"
             href="javascript:void(0)" (click)="logout()">
             Logout
             <i class="text-h5 ai-door"></i>

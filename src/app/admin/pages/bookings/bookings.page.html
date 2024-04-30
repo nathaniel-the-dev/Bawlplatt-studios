@@ -1,10 +1,5 @@
-<div class="container py-12">
-    <!-- Title -->
-    <div class="flex items-center justify-between mb-4">
-        <h1 class="text-h3">Bookings</h1>
-
-        <button class="btn" routerLink="new"><i class="text-h6 ai-plus"></i> Create a booking</button>
-    </div>
+<main-dashboard-layout title="Bookings">
+    <button class="btn" routerLink="new" actions><i class="text-h6 ai-plus"></i> Create a booking</button>
 
     <!-- Filtering -->
     <div class="flex items-center gap-4 mb-8">
@@ -30,6 +25,7 @@
         </span>
     </div>
 
+    <!-- Table -->
     <div class="grid grid-rows-[minmax(25rem,_100%),_max-content] gap-8"
         *ngIf="bookings.length && !loading; else notFound">
         <div role="table">
@@ -128,4 +124,4 @@
             </div>
         </div>
     </ng-template>
-</div>
+</main-dashboard-layout>
