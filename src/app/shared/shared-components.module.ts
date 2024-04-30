@@ -8,6 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { ConfirmPasswordValidatorDirective } from './directives/confirm-password.directive';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 const declarations = [
     ErrorComponent,
@@ -20,7 +21,7 @@ const declarations = [
     FooterComponent,
 ];
 
-const modules: any[] = [RouterModule];
+const modules: any[] = [RouterModule, NgSelectModule];
 
 @NgModule({
     declarations: [...declarations],

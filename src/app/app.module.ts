@@ -2,7 +2,7 @@ import { SharedComponentsModule } from './shared/shared-components.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,6 +16,7 @@ import { AdminModule } from './admin/admin.module';
 import { ApiService } from './shared/services/api.service';
 import { ToastService } from './shared/services/toast.service';
 import { ValidatorService } from './shared/services/validator.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
     declarations: [

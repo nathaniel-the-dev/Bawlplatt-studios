@@ -54,6 +54,9 @@ export class ApiService {
                                     name: meta_data.name,
                                     roles: meta_data.roles,
                                     contact_num: meta_data.contact_num,
+                                    avatar:
+                                        meta_data.avatar ||
+                                        `https://api.dicebear.com/8.x/initials/svg?seed=${meta_data.name}&backgroundColor=000000`,
                                 },
                             });
                             user = res.data.user || user;
@@ -81,9 +84,8 @@ export class ApiService {
                     if (opts.data?.['where']) {
                         return query
                             .select(opts.sql || '*')
-                            .filter(
+                            .eq(
                                 opts.data?.['where'].field,
-                                'eq',
                                 opts.data?.['where'].value
                             );
                     }

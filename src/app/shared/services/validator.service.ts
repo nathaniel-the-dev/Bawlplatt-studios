@@ -45,7 +45,7 @@ export class ValidatorService {
             const [key, value] = Object.entries(control!.errors!)[0];
 
             (errors as any)[name] = (() => {
-                let errorMessage = this.formatValidationError(name, key, value);
+                let errorMessage = this.formatErrorMessage(name, key, value);
                 return errorMessage;
             })();
         }
@@ -58,7 +58,7 @@ export class ValidatorService {
         };
     }
 
-    private formatValidationError(field: string, key: string, value: any) {
+    private formatErrorMessage(field: string, key: string, value: any) {
         if (!value) return '';
 
         let fieldName = field.replace(/([A-Z])/g, ' $1').trim();

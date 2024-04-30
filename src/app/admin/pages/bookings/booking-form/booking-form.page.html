@@ -43,7 +43,13 @@
 
                 <div class="form-control required">
                     <label class="label" for="date_booked">Booked For</label>
-                    <input class="input" type="text" name="booked_for" id="booked_for" formControlName="booked_for">
+                    <!-- <input class="input" type="text" name="booked_for" id="booked_for" formControlName="booked_for"> -->
+                    <ng-select formControlName="booked_for" id="booked_for">
+                        <ng-option *ngFor="let customer of customers" [value]="customer.id">
+                            <span class="flex items-center gap-3"><img src="{{customer.avatar}}" alt="">
+                                {{customer.name}}</span>
+                        </ng-option>
+                    </ng-select>
 
                     <div class="feedback">
                         <base-error

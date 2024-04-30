@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Booking } from 'src/app/shared/models/booking';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { ValidatorService } from 'src/app/shared/services/validator.service';
 
 @Component({
     selector: 'app-booking-form',
@@ -32,6 +33,7 @@ export class BookingFormPage implements OnInit, OnDestroy {
     });
 
     public customer_types: any[] = [];
+    public customers: any[] = [];
 
     public action: 'add' | 'edit' = 'add';
     private subscriptions = new Subscription();
@@ -39,6 +41,7 @@ export class BookingFormPage implements OnInit, OnDestroy {
     constructor(
         private apiService: ApiService,
         private toastService: ToastService,
+        private validatorService: ValidatorService,
         private fb: FormBuilder,
         private router: Router,
         private route: ActivatedRoute
@@ -53,6 +56,24 @@ export class BookingFormPage implements OnInit, OnDestroy {
             })
             .then((res) => {
                 if (res.data) this.customer_types = res.data;
+            });
+
+        // Get customers
+        this.apiService
+            .sendRequest({
+                method: 'select',
+                table: 'profiles',
+                sql: 'id, name, avatar, roles!inner(title)',
+                data: {
+                    where: {
+                        field: 'roles.title',
+                        // value: 'customer',
+                        value: 'admin',
+                    },
+                },
+            })
+            .then((res) => {
+                this.customers = res.data;
             });
 
         // Get booking data if attempting to edit
@@ -149,7 +170,7 @@ export class BookingFormPage implements OnInit, OnDestroy {
         // this.subscriptions.add(bookingSub);
     }
 
-    private _populateValues(form: UntypedFormGroup, data: any) {
+    private _populateValues(form: FormGroup, data: any) {
         const keys = Object.keys(data);
         const obj: any = {};
 

@@ -70,10 +70,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.subscriptions.add(
             this.apiService.user$.subscribe((user) => {
                 this.user = user;
-
                 this.profileImage =
-                    user?.user_metadata['avatar'] ||
-                    `https://api.dicebear.com/8.x/initials/svg?seed=${user?.user_metadata['name']}&backgroundColor=000000`;
+                    user?.user_metadata['avatar'] || '/assets/avatar.png';
             })
         );
     }

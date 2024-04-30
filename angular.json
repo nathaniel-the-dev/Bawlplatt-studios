@@ -29,12 +29,16 @@
                             "src/assets",
                             "src/_redirects"
                         ],
-                        "styles": ["src/styles.css"],
+                        "styles": [
+                            "src/styles.css",
+                            "./node_modules/@ng-select/ng-select/themes/default.theme.css"
+                        ],
                         "scripts": [],
                         "allowedCommonJsDependencies": [
                             "dayjs",
                             "sweetalert2",
-                            "ws"
+                            "ws",
+                            "localforage"
                         ]
                     },
                     "configurations": {
