@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { ValidatorService } from 'src/app/shared/services/validator.service';
 
 @Component({
     selector: 'app-login',
@@ -11,42 +12,46 @@ import { ApiService } from 'src/app/shared/services/api.service';
 })
 export class LoginPage implements OnInit {
     form = this.fb.group({
-        email: [''],
-        password: [''],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required]],
     });
     status: 'success' | 'error' | 'loading' | '' = '';
-    error = '';
+    errors = {
+        email: '',
+        password: '',
+    };
 
     constructor(
         private apiService: ApiService,
-        private fb: UntypedFormBuilder,
+        private validatorService: ValidatorService,
+        private fb: FormBuilder,
         private router: Router
     ) {}
 
-    private subscription = new Subscription();
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-    }
-
     ngOnInit(): void {
-        this.subscription.add(
-            this.form.valueChanges.subscribe(() => {
-                this.hideError();
-            })
-        );
+        this.validatorService.validateOnInput(this.form, (errors) => {
+            this.errors = errors;
+        });
     }
 
     async onSubmit() {
+        const formResponse = this.validatorService.validate<typeof this.form>(
+            this.form
+        );
+        if (!formResponse.valid) {
+            this.errors = formResponse.errors;
+            return;
+        }
+
         this.status = 'loading';
         const { error } =
             await this.apiService.supabase.auth.signInWithPassword(
-                this.form.value
+                this.form.value as any
             );
 
         if (error) {
             this.status = 'error';
-            this.renderError(error);
+            this.errors.email = error.message;
             return;
         }
 
@@ -55,13 +60,5 @@ export class LoginPage implements OnInit {
         setTimeout(() => {
             this.router.navigateByUrl('/admin');
         }, 600);
-    }
-
-    hideError() {
-        this.error = '';
-    }
-
-    renderError(err: any) {
-        this.error = err.message;
     }
 }

@@ -5,10 +5,16 @@
         <div class="w-full max-w-lg px-20 py-16 mt-4 text-center bg-gray-700 rounded-lg">
             <h1 class="text-h3 mb-6 leading-tight">Log into your account</h1>
 
-            <form [formGroup]="form" (ngSubmit)="form.valid && onSubmit()">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
                 <div class="form-control max-w-full">
                     <label class="label" for="email">Email</label>
                     <input class="input" type="email" name="email" id="email" formControlName="email">
+
+                    <div class="feedback">
+                        <base-error class="text-red-400" *ngIf="errors.email">
+                            {{errors.email}}
+                        </base-error>
+                    </div>
                 </div>
 
                 <div class="form-control max-w-full">
@@ -18,8 +24,8 @@
                     <input class="input" type="password" name="password" id="password" formControlName="password">
 
                     <div class="feedback">
-                        <base-error class="text-red-400" *ngIf="error">
-                            {{error}}
+                        <base-error class="text-red-400" *ngIf="errors.password">
+                            {{errors.password}}
                         </base-error>
                     </div>
                 </div>

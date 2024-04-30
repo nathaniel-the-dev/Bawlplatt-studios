@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { ValidatorService } from 'src/app/shared/services/validator.service';
 
 @Component({
     selector: 'app-forgot-password',
@@ -10,7 +11,7 @@ import { ApiService } from 'src/app/shared/services/api.service';
 })
 export class ForgotPasswordPage {
     form = this.fb.group({
-        email: [''],
+        email: ['', [Validators.required, Validators.email]],
     });
     status: 'success' | 'error' | 'loading' | '' = '';
     error = '';
@@ -19,28 +20,29 @@ export class ForgotPasswordPage {
 
     constructor(
         private apiService: ApiService,
-        private fb: UntypedFormBuilder
+        private validatorService: ValidatorService,
+        private fb: FormBuilder
     ) {}
 
-    private subscription = new Subscription();
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-    }
-
     ngOnInit(): void {
-        this.subscription.add(
-            this.form.valueChanges.subscribe(() => {
-                this.hideError();
-            })
-        );
+        this.validatorService.validateOnInput(this.form, (errors) => {
+            this.error = errors.email;
+        });
     }
 
     async onSubmit() {
+        const formResponse = this.validatorService.validate<typeof this.form>(
+            this.form
+        );
+        if (!formResponse.valid) {
+            this.error = formResponse.errors.email;
+            return;
+        }
+
         this.status = 'loading';
         const { error } =
             await this.apiService.supabase.auth.resetPasswordForEmail(
-                this.form.value.email,
+                this.form.value.email!,
                 {
                     redirectTo:
                         window.location.origin + '/admin/reset-password',
@@ -55,7 +57,7 @@ export class ForgotPasswordPage {
             setTimeout(() => {
                 this.status = '';
             }, 600);
-            this.hideError();
+            this.error = '';
             this.showConfirmation = true;
         }
     }
@@ -65,10 +67,6 @@ export class ForgotPasswordPage {
         this.status = '';
         this.error = '';
         this.showConfirmation = false;
-    }
-
-    hideError() {
-        this.error = '';
     }
 
     renderError(err: any) {

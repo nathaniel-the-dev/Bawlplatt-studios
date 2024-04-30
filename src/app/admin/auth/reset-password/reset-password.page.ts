@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { ToastService } from 'src/app/shared/services/toast.service';
+import { ValidatorService } from 'src/app/shared/services/validator.service';
 
 @Component({
     selector: 'app-reset-password',
@@ -24,71 +26,55 @@ export class ResetPasswordPage {
 
     constructor(
         private apiService: ApiService,
-        private fb: UntypedFormBuilder,
+        private toastService: ToastService,
+        private validatorService: ValidatorService,
+        private fb: FormBuilder,
         private router: Router,
         private route: ActivatedRoute
     ) {}
 
-    private subscription = new Subscription();
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-    }
-
     ngOnInit(): void {
-        this.subscription.add(
-            this.form.valueChanges.subscribe(() => {
-                this.validateForm();
-            })
-        );
+        this.validatorService.validateOnInput(this.form, (errors) => {
+            this.errors = errors;
+        });
 
         const error = this.route.snapshot.fragment;
         if (error) {
-            const parsed = new URLSearchParams(error);
-            this.urlError = parsed.get('error_description') ?? '';
+            const urlParsed = new URLSearchParams(error);
+            this.urlError = urlParsed.get('error_description') ?? '';
         }
     }
 
-    private validateForm() {
-        Object.keys(this.form.controls).forEach((control) => {
-            // Validate each input control
-            if (this.form.get(control)?.invalid) {
-                const [key, value] = Object.entries(
-                    this.form.get(control)!.errors!
-                )[0];
-
-                this.errors[control as keyof typeof this.errors] = (() => {
-                    if (!value) return '';
-
-                    switch (key) {
-                        case 'required':
-                            return 'This field is required';
-                        case 'async':
-                        default:
-                            return typeof value === 'string'
-                                ? value
-                                : 'This field is invalid';
-                    }
-                })();
-            }
-        });
-    }
-
     async onSubmit() {
-        this.validateForm();
-        if (this.form.invalid) return;
+        const formResponse = this.validatorService.validate<typeof this.form>(
+            this.form
+        );
+
+        if (!formResponse.valid) {
+            this.errors = formResponse.errors;
+            return;
+        }
 
         this.status = 'loading';
         const { error } = await this.apiService.supabase.auth.updateUser({
-            password: this.form.value.password,
+            password: this.form.value.password!,
         });
 
-        if (error) {
-            this.status = 'error';
-            // this.renderError(error);
-        } else {
+        if (!error) {
             await this.apiService.logout();
             this.router.navigateByUrl('/admin/login');
+            this.toastService.createToast(
+                'Success',
+                'Your password has been reset. Please log in now.',
+                'success'
+            );
+        } else {
+            this.status = 'error';
+            this.toastService.createToast(
+                'Something went wrong',
+                error.message,
+                'error'
+            );
         }
     }
 

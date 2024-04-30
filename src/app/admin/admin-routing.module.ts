@@ -17,11 +17,16 @@ import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page'
 import { ResetPasswordPage } from './auth/reset-password/reset-password.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { BookingDetailsPage } from './pages/bookings/booking-details/booking-details.page';
+import { RedirectOnlyGuard } from './shared/guards/redirect-only.guard';
 
 const routes: Route[] = [
     { path: 'login', component: LoginPage },
     { path: 'forgot-password', component: ForgotPasswordPage },
-    { path: 'reset-password', component: ResetPasswordPage },
+    {
+        path: 'reset-password',
+        component: ResetPasswordPage,
+        canActivate: [RedirectOnlyGuard],
+    },
 
     {
         path: '',

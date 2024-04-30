@@ -15,6 +15,7 @@ import { MakeBookingPage } from './pages/make-booking/make-booking.page';
 import { AdminModule } from './admin/admin.module';
 import { ApiService } from './shared/services/api.service';
 import { ToastService } from './shared/services/toast.service';
+import { ValidatorService } from './shared/services/validator.service';
 
 @NgModule({
     declarations: [
@@ -36,7 +37,7 @@ import { ToastService } from './shared/services/toast.service';
         AdminModule,
         SharedComponentsModule,
     ],
-    providers: [ApiService, ToastService],
+    providers: [ApiService, ToastService, ValidatorService],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
