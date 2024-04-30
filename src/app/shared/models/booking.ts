@@ -4,7 +4,7 @@ export interface Booking {
     id: number;
 
     customer_type?: { name: 'band' | 'artist' };
-    status: string;
+    booked_for?: User;
 
     date_booked: Date;
     time_booked: Date;
@@ -14,7 +14,7 @@ export interface Booking {
     equipment_needed: any;
     additional_requirements?: string;
 
-    booked_by?: User;
+    status: string;
     approved_by?: User;
 
     transaction: any;

@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-not-found',
@@ -7,12 +7,7 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./not-found.page.css'],
 })
 export class NotFoundPage {
-    public canGoBack = false;
-
-    constructor(private location: Location) {
-        this.canGoBack =
-            (this.location.getState() as any).navigationId > 1 ? true : false;
-    }
+    constructor(private location: Location) {}
 
     back() {
         this.location.back();
