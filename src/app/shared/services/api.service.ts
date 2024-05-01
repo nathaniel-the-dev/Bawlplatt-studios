@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthUser, createClient, User } from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
-import { RequestOptions, APIResponse } from '../models/api';
 import localforage from 'localforage';
 import { BehaviorSubject } from 'rxjs';
 
@@ -45,21 +44,42 @@ export class ApiService {
                     let user = session?.user;
 
                     // Store user profile data only on initial session and user updates
-                    if (user && e === 'INITIAL_SESSION') {
-                        const meta_data = await this.getUserMetaData(user.id);
-                        if (meta_data) {
-                            const res = await supabase.auth.updateUser({
-                                data: {
-                                    id: meta_data.id,
-                                    name: meta_data.name,
-                                    roles: meta_data.roles,
-                                    contact_num: meta_data.contact_num,
-                                    avatar:
-                                        meta_data.avatar ||
-                                        `https://api.dicebear.com/8.x/initials/svg?seed=${meta_data.name}&backgroundColor=000000`,
-                                },
-                            });
-                            user = res.data.user || user;
+                    if (user) {
+                        if (
+                            e === 'INITIAL_SESSION' ||
+                            e === 'TOKEN_REFRESHED'
+                        ) {
+                            const meta_data = await this.getUserMetaData(
+                                user.id
+                            );
+                            if (meta_data) {
+                                const res = await supabase.auth.updateUser({
+                                    data: {
+                                        id: meta_data.id,
+                                        name: meta_data.name,
+                                        role: meta_data.role.title,
+                                        contact_num: meta_data.contact_num,
+                                        avatar:
+                                            meta_data.avatar ||
+                                            `https://api.dicebear.com/8.x/initials/svg?seed=${meta_data.name}&backgroundColor=000000`,
+                                    },
+                                });
+                                user = res.data.user || user;
+                            }
+                        }
+
+                        if (e === 'USER_UPDATED') {
+                            await supabase
+                                .from('profiles')
+                                .update({
+                                    name: user.user_metadata['name'],
+                                    email: user.email,
+                                    contact_num:
+                                        user.user_metadata['contact_num'],
+                                    avatar: user.user_metadata['avatar'],
+                                    verified: Boolean(user.email_confirmed_at),
+                                })
+                                .eq('id', user.id);
                         }
                     }
 
@@ -75,42 +95,7 @@ export class ApiService {
         console.error(err);
     }
 
-    async sendRequest(opts: RequestOptions): Promise<APIResponse> {
-        const query = supabase.from(opts.table);
-
-        const { status, statusText, data, error } = await (() => {
-            switch (opts.method) {
-                case 'select':
-                    if (opts.data?.['where']) {
-                        return query
-                            .select(opts.sql || '*')
-                            .eq(
-                                opts.data?.['where'].field,
-                                opts.data?.['where'].value
-                            );
-                    }
-                    return query.select(opts.sql || '*');
-                case 'insert':
-                    return query.insert(opts.data);
-                case 'update':
-                    return query.update(opts.data);
-                case 'delete':
-                    return query.delete().eq('id', opts.data?.['id']);
-            }
-        })();
-
-        if (error) {
-            this.handleErrors(error);
-        }
-
-        return {
-            status: statusText || this.mapCodeToStatus(status),
-            data,
-            error,
-        };
-    }
-
-    private mapCodeToStatus(code: number): string {
+    public mapCodeToStatus(code: number): string {
         const statusCode = code.toString();
 
         switch (true) {
@@ -138,17 +123,11 @@ export class ApiService {
     }
 
     async getUserMetaData(user_id: string) {
-        const profile = await this.sendRequest({
-            method: 'select',
-            table: 'profiles',
-            sql: '*, roles(title)',
-            data: {
-                where: {
-                    field: 'uuid',
-                    value: user_id,
-                },
-            },
-        });
+        const profile = await supabase
+            .from('profiles')
+            .select('*, role:roles(title)')
+            .eq('uuid', user_id)
+            .limit(1);
         return profile.data?.[0];
     }
 

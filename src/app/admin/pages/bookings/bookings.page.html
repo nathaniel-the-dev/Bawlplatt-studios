@@ -1,10 +1,10 @@
-<main-dashboard-layout title="Bookings">
+<main-dashboard-layout heading="Bookings">
     <button class="btn" routerLink="new" actions><i class="text-h6 ai-plus"></i> Create a booking</button>
 
     <!-- Filtering -->
-    <div class="flex items-center gap-4 mb-8">
+    <div class="flex items-center gap-4 mb-12">
         <form class="relative w-full" (ngSubmit)="search()">
-            <input class="peer text-almost-black w-full px-6 py-2 border-0 rounded" type="text" name="search"
+            <input class="peer text-almost-black w-full px-2 py-2 border-0 rounded" type="text" name="search"
                 id="search" placeholder="Search bookings" [(ngModel)]="searchQuery">
             <button type="submit"
                 class="peer-focus-visible:opacity-100 text-almost-black text-h6 top-1/2 right-6 absolute transition-opacity -translate-y-1/2 opacity-75">
@@ -13,115 +13,104 @@
         </form>
 
         <span>
-            <select class="text-almost-black px-4 py-2 border-0 rounded" name="filter" id="filter"
-                [(ngModel)]="selectedFilter" (ngModelChange)="filterList()">
-                <option value="" selected disabled hidden>Filter By</option>
-                <option value="none">None</option>
-                <option value="customer_type=artist">Artist</option>
-                <option value="customer_type=band">Band</option>
-                <option value="payed=true">Paid</option>
-                <option value="payed=false">Not Yet Paid</option>
-            </select>
+            <ng-select class="text-almost-black px-4 py-2 border-0 rounded" name="filter" id="filter"
+                [(ngModel)]="selectedFilter" (ngModelChange)="filterList()" [clearable]="false">
+                <ng-option value="" selected disabled>Filter By</ng-option>
+                <ng-option value="none">None</ng-option>
+                <ng-option value="customer_type=artist">Artist</ng-option>
+                <ng-option value="customer_type=band">Band</ng-option>
+                <ng-option value="payed=true">Paid</ng-option>
+                <ng-option value="payed=false">Not Yet Paid</ng-option>
+            </ng-select>
         </span>
     </div>
 
-    <!-- Table -->
-    <div class="grid grid-rows-[minmax(25rem,_100%),_max-content] gap-8"
-        *ngIf="bookings.length && !loading; else notFound">
-        <div role="table">
-            <!-- Table -->
-            <div class="item-list__table px-4 mb-2" role="row">
-                <span role="columnheader">Booked For</span>
-                <span role="columnheader">Booking Date</span>
-                <span role="columnheader">Duration</span>
-                <span role="columnheader">Cost</span>
-                <span role="columnheader">Booked On</span>
-                <span role="columnheader">Status</span>
-                <span role="columnheader">Approved By</span>
-                <span role="columnheader"></span>
-            </div>
-            <div class="space-y-4" role="rowgroup">
-                <div role="row" class="px-4 py-3 transition-all bg-gray-800 rounded"
-                    *ngFor="let booking of bookings; let i = index;">
-                    <div class="item-list__table text-white">
-                        <div role="row">
-                            <p class="text-xl capitalize">
-                                {{ booking.customer_type?.name }}
-                            </p>
-                            <p>{{ booking.booked_for?.name }}</p>
-                        </div>
-                        <div role="row">
-                            <p>
-                                {{booking.date_booked | formatDate: 'date'}}
-                            </p>
-                            <p>
-                                {{booking.time_booked}}
-                            </p>
-                        </div>
-                        <div role="row">
-                            {{booking.duration_in_minutes + ' mins.'}}
-                        </div>
-                        <div role="row">
-                            {{booking.transaction?.amount | currency}}
-                        </div>
-                        <div role="row">
-                            {{booking.created_at | formatDate: 'date'}}
-                        </div>
-                        <div role="row">
-                            {{booking.status | titlecase}}
-                        </div>
-                        <div role="row">
-                            {{booking.approved_by?.name}}
-                        </div>
-                        <div role="row"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Pagination -->
-        <div class="flex items-center justify-center gap-4">
-            <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(-1)"
-                [class.invisible]="page <= 1">
-                <i class="ai-arrow-left"></i>
-            </button>
-            <p>Page {{page}} of {{totalPages}}</p>
-            <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(1)"
-                [class.invisible]="page >= totalPages">
-                <i class="ai-arrow-right"></i>
-            </button>
-        </div>
+    <!-- Table -->
+    <div class="min-h-[60vh]">
+        <table class="dashboard-table" *ngIf="bookings.length && !loading; else notFound">
+            <thead class="">
+                <tr class="">
+                    <th class="">Booked For</th>
+                    <th class="">Date Booked</th>
+                    <th class="">Duration</th>
+                    <th class="">Cost</th>
+                    <th class="">Booked On</th>
+                    <th class="">Status</th>
+                    <th class="">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="">
+                <tr class="" *ngFor="let booking of bookings">
+                    <td class="">
+                        <p>{{booking.customer_type?.name || '-'}}</p>
+                        <p>{{booking.booked_for?.name || '-'}}</p>
+                    </td>
+                    <td class="">
+                        <p>{{booking.date_booked | dateTime: 'date'}}</p>
+                        <p>{{booking.time_booked | dateTime: 'time'}}</p>
+                    </td>
+                    <td class="">
+                        <p>{{(booking.duration_in_minutes | duration) || '-'}}</p>
+                    </td>
+                    <td class="">
+                        <p>{{booking.transaction?.amount || '-'}}</p>
+                    </td>
+                    <td class="">
+                        <p>{{booking.created_at | dateTime: 'date'}}</p>
+                        <p>{{booking.created_at | dateTime: 'time'}}</p>
+                    </td>
+                    <td class="">
+                        <p>{{booking.status}}</p>
+                    </td>
+                    <td class="">
+                        <div class="flex items-center gap-3">
+                            <button class="btn btn-sm btn-primary" routerLink="edit/{{booking.id}}"><i
+                                    class="ai-pencil"></i></button>
+                            <button class="btn btn-sm btn-primary" routerLink="{{booking.id}}"><i
+                                    class="ai-arrow-right"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-center gap-4">
+        <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(-1)"
+            [class.invisible]="page <= 1">
+            <i class="ai-arrow-left"></i>
+        </button>
+        <p>Page {{page}} of {{totalPages}}</p>
+        <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(1)"
+            [class.invisible]="page >= totalPages">
+            <i class="ai-arrow-right"></i>
+        </button>
     </div>
 
     <!-- No Bookings Found -->
     <ng-template #notFound>
-        <div [ngSwitch]="loading">
-            <div *ngSwitchCase="true">
-                <div class="place-items-center h-80 grid">
-                    <div style="border-top-color:transparent"
-                        class="aspect-square border-bright-red-400 animate-spin w-20 border-4 border-dashed rounded-full">
-                    </div>
+        <app-spinner *ngIf="loading" />
+
+        <div class="py-12 text-center" *ngIf="!loading">
+            <h2 class="text-h4 mb-6">No Bookings Found</h2>
+
+            <div [ngSwitch]="isSearching">
+                <div *ngSwitchCase="true">
+                    <p class="max-w-prose mx-auto">No bookings for that search term were found. Try searching by a
+                        different name.</p>
                 </div>
-            </div>
+                <div *ngSwitchDefault>
+                    <p class="max-w-prose mx-auto mb-4">Bookings will appear here once a customer books a session,
+                        or
+                        you can try adding one yourself.
+                    </p>
 
-            <div class="py-12 text-center" *ngSwitchDefault>
-                <h2 class="text-h4 mb-6">No Bookings Found</h2>
-
-                <div [ngSwitch]="isSearching">
-                    <div *ngSwitchCase="true">
-                        <p class="max-w-prose mx-auto">No bookings for that search term were found. Try searching by a
-                            different name.</p>
-                    </div>
-                    <div *ngSwitchDefault>
-                        <p class="max-w-prose mx-auto mb-4">Bookings will appear here once a customer books a session,
-                            or
-                            you can try adding one yourself.
-                        </p>
-
-                        <a class="btn" routerLink="new">Create</a>
-                    </div>
+                    <a class="btn" routerLink="new">Create</a>
                 </div>
             </div>
         </div>
+
     </ng-template>
 </main-dashboard-layout>

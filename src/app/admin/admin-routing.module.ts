@@ -18,6 +18,7 @@ import { ResetPasswordPage } from './auth/reset-password/reset-password.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { BookingDetailsPage } from './pages/bookings/booking-details/booking-details.page';
 import { RedirectOnlyGuard } from './shared/guards/redirect-only.guard';
+import { UserFormPage } from './pages/users/user-form/user-form.page';
 
 const routes: Route[] = [
     { path: 'login', component: LoginPage },
@@ -63,6 +64,10 @@ const routes: Route[] = [
             {
                 path: 'users',
                 children: [
+                    {
+                        path: 'new',
+                        component: UserFormPage,
+                    },
                     {
                         path: '',
                         component: UserListPage,

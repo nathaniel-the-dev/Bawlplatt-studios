@@ -1,4 +1,4 @@
-<main-dashboard-layout title="History">
+<main-dashboard-layout heading="History">
 
     <div [ngSwitch]="!!bookings.length">
         <div *ngSwitchCase="true">
@@ -14,9 +14,8 @@
 
                         <p>
                             <i class="ai-clock text-h6"></i>
-                            {{booking.date_booked | formatDate: 'date'}} <span
-                                class="text-gray-400">{{booking.time_booked
-                                | formatDate:
+                            {{booking.date_booked | dateTime: 'date'}} <span class="text-gray-400">{{booking.time_booked
+                                | dateTime:
                                 'time'}}</span>
                         </p>
 

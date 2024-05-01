@@ -6,5 +6,5 @@ import { Component, Input } from '@angular/core';
     styleUrls: ['./main.layout.css'],
 })
 export class MainLayout {
-    @Input() title?: string;
+    @Input() heading?: string;
 }

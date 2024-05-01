@@ -49,31 +49,20 @@ export class BookingFormPage implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         // Get customer types
-        this.apiService
-            .sendRequest({
-                method: 'select',
-                table: 'customer_type',
-            })
-            .then((res) => {
-                if (res.data) this.customer_types = res.data;
+        this.apiService.supabase
+            .from('customer_type')
+            .select('*')
+            .then(({ data }) => {
+                if (data) this.customer_types = data;
             });
 
         // Get customers
-        this.apiService
-            .sendRequest({
-                method: 'select',
-                table: 'profiles',
-                sql: 'id, name, avatar, roles!inner(title)',
-                data: {
-                    where: {
-                        field: 'roles.title',
-                        // value: 'customer',
-                        value: 'admin',
-                    },
-                },
-            })
-            .then((res) => {
-                this.customers = res.data;
+        this.apiService.supabase
+            .from('profiles')
+            .select('id, name, avatar, role:roles!inner(title)')
+            .in('role.title', ['admin', 'customer'])
+            .then(({ data }) => {
+                if (data) this.customers = data;
             });
 
         // Get booking data if attempting to edit
@@ -111,12 +100,10 @@ export class BookingFormPage implements OnInit, OnDestroy {
 
         // Send the corresponding request based on the action
         if (this.action === 'add') {
-            const res = await this.apiService.sendRequest({
-                method: 'insert',
-                table: 'bookings',
-                data: mockBooking,
-            });
-            if (res.status === 'success') {
+            const res = await this.apiService.supabase
+                .from('bookings')
+                .insert([mockBooking]);
+            if (res.status === 200) {
                 this.router.navigateByUrl('/admin/bookings');
                 this.toastService.createToast(
                     'Booking Created',

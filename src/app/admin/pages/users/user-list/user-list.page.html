@@ -1,3 +1,69 @@
-<main-dashboard-layout title="Users">
+<main-dashboard-layout heading="Users">
     <button class="btn" routerLink="new" actions><i class="text-h6 ai-plus"></i> Add a user</button>
+
+    <!-- Table -->
+    <div class="min-h-[60vh] mt-8">
+        <table class="dashboard-table" *ngIf="users.length && !loading; else notFound">
+            <thead class="">
+                <tr class="">
+                    <th class=""></th>
+                    <th class="">Name</th>
+                    <th class="">Email</th>
+                    <th class="">Role</th>
+                    <th class="">Contact Number</th>
+                    <th class="">Verified</th>
+                    <th class="">Date Created</th>
+                    <th class=""></th>
+                </tr>
+            </thead>
+            <tbody class="">
+                <tr class="" *ngFor="let user of users">
+                    <td class="">
+                        <div>
+                            <img class="aspect-square object-cover h-10 rounded-full" [src]="user.avatar" alt="">
+                        </div>
+                    </td>
+                    <td class="">
+                        <p>{{user.name}}</p>
+                    </td>
+                    <td class="">
+                        <p>{{user.email || '&mdash;'}}</p>
+                    </td>
+                    <td class="">
+                        <span class="badge" [ngClass]="{'bg-red-800':user.role?.title === 'admin'}">
+                            {{user.role?.title}}
+                        </span>
+                    </td>
+                    <td class="">
+                        <p>{{(user.contact_num | mask: '(000) 000-0000') || '&mdash;'}}</p>
+                    </td>
+                    <td class="">
+                        <span class="badge bg-green-900" *ngIf="user.verified">
+                            Yes
+                        </span>
+                        <span class="badge bg-red-900" *ngIf="!user.verified">
+                            No
+                        </span>
+                    </td>
+                    <td class="">
+                        <p>{{user.created_at | dateTime: 'both'}}</p>
+                    </td>
+                    <td class="">
+                        <div class="flex items-center gap-3"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <ng-template #notFound>
+            <app-spinner *ngIf="loading" />
+
+            <div class="py-12 text-center" *ngIf="!loading">
+                <h2 class="text-h4 mb-6">No Users Found</h2>
+                <p>Users will appear here once you create one.</p>
+                <a class="btn" routerLink="new">Create</a>
+            </div>
+
+        </ng-template>
+    </div>
 </main-dashboard-layout>

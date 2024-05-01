@@ -1,5 +1,10 @@
 # TODO
 
+## Bugfixes
+
+-   [ ] Fix validation showing up when input wasn't even touched
+-   [ ] Update Auth Policies for each table (Supabase)
+
 ## Admin Portal
 
 ### Auth
@@ -16,6 +21,7 @@
 -   Implement user management (for admin only)
 
     -   [ ] User list page
+        -   [ ] Add pagination and filtering
     -   [ ] Add new user (staff)
 
 -   Implement booking management

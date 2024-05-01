@@ -45,11 +45,13 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
 
     async onInfoFormSubmit() {
-        const res = await this.apiService.sendRequest({
-            table: 'users',
-            method: 'update',
-            data: this.infoForm.value,
-        });
+        const res = await this.apiService.supabase
+            .from('profiles')
+            .update({
+                name: this.infoForm.value.name,
+                email: this.infoForm.value.email,
+            })
+            .eq('id', this.user!.id);
 
         if (!res.error) {
             this.infoForm.markAsPristine();

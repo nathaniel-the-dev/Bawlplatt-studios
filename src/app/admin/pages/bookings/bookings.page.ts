@@ -43,7 +43,7 @@ export class BookingsPage implements OnInit {
 
     // Pagination
     page: number = 1;
-    totalPages: number = 0;
+    totalPages: number = 1;
     changePage(dir: -1 | 1): void {
         const newPage =
             dir === -1
@@ -85,19 +85,13 @@ export class BookingsPage implements OnInit {
 
     private async getAllBookings() {
         this.loading = true;
-
-        const res = await this.apiService.sendRequest({
-            sql: '*, customer_type(name)',
-            table: 'bookings',
-            method: 'select',
-            data: this.filterOpts,
-        });
-
+        const { data } = await this.apiService.supabase
+            .from('bookings')
+            .select('*, customer_type(name)');
         this.loading = false;
 
-        if (res.status === 'success') {
-            console.log(res);
-            this.bookings = res.data;
+        if (data) {
+            this.bookings = data;
             // this.totalPages = (res.data!['page'] as any).maxNumOfPages;
             // this.page = (res.data!['page'] as any).current;
         }

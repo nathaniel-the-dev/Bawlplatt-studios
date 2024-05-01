@@ -21,6 +21,7 @@ import { AuditPage } from './pages/audit/audit.page';
 import { ForgotPasswordPage } from './auth/forgot-password/forgot-password.page';
 import { ResetPasswordPage } from './auth/reset-password/reset-password.page';
 import { MainLayout } from './layouts/main/main.layout';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 @NgModule({
     declarations: [
@@ -44,6 +45,7 @@ import { MainLayout } from './layouts/main/main.layout';
         ForgotPasswordPage,
         ResetPasswordPage,
         MainLayout,
+        SpinnerComponent,
     ],
     imports: [
         CommonModule,

@@ -1,4 +1,5 @@
 @import "simple-notify/dist/simple-notify.min.css";
+@import "~@ng-select/ng-select/themes/default.theme.css";
 
 @tailwind base;
 @tailwind components;
@@ -39,11 +40,46 @@
         @apply -z-10 absolute top-0 left-0 text-sm;
     }
 
+    /* Breadcrumbs */
     .breadcrumbs {
         @apply flex items-center gap-2 mb-4 text-gray-400;
     }
     .breadcrumbs a {
         @apply hover:underline hover:text-gray-100 transition;
+    }
+
+    /* Table */
+    div:has(.dashboard-table) {
+        @apply overflow-x-auto;
+    }
+
+    .dashboard-table {
+        @apply overflow-x-auto w-full my-0 align-middle border-neutral-200;
+    }
+    .dashboard-table thead {
+        @apply align-bottom;
+    }
+    .dashboard-table thead tr {
+        @apply font-medium text-sm text-gray-400;
+    }
+    .dashboard-table thead th {
+        @apply whitespace-nowrap uppercase text-start px-2.5 py-2;
+    }
+
+    .dashboard-table tbody {
+        @apply divide-y-2 divide-gray-800 bg-gray-900;
+    }
+    .dashboard-table tbody td {
+        @apply px-2.5 py-4 whitespace-nowrap text-gray-100 font-medium text-[0.9rem];
+    }
+
+    .dashboard-table :is(thead, tbody) :is(th, td):first-child {
+        @apply pl-6;
+    }
+
+    /* Badges */
+    .badge {
+        @apply inline-block whitespace-nowrap rounded bg-blue-900 text-white uppercase px-2 py-1 text-center align-baseline text-sm leading-none;
     }
 }
 

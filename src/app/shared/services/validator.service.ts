@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 
 @Injectable({
@@ -25,7 +25,10 @@ export class ValidatorService {
         );
     }
 
-    public validate<TForm extends FormGroup = FormGroup>(form: TForm) {
+    public validate<TForm extends FormGroup = FormGroup>(
+        form: TForm,
+        ref?: FormGroupDirective
+    ) {
         let errors: Record<keyof TForm['controls'], string> = {} as Record<
             keyof TForm['controls'],
             string
@@ -35,19 +38,24 @@ export class ValidatorService {
             // Get associated control
             const control = form.get(name);
 
-            // Check if control is valid
-            if (!control || control.valid) {
-                (errors as any)[name] = '';
-                continue;
+            if (!ref || ref.submitted) {
+                // Check if control is valid
+                if (!control || control.valid) {
+                    (errors as any)[name] = '';
+                    continue;
+                }
+
+                // Validate each input control
+                const [key, value] = Object.entries(control!.errors!)[0];
+                (errors as any)[name] = (() => {
+                    let errorMessage = this.formatErrorMessage(
+                        name,
+                        key,
+                        value
+                    );
+                    return errorMessage;
+                })();
             }
-
-            // Validate each input control
-            const [key, value] = Object.entries(control!.errors!)[0];
-
-            (errors as any)[name] = (() => {
-                let errorMessage = this.formatErrorMessage(name, key, value);
-                return errorMessage;
-            })();
         }
 
         // Set errors and return validation result

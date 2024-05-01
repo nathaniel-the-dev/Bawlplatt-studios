@@ -2,26 +2,27 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormatPhoneDirective } from './directives/format-phone.directive';
 import { ErrorComponent } from './components/error/error.component';
-import { FormatContactNumPipe } from './pipes/format-contact-num.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { ConfirmPasswordValidatorDirective } from './directives/confirm-password.directive';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { DurationPipe } from './pipes/duration.pipe';
+import { NgxMaskModule } from 'ngx-mask';
 
 const declarations = [
     ErrorComponent,
     FormatPhoneDirective,
     ConfirmPasswordValidatorDirective,
-    FormatContactNumPipe,
     FormatDatePipe,
+    DurationPipe,
 
     HeaderComponent,
     FooterComponent,
 ];
 
-const modules: any[] = [RouterModule, NgSelectModule];
+const modules: any[] = [RouterModule, NgSelectModule, NgxMaskModule.forRoot()];
 
 @NgModule({
     declarations: [...declarations],

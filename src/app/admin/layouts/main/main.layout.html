@@ -3,8 +3,8 @@
         <ng-content select=".breadcrumbs"></ng-content>
     </nav>
 
-    <header class="flex items-center justify-between mb-6" *ngIf="title">
-        <h2 class="text-h3">{{title | titlecase}}</h2>
+    <header class="flex items-center justify-between mb-6" *ngIf="heading">
+        <h2 class="text-h3">{{heading | titlecase}}</h2>
 
         <ng-content select="[actions]"></ng-content>
     </header>
