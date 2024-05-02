@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <div class="form-control required">
+            <div class="form-control">
                 <label class="label" for="contact_num">Contact Number</label>
                 <input class="input" type="tel" name="contact_num" id="contact_num" formControlName="contact_num" />
 
@@ -34,12 +34,42 @@
                     <base-error *ngIf="errors.contact_num">{{errors.contact_num}}</base-error>
                 </div>
             </div>
+
+            <div class="form-control required">
+                <label class="label" for="contact_num">Role</label>
+                <ng-select placeholder="Select Role" name="role" id="role" formControlName="role">
+                    <ng-option *ngFor="let role of roles" [value]="role.id">{{role.title | titlecase}}</ng-option>
+                </ng-select>
+
+                <div class="feedback">
+                    <base-error *ngIf="errors.role">{{errors.role}}</base-error>
+                </div>
+            </div>
+
+            <div class="form-control required">
+                <label class="label" for="password">Password</label>
+                <input class="input" type="password" name="password" id="password" formControlName="password"
+                    passwordToggle />
+
+                <div class="feedback">
+                    <base-error *ngIf="errors.password">{{errors.password}}</base-error>
+                </div>
+            </div>
+
+            <div class="form-control required">
+                <label class="label" for="confirm_password">Confirm Password</label>
+                <input class="input" type="password" name="confirm_password" id="confirm_password"
+                    formControlName="confirm_password" passwordToggle confirmPasswordValidator="password" />
+
+                <div class="feedback">
+                    <base-error *ngIf="errors.confirm_password">{{errors.confirm_password}}</base-error>
+                </div>
+            </div>
         </section>
 
         <div class="flex gap-4 mt-6 justify-end">
             <button class="btn btn-outline" type="button" routerLink="../">Cancel</button>
-            <button class="btn" type="submit"
-                [disabled]="(userForm.dirty || form.submitted) && userForm.invalid">Save</button>
+            <button class="btn" type="submit">Save</button>
         </div>
     </form>
 </main-dashboard-layout>

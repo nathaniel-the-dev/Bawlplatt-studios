@@ -4,7 +4,7 @@ import { Component, HostBinding, Input, OnInit } from '@angular/core';
 @Component({
     selector: 'base-error',
     template: `
-        <span class="inline-flex gap-1 items-center">
+        <span class="inline-flex gap-1 items-center whitespace-nowrap">
             <svg
                 id="icon"
                 xmlns="http://www.w3.org/2000/svg"

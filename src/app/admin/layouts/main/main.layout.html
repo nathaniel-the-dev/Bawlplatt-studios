@@ -1,4 +1,4 @@
-<div class="container py-16">
+<div class="container py-16 overflow-x-auto">
     <nav>
         <ng-content select=".breadcrumbs"></ng-content>
     </nav>
@@ -9,7 +9,5 @@
         <ng-content select="[actions]"></ng-content>
     </header>
 
-    <div>
-        <ng-content></ng-content>
-    </div>
+    <ng-content></ng-content>
 </div>

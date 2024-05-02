@@ -2,11 +2,10 @@
     <button class="btn" routerLink="new" actions><i class="text-h6 ai-plus"></i> Add a user</button>
 
     <!-- Table -->
-    <div class="min-h-[60vh] mt-8">
+    <div class="min-h-[60vh] mt-8 overflow-x-auto max-w-full">
         <table class="dashboard-table" *ngIf="users.length && !loading; else notFound">
             <thead class="">
                 <tr class="">
-                    <th class=""></th>
                     <th class="">Name</th>
                     <th class="">Email</th>
                     <th class="">Role</th>
@@ -19,12 +18,10 @@
             <tbody class="">
                 <tr class="" *ngFor="let user of users">
                     <td class="">
-                        <div>
+                        <div class="flex items-center gap-2">
                             <img class="aspect-square object-cover h-10 rounded-full" [src]="user.avatar" alt="">
+                            <p>{{user.name}}</p>
                         </div>
-                    </td>
-                    <td class="">
-                        <p>{{user.name}}</p>
                     </td>
                     <td class="">
                         <p>{{user.email || '&mdash;'}}</p>

@@ -10,6 +10,7 @@ export const environment = {
     production: ${process.env['NODE_ENV'] === 'production'},
     SUPABASE_URL: '${process.env['SUPABASE_URL']}',
     SUPABASE_KEY: '${process.env['SUPABASE_KEY']}',
+    SERVICE_ROLE_KEY: '${process.env['SERVICE_ROLE_KEY']}',
 };
 `;
 

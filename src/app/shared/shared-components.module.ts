@@ -10,11 +10,15 @@ import { ConfirmPasswordValidatorDirective } from './directives/confirm-password
 import { NgSelectModule } from '@ng-select/ng-select';
 import { DurationPipe } from './pipes/duration.pipe';
 import { NgxMaskModule } from 'ngx-mask';
+import { PasswordToggleDirective } from './directives/password-toggle.directive';
 
 const declarations = [
     ErrorComponent,
+
     FormatPhoneDirective,
     ConfirmPasswordValidatorDirective,
+    PasswordToggleDirective,
+
     FormatDatePipe,
     DurationPipe,
 

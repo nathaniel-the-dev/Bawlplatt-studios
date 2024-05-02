@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/shared/services/api.service';
@@ -11,12 +11,14 @@ import { ValidatorService } from 'src/app/shared/services/validator.service';
     styleUrls: ['./login.page.css'],
 })
 export class LoginPage implements OnInit {
-    form = this.fb.group({
+    @ViewChild('formRef') formRef?: FormGroupDirective;
+
+    public form = this.fb.group({
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]],
     });
-    status: 'success' | 'error' | 'loading' | '' = '';
-    errors = {
+    public status: 'success' | 'error' | 'loading' | '' = '';
+    public errors = {
         email: '',
         password: '',
     };
@@ -29,14 +31,19 @@ export class LoginPage implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.validatorService.validateOnInput(this.form, (errors) => {
-            this.errors = errors;
-        });
+        this.validatorService.validateOnInput(
+            this.form,
+            (errors) => {
+                this.errors = errors;
+            },
+            this.formRef
+        );
     }
 
     async onSubmit() {
         const formResponse = this.validatorService.validate<typeof this.form>(
-            this.form
+            this.form,
+            this.formRef
         );
         if (!formResponse.valid) {
             this.errors = formResponse.errors;

@@ -34,7 +34,7 @@
     }
 
     .form-control .feedback {
-        @apply text-bright-red-600 relative text-left;
+        @apply text-bright-red-600 relative text-left isolate;
     }
     .form-control .feedback base-error {
         @apply -z-10 absolute top-0 left-0 text-sm;

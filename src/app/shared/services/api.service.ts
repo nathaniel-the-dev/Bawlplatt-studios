@@ -23,6 +23,18 @@ const supabase = createClient(
         },
     }
 );
+
+const superAdminClient = createClient(
+    environment.SUPABASE_URL,
+    environment.SERVICE_ROLE_KEY,
+    {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+        },
+    }
+);
+
 let authSubscription: any = null;
 
 @Injectable({
@@ -33,6 +45,7 @@ export class ApiService {
     public user$ = new BehaviorSubject<typeof this.user>(null);
 
     public supabase = supabase;
+    public adminClient = superAdminClient;
 
     constructor() {
         // Ensure auth subscription is initialized once (Singleton)
@@ -53,9 +66,9 @@ export class ApiService {
                                 user.id
                             );
                             if (meta_data) {
+                                // TODO Change to upsert
                                 const res = await supabase.auth.updateUser({
                                     data: {
-                                        id: meta_data.id,
                                         name: meta_data.name,
                                         role: meta_data.role.title,
                                         contact_num: meta_data.contact_num,
@@ -79,7 +92,7 @@ export class ApiService {
                                     avatar: user.user_metadata['avatar'],
                                     verified: Boolean(user.email_confirmed_at),
                                 })
-                                .eq('id', user.id);
+                                .eq('uuid', user.id);
                         }
                     }
 

@@ -15,10 +15,14 @@ export class ValidatorService {
         this.subscriptions.unsubscribe();
     }
 
-    public validateOnInput(form: FormGroup, cb: (errors: any) => void) {
+    public validateOnInput(
+        form: FormGroup,
+        cb: (errors: any) => void,
+        ref?: FormGroupDirective
+    ) {
         this.subscriptions.add(
             form.valueChanges.subscribe(() => {
-                const errors = this.validate<typeof form>(form).errors;
+                const errors = this.validate<typeof form>(form, ref).errors;
                 this.errors$.next(errors);
                 cb(errors);
             })
@@ -38,24 +42,22 @@ export class ValidatorService {
             // Get associated control
             const control = form.get(name);
 
-            if (!ref || ref.submitted) {
-                // Check if control is valid
-                if (!control || control.valid) {
-                    (errors as any)[name] = '';
-                    continue;
-                }
+            // Reset errors for each control
+            (errors as any)[name] = '';
 
-                // Validate each input control
-                const [key, value] = Object.entries(control!.errors!)[0];
-                (errors as any)[name] = (() => {
-                    let errorMessage = this.formatErrorMessage(
-                        name,
-                        key,
-                        value
-                    );
-                    return errorMessage;
-                })();
-            }
+            if (!ref || ref.submitted)
+                if (control?.invalid) {
+                    // Validate each input control
+                    const [key, value] = Object.entries(control!.errors!)[0];
+                    (errors as any)[name] = (() => {
+                        let errorMessage = this.formatErrorMessage(
+                            name,
+                            key,
+                            value
+                        );
+                        return errorMessage;
+                    })();
+                }
         }
 
         // Set errors and return validation result
