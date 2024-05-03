@@ -16,8 +16,14 @@
             "prefix": "app",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-builders/custom-webpack:browser",
                     "options": {
+                        "customWebpackConfig": {
+                            "path": "./extra-webpack.config.js",
+                            "mergeRules": {
+                                "externals": "replace"
+                            }
+                        },
                         "outputPath": "dist/personal-project",
                         "index": "src/index.html",
                         "main": "src/main.ts",
@@ -35,7 +41,8 @@
                             "dayjs",
                             "sweetalert2",
                             "ws",
-                            "localforage"
+                            "localforage",
+                            "generate-password-ts"
                         ]
                     },
                     "configurations": {
@@ -66,7 +73,7 @@
                     "defaultConfiguration": "production"
                 },
                 "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "builder": "@angular-builders/custom-webpack:dev-server",
                     "configurations": {
                         "production": {
                             "browserTarget": "personal-project:build:production"

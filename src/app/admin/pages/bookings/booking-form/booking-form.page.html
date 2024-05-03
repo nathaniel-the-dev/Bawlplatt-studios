@@ -44,11 +44,14 @@
                 <div class="form-control required">
                     <label class="label" for="date_booked">Booked For</label>
                     <!-- <input class="input" type="text" name="booked_for" id="booked_for" formControlName="booked_for"> -->
-                    <ng-select formControlName="booked_for" id="booked_for">
-                        <ng-option *ngFor="let customer of customers" [value]="customer.id">
-                            <span class="flex items-center gap-3"><img src="{{customer.avatar}}" alt="">
-                                {{customer.name}}</span>
-                        </ng-option>
+                    <ng-select [items]="customers" bindLabel="name" bindValue="id" class="select"
+                        formControlName="booked_for" id="booked_for" [clearable]="false">
+                        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="name">
+                            <span class="flex items-center gap-2">
+                                <img class="w-6 rounded-full aspect-square object-cover" src="{{item.avatar}}" alt="">
+                                {{item.name}}
+                            </span>
+                        </ng-template>
                     </ng-select>
 
                     <div class="feedback">

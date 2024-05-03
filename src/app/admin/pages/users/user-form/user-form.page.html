@@ -7,8 +7,8 @@
 
 
     <form class="max-w-xl" [formGroup]="userForm" (ngSubmit)="onSubmit()" #form="ngForm">
-        <section class="space-y-6">
-            <div class="form-control required">
+        <section class="">
+            <div class="form-control mb-6 required ">
                 <label class="label" for="name">Name</label>
                 <input class="input" type="text" name="name" id="name" formControlName="name" />
 
@@ -17,7 +17,7 @@
                 </div>
             </div>
 
-            <div class="form-control required">
+            <div class="form-control mb-6 required">
                 <label class="label" for="email">Email</label>
                 <input class="input" type="email" name="email" id="email" formControlName="email" />
 
@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <div class="form-control">
+            <div class="form-control mb-6">
                 <label class="label" for="contact_num">Contact Number</label>
                 <input class="input" type="tel" name="contact_num" id="contact_num" formControlName="contact_num" />
 
@@ -35,9 +35,10 @@
                 </div>
             </div>
 
-            <div class="form-control required">
+            <div class="form-control mb-6 required">
                 <label class="label" for="contact_num">Role</label>
-                <ng-select placeholder="Select Role" name="role" id="role" formControlName="role">
+                <ng-select class="select" placeholder="Select Role" name="role" id="role" formControlName="role"
+                    [clearable]="false">
                     <ng-option *ngFor="let role of roles" [value]="role.id">{{role.title | titlecase}}</ng-option>
                 </ng-select>
 
@@ -46,17 +47,26 @@
                 </div>
             </div>
 
-            <div class="form-control required">
+            <div class="form-control required" [ngClass]="errors.password?'mb-6':'mb-1'">
                 <label class="label" for="password">Password</label>
                 <input class="input" type="password" name="password" id="password" formControlName="password"
-                    passwordToggle />
+                    passwordToggle #password />
 
                 <div class="feedback">
                     <base-error *ngIf="errors.password">{{errors.password}}</base-error>
                 </div>
             </div>
+            <div class="flex items-center gap-2 mb-6">
+                <button
+                    class="text-sm whitespace-nowrap border border-gray-700 rounded px-2 py-1 cursor-pointer transition hover:bg-gray-700"
+                    type="button" (click)="generatePassword()">Generate Password</button>
+                <button
+                    class="text-sm whitespace-nowrap border border-gray-700 rounded px-2 py-1 cursor-pointer transition hover:bg-gray-700"
+                    type="button" *ngIf="password.value" (click)="copyPassword()"><i class="text-sm ai-copy"></i>
+                    Copy Password</button>
+            </div>
 
-            <div class="form-control required">
+            <div class="form-control mb-6 required">
                 <label class="label" for="confirm_password">Confirm Password</label>
                 <input class="input" type="password" name="confirm_password" id="confirm_password"
                     formControlName="confirm_password" passwordToggle confirmPasswordValidator="password" />

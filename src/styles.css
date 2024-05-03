@@ -19,22 +19,37 @@
 
     /* Form Controls */
     .form-control {
-        @apply isolate grid w-full max-w-xs gap-1 mb-6 text-white;
+        @apply grid w-full max-w-xs gap-1 mb-6 text-white;
     }
 
-    .form-control .label {
+    label.label {
         @apply w-fit;
     }
     .form-control.required .label::after {
         @apply content-['*'] text-red-500;
     }
 
-    .form-control .input {
-        @apply px-6 py-3 bg-gray-800 bg-opacity-75 rounded;
+    :is(input, select, textarea).input,
+    ng-select.ng-select.select .ng-select-container {
+        @apply px-6 py-3 bg-gray-800 bg-opacity-75 rounded text-white;
+    }
+
+    ng-select.ng-select.select .ng-value-container {
+        @apply !pl-0;
+    }
+
+    ng-select.ng-select.select .ng-select-container {
+        @apply border-0 min-h-[auto] h-auto;
+    }
+    ng-select.ng-select.select .ng-input {
+        @apply !top-1/2 -translate-y-1/2 !pl-6;
     }
 
     .form-control .feedback {
         @apply text-bright-red-600 relative text-left isolate;
+    }
+    .form-control .feedback:has(base-error) {
+        @apply h-5;
     }
     .form-control .feedback base-error {
         @apply -z-10 absolute top-0 left-0 text-sm;
@@ -79,7 +94,7 @@
 
     /* Badges */
     .badge {
-        @apply inline-block whitespace-nowrap rounded bg-blue-900 text-white uppercase px-2 py-1 text-center align-baseline text-sm leading-none;
+        @apply inline-block whitespace-nowrap tracking-wider rounded bg-blue-900 text-white uppercase px-2 py-1 text-center align-baseline text-sm leading-none;
     }
 }
 

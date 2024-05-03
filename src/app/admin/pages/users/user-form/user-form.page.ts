@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
+import generator from 'generate-password-ts';
 
 @Component({
     selector: 'app-user-form',
@@ -14,12 +15,12 @@ export class UserFormPage implements OnInit, AfterViewInit {
     @ViewChild('form') form?: FormGroupDirective;
 
     public userForm = this.fb.group({
-        name: [null, [Validators.required]],
-        email: [null, [Validators.required, Validators.email]],
-        contact_num: [null, []],
-        role: [null, [Validators.required]],
-        password: [null, [Validators.required]],
-        confirm_password: [null, []],
+        name: [null as string | null, [Validators.required]],
+        email: [null as string | null, [Validators.required, Validators.email]],
+        contact_num: [null as number | null, []],
+        role: [null as string | null, [Validators.required]],
+        password: [null as string | null, [Validators.required]],
+        confirm_password: [null as string | null, []],
     });
 
     public errors: Record<keyof (typeof this.userForm)['controls'], string> = {
@@ -68,12 +69,11 @@ export class UserFormPage implements OnInit, AfterViewInit {
 
         // Create user
         try {
-            const userRes =
-                await this.apiService.adminClient.auth.admin.createUser({
-                    email: this.userForm.value.email!,
-                    password: this.userForm.value.password!,
-                    email_confirm: false,
-                });
+            const userRes = await this.apiService.admin.createUser({
+                email: this.userForm.value.email!,
+                password: this.userForm.value.password!,
+                email_confirm: false,
+            });
             if (userRes.error) throw userRes.error;
 
             // Add user profile info
@@ -107,6 +107,28 @@ export class UserFormPage implements OnInit, AfterViewInit {
                 this.userForm.controls.email.setErrors({ async: message });
                 this.userForm.updateValueAndValidity();
             }
+        }
+    }
+
+    public generatePassword() {
+        const password = generator.generate({
+            length: 8,
+            numbers: true,
+        });
+        this.userForm.controls.password.setValue(password);
+        this.userForm.controls.confirm_password.setValue(password);
+    }
+
+    public copyPassword() {
+        if (this.userForm.controls.password.value) {
+            navigator.clipboard.writeText(
+                this.userForm.controls.password.value
+            );
+            this.toastService.createToast(
+                'Password Copied',
+                'Password has been copied to clipboard',
+                'success'
+            );
         }
     }
 

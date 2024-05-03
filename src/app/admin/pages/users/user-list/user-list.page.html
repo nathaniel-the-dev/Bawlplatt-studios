@@ -19,7 +19,7 @@
                 <tr class="" *ngFor="let user of users">
                     <td class="">
                         <div class="flex items-center gap-2">
-                            <img class="aspect-square object-cover h-10 rounded-full" [src]="user.avatar" alt="">
+                            <img class="aspect-square object-cover size-10 rounded-full" [src]="user.avatar" alt="">
                             <p>{{user.name}}</p>
                         </div>
                     </td>
@@ -27,7 +27,7 @@
                         <p>{{user.email || '&mdash;'}}</p>
                     </td>
                     <td class="">
-                        <span class="badge" [ngClass]="{'bg-red-800':user.role?.title === 'admin'}">
+                        <span class="badge" [ngClass]="{'bg-slate-700':user.role?.title === 'admin'}">
                             {{user.role?.title}}
                         </span>
                     </td>

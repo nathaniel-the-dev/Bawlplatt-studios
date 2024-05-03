@@ -4,17 +4,17 @@
     <!-- Filtering -->
     <div class="flex items-center gap-4 mb-12">
         <form class="relative w-full" (ngSubmit)="search()">
-            <input class="peer text-almost-black w-full px-2 py-2 border-0 rounded" type="text" name="search"
-                id="search" placeholder="Search bookings" [(ngModel)]="searchQuery">
+            <input class="input peer w-full" type="text" name="search" id="search" placeholder="Search bookings"
+                [(ngModel)]="searchQuery">
             <button type="submit"
                 class="peer-focus-visible:opacity-100 text-almost-black text-h6 top-1/2 right-6 absolute transition-opacity -translate-y-1/2 opacity-75">
-                <i class="ai-search"></i>
+                <i class="ai-search text-white"></i>
             </button>
         </form>
 
         <span>
-            <ng-select class="text-almost-black px-4 py-2 border-0 rounded" name="filter" id="filter"
-                [(ngModel)]="selectedFilter" (ngModelChange)="filterList()" [clearable]="false">
+            <ng-select class="select" name="filter" id="filter" [(ngModel)]="selectedFilter"
+                (ngModelChange)="filterList()" [clearable]="false">
                 <ng-option value="" selected disabled>Filter By</ng-option>
                 <ng-option value="none">None</ng-option>
                 <ng-option value="customer_type=artist">Artist</ng-option>

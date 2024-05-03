@@ -98,7 +98,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         this.user = this.apiService.user!;
 
         this.infoForm.setValue({
-            name: this.user.user_metadata['first_name'],
+            name: this.user.user_metadata['name'] || '',
             email: this.user.email,
         });
     }

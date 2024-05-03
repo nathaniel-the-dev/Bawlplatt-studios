@@ -33,7 +33,7 @@ const superAdminClient = createClient(
             autoRefreshToken: false,
         },
     }
-);
+).auth.admin;
 
 let authSubscription: any = null;
 
@@ -45,7 +45,7 @@ export class ApiService {
     public user$ = new BehaviorSubject<typeof this.user>(null);
 
     public supabase = supabase;
-    public adminClient = superAdminClient;
+    public admin = superAdminClient;
 
     constructor() {
         // Ensure auth subscription is initialized once (Singleton)

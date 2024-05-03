@@ -21,7 +21,8 @@
                     <div class="flex items-baseline justify-between">
                         <label class="label" for="password">Password</label>
                     </div>
-                    <input class="input" type="password" name="password" id="password" formControlName="password">
+                    <input class="input" type="password" name="password" id="password" formControlName="password"
+                        passwordToggle>
 
                     <div class="feedback">
                         <base-error class="text-red-400" *ngIf="errors.password">

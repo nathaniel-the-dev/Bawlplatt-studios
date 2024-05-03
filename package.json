@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "scripts": {
         "ng": "ng",
-        "start": "npm run config && ng serve --port=3000",
+        "start": "npm run config && ng serve",
         "build": "npm run config && ng build --prod",
         "watch": "ng build --watch --configuration development",
         "test": "ng test",
@@ -23,6 +23,7 @@
         "@supabase/supabase-js": "^2.42.7",
         "dayjs": "^1.11.5",
         "dotenv": "^16.4.5",
+        "generate-password-ts": "^1.6.5",
         "humanize-duration": "^3.32.0",
         "localforage": "^1.10.0",
         "ngx-mask": "^14.3.3",
@@ -33,6 +34,7 @@
         "zone.js": "~0.11.4"
     },
     "devDependencies": {
+        "@angular-builders/custom-webpack": "^15.0.0",
         "@angular-devkit/build-angular": "~15.2.11",
         "@angular/cli": "^15.2.11",
         "@angular/compiler-cli": "~15.2.10",
