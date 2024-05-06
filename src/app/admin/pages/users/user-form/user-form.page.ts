@@ -6,6 +6,11 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
 import generator from 'generate-password-ts';
 
+type FormErrors = Record<
+    keyof Omit<(typeof UserFormPage.prototype.userForm)['controls'], 'id'>,
+    string
+>;
+
 @Component({
     selector: 'app-user-form',
     templateUrl: './user-form.page.html',
@@ -30,10 +35,7 @@ export class UserFormPage implements OnInit, AfterViewInit {
         id: [null as string | null],
     });
 
-    public errors: Record<
-        keyof Omit<(typeof this.userForm)['controls'], 'id'>,
-        string
-    > = {
+    public errors: FormErrors = {
         name: '',
         email: '',
         contact_number: '',
@@ -73,6 +75,7 @@ export class UserFormPage implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        // Validate fields when input changes
         this.validatorService.validateOnInput(
             this.userForm,
             (errors) => {

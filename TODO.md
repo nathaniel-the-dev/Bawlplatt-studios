@@ -22,7 +22,7 @@
 
     -   User list page
         -   [x] List users
-        -   [ ] Add pagination and filtering
+        -   [x] Add pagination and filtering
     -   [x] Add new user
     -   [x] Edit user
     -   [x] View details

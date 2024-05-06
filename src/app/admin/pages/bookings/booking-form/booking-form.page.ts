@@ -1,42 +1,66 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    FormBuilder,
+    FormGroup,
+    FormGroupDirective,
+    Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { Booking } from 'src/app/shared/models/booking';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
+
+type FormErrors = Record<
+    keyof Omit<
+        (typeof BookingFormPage.prototype.bookingForm)['controls'],
+        'id'
+    >,
+    string
+>;
 
 @Component({
     selector: 'app-booking-form',
     templateUrl: './booking-form.page.html',
     styleUrls: ['./booking-form.page.css'],
 })
-export class BookingFormPage implements OnInit, OnDestroy {
-    private booking: Partial<Booking> = {};
+export class BookingFormPage implements OnInit {
+    @ViewChild('form') formRef?: FormGroupDirective;
 
     public bookingForm = this.fb.group({
         // Customer type
         customer_type: [null, [Validators.required]],
-        booked_for: [null],
+        booked_for: [null, [Validators.required]],
 
         // Session information
-        date_booked: [null],
-        time_booked: [null, [ValidateTime('08:00', '20:00')]],
-        duration_in_minutes: [null],
+        date_booked: [null, [Validators.required]],
+        time_booked: [
+            null,
+            [Validators.required, ValidateTime('08:00', '20:00')],
+        ],
+        duration_in_minutes: [null, [Validators.required]],
 
         // Requirements
-        num_of_musicians: [null],
+        num_of_musicians: [null, [Validators.required]],
         equipment_needed: [null], // Format: {drums: 2, guitar: 1}
         additional_requirements: [null],
     });
+
+    public errors: FormErrors = {
+        customer_type: '',
+        booked_for: '',
+        date_booked: '',
+        time_booked: '',
+        duration_in_minutes: '',
+        num_of_musicians: '',
+        equipment_needed: '',
+        additional_requirements: '',
+    };
 
     public customer_types: any[] = [];
     public customers: any[] = [];
 
     public action: 'add' | 'edit' = 'add';
-    private subscriptions = new Subscription();
 
     constructor(
         private apiService: ApiService,
@@ -48,6 +72,26 @@ export class BookingFormPage implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        this.setFormOptions();
+
+        // Get booking data if attempting to edit
+        let id = this.route.snapshot.params['id'];
+        if (id) {
+            this.action = 'edit';
+            this.getBookingFromParams(id);
+        }
+
+        // Validate fields when input changes
+        this.validatorService.validateOnInput(
+            this.bookingForm,
+            (errors) => {
+                this.errors = errors;
+            },
+            this.formRef
+        );
+    }
+
+    private setFormOptions() {
         // Get customer types
         this.apiService.supabase
             .from('customer_type')
@@ -59,28 +103,23 @@ export class BookingFormPage implements OnInit, OnDestroy {
         // Get customers
         this.apiService.supabase
             .from('profiles')
-            .select('id, name, avatar, role:roles!inner(title)')
+            .select('id, name, avatar, active, role:roles!inner(title)')
             .in('role.title', ['admin', 'customer'])
+            .eq('active', true)
             .then(({ data }) => {
                 if (data) this.customers = data;
             });
-
-        // Get booking data if attempting to edit
-        let id = this.route.snapshot.params['id'];
-        if (id) this.getBookingFromParams(id);
-    }
-
-    ngOnDestroy(): void {
-        this.subscriptions.unsubscribe();
     }
 
     public async onFormSubmit(): Promise<void> {
-        // if (this.bookingForm.invalid) return;
+        const formResponse = this.validatorService.validate<
+            typeof this.bookingForm
+        >(this.bookingForm, this.formRef);
 
-        // Add the data to the booking
-        Object.assign(this.booking, {
-            ...this.bookingForm.value,
-        });
+        if (!formResponse.valid) {
+            this.errors = formResponse.errors;
+            return;
+        }
 
         // ! Remove later
         const mockBooking = {
@@ -99,40 +138,25 @@ export class BookingFormPage implements OnInit, OnDestroy {
         };
 
         // Send the corresponding request based on the action
-        if (this.action === 'add') {
-            const res = await this.apiService.supabase
-                .from('bookings')
-                .insert([mockBooking]);
-            if (res.status === 200) {
-                this.router.navigateByUrl('/admin/bookings');
-                this.toastService.createToast(
-                    'Booking Created',
-                    'A new session was booked successfully'
-                );
-            }
+        if (this.action === 'add') await this.createBooking();
+        if (this.action === 'edit') await this.updateBooking();
+    }
+
+    private async createBooking() {
+        const res = await this.apiService.supabase
+            .from('bookings')
+            .insert(this.bookingForm.value);
+        if (res.status === 200) {
+            this.router.navigateByUrl('/admin/bookings');
+            this.toastService.createToast(
+                'Booking Created',
+                'A new session was booked successfully'
+            );
         }
-        // else {
-        //     const updateBookingSub = this.apiService
-        //         .updateBooking(this.booking)
-        //         .subscribe((res) => {
-        //             if (res.status === 'success') {
-        //                 this.router.navigateByUrl('/dashboard/bookings');
-        //                 this.toastService.createToast(
-        //                     'Booking Created',
-        //                     'A new session was booked successfully'
-        //                 );
-        //             }
-        //             if (
-        //                 res.status === 'fail' &&
-        //                 res.error!.type === 'ValidationError'
-        //             )
-        //                 this.errorService.handleValidationError(
-        //                     res,
-        //                     this.bookingForm
-        //                 );
-        //         });
-        //     this.subscriptions.add(updateBookingSub);
-        // }
+    }
+
+    private async updateBooking() {
+        // TODO : Update booking
     }
 
     private getBookingFromParams(id: string) {

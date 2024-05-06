@@ -12,13 +12,13 @@
         <section>
             <h2 class="text-h5 mb-4">1. Customer Information</h2>
 
-            <div class="border-bright-red-500 py-8 pl-8 my-2 ml-1 border-l-4">
+            <div class="border-bright-red-500/50 py-8 pl-8 my-2 ml-1 border-l-4">
                 <div class="overflow-hidden transition-[max-height] space-y-4">
                     <fieldset class="form-control required">
                         <legend class="label mb-2">Who are you booking for?</legend>
 
                         <div class="space-x-2">
-                            <label for="customer_type-artist" class="cursor-pointer"
+                            <label for="customer_type-{{type.name}}" class="cursor-pointer"
                                 *ngFor="let type of customer_types">
                                 <input type="radio" name="customer_type" id="customer_type-{{type.name}}"
                                     class="peer hidden" [value]="type.id" formControlName="customer_type">
@@ -68,7 +68,7 @@
         <section>
             <h2 class="text-h5 my-4">2. Session Information</h2>
 
-            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1"
+            <div class="border-bright-red-500/50 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1"
                 data-expanded="true">
                 <div class="form-control required">
                     <label class="label" for="date_booked">Session Date</label>
@@ -157,7 +157,7 @@
         <section>
             <h2 class="text-h5 my-4">3. Requirements</h2>
 
-            <div class="border-bright-red-500 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1"
+            <div class="border-bright-red-500/50 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1"
                 data-expanded="true">
                 <div class="form-control">
                     <label class="label" for="num_of_musicians">Number of Musicians</label>
