@@ -47,7 +47,12 @@ export class HistoryPage implements OnInit, OnDestroy {
 
     deleteBooking(booking: Booking): void {
         this.toastService
-            .openConfirmDeleteModal()
+            .openConfirmDeleteModal({
+                title: 'Are you sure you want to delete this booking?',
+                text: `This action cannot be undone.`,
+                confirmButtonText: 'Yes, delete',
+                cancelButtonText: 'No',
+            })
             .then((confirmation: boolean) => {
                 if (!confirmation) return;
 

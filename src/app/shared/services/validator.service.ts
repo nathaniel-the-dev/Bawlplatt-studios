@@ -71,7 +71,13 @@ export class ValidatorService {
     private formatErrorMessage(field: string, key: string, value: any) {
         if (!value) return '';
 
-        let fieldName = field.replace(/([A-Z])/g, ' $1').trim();
+        let fieldName = field;
+
+        // Separate field names with spaces
+        fieldName = fieldName.replace(/([A-Z])/g, ' $1').trim();
+        // Remove underscores or hyphens
+        fieldName = fieldName.replace(/[_-]/g, ' ');
+        // Capitalize first letter
         fieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
 
         switch (key) {
@@ -79,7 +85,11 @@ export class ValidatorService {
                 return `${fieldName} is required`;
             case 'email':
                 return `${fieldName} is not a valid email address`;
-
+            case 'minlength':
+                return `${fieldName} must be at least ${value.requiredLength} characters`;
+            case 'maxlength':
+                return `${fieldName} must be at most ${value.requiredLength} characters`;
+            case 'pattern':
             case 'async':
             case 'range':
             default:

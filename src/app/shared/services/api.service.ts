@@ -104,6 +104,30 @@ export class ApiService {
         }
     }
 
+    public async paginateQuery(query: any, pagination: any): Promise<any> {
+        let rangeStart = pagination.limit * (pagination.current - 1);
+        let rangeEnd = pagination.limit * pagination.current - 1;
+
+        try {
+            const res = await query.range(rangeStart, rangeEnd);
+            if (res.error) throw res.error;
+
+            if (res.count === 0 && pagination.current > 1) {
+                pagination.current -= 1;
+                return await this.paginateQuery(query, pagination);
+            }
+
+            pagination.max = Math.ceil((res.count || 1) / pagination.limit);
+
+            return res;
+        } catch (error: any) {
+            if (error.code === 'PGRST103') {
+                pagination.current = 1;
+                return await this.paginateQuery(query, pagination);
+            }
+        }
+    }
+
     private handleErrors(err: any) {
         console.error(err);
     }
@@ -136,12 +160,12 @@ export class ApiService {
     }
 
     async getUserMetaData(user_id: string) {
-        const profile = await supabase
+        const { data: profile } = await supabase
             .from('profiles')
             .select('*, role:roles(title)')
             .eq('uuid', user_id)
-            .limit(1);
-        return profile.data?.[0];
+            .maybeSingle();
+        return profile;
     }
 
     async logout(): Promise<boolean> {

@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import Notify from 'simple-notify';
-import Swal from 'sweetalert2';
-
+import Swal, { SweetAlertOptions } from 'sweetalert2';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ToastService {
-
-    createToast(title: string, msg: string, status: 'success' | 'error' | 'warning' = 'success') {
+    createToast(
+        title: string,
+        msg: string,
+        status: 'success' | 'error' | 'warning' = 'success'
+    ) {
         return new Notify({
             status: status,
             title: title,
@@ -21,22 +23,27 @@ export class ToastService {
             gap: 20,
             distance: 20,
             type: 3,
-            position: 'right top'
-
-        })
+            position: 'right top',
+        });
     }
 
-    async openConfirmDeleteModal() {
+    async openConfirmDeleteModal(
+        options: Pick<
+            SweetAlertOptions,
+            'title' | 'text' | 'confirmButtonText' | 'cancelButtonText'
+        >
+    ) {
         const result = await Swal.fire({
-            title: 'Are you sure you want to delete this session?',
-            confirmButtonText: 'Yes',
+            title: options.title,
+            text: options.text,
             showCancelButton: true,
-            cancelButtonText: 'No',
+            confirmButtonText: options.confirmButtonText,
+            cancelButtonText: options.cancelButtonText,
 
-            color: "#fff",
-            background: "#1f2937",
-            customClass: "text-center",
-            confirmButtonColor: "#e24141"
+            color: '#fff',
+            background: '#1f2937',
+            customClass: 'text-center',
+            confirmButtonColor: '#e24141',
         });
 
         return result.isConfirmed;
@@ -49,26 +56,25 @@ export class ToastService {
             inputLabel: 'Enter your password',
             inputValidator: (value) => {
                 if (!value) {
-                    return 'You need to write something!'
-                } else
-                    return null;
+                    return 'You need to write something!';
+                } else return null;
             },
 
             showCancelButton: true,
 
             inputAttributes: {
                 autocapitalize: 'off',
-                autocorrect: 'off'
+                autocorrect: 'off',
             },
 
-            color: "#fff",
-            background: "#1f2937",
-            customClass: "text-center",
-            confirmButtonColor: "#e24141"
+            color: '#fff',
+            background: '#1f2937',
+            customClass: 'text-center',
+            confirmButtonColor: '#e24141',
         });
 
         return password;
     }
 
-    constructor() { }
+    constructor() {}
 }

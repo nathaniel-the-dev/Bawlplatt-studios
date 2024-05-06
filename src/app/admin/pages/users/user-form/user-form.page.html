@@ -1,14 +1,14 @@
-<main-dashboard-layout heading="Add a User">
+<main-dashboard-layout heading="{{ action | titlecase }} a User">
     <div class="breadcrumbs">
-        <a routerLink="../">Users</a>
+        <a routerLink="/admin/users">Users</a>
         <i class="ai-chevron-right-small"></i>
-        <a routerLink="./">New</a>
+        <a routerLink="./">{{ (action === 'add' ? 'New' : 'Edit') }}</a>
     </div>
 
 
     <form class="max-w-xl" [formGroup]="userForm" (ngSubmit)="onSubmit()" #form="ngForm">
         <section class="">
-            <div class="form-control mb-6 required ">
+            <div class="form-control mb-6 required">
                 <label class="label" for="name">Name</label>
                 <input class="input" type="text" name="name" id="name" formControlName="name" />
 
@@ -27,16 +27,17 @@
             </div>
 
             <div class="form-control mb-6">
-                <label class="label" for="contact_num">Contact Number</label>
-                <input class="input" type="tel" name="contact_num" id="contact_num" formControlName="contact_num" />
+                <label class="label" for="contact_number">Contact Number</label>
+                <input class="input" type="tel" name="contact_number" id="contact_number"
+                    formControlName="contact_number" mask="000-000-0000" />
 
                 <div class="feedback">
-                    <base-error *ngIf="errors.contact_num">{{errors.contact_num}}</base-error>
+                    <base-error *ngIf="errors.contact_number">{{errors.contact_number}}</base-error>
                 </div>
             </div>
 
             <div class="form-control mb-6 required">
-                <label class="label" for="contact_num">Role</label>
+                <label class="label" for="role">Role</label>
                 <ng-select class="select" placeholder="Select Role" name="role" id="role" formControlName="role"
                     [clearable]="false">
                     <ng-option *ngFor="let role of roles" [value]="role.id">{{role.title | titlecase}}</ng-option>
@@ -47,38 +48,43 @@
                 </div>
             </div>
 
-            <div class="form-control required" [ngClass]="errors.password?'mb-6':'mb-1'">
-                <label class="label" for="password">Password</label>
-                <input class="input" type="password" name="password" id="password" formControlName="password"
-                    passwordToggle #password />
+            <ng-container *ngIf="userForm.controls.password.enabled">
+                <div class="form-control required" [ngClass]="errors.password?'mb-6':'mb-1'">
+                    <label class="label" for="password">Password</label>
+                    <input class="input" type="password" name="password" id="password" formControlName="password"
+                        passwordToggle #password />
 
-                <div class="feedback">
-                    <base-error *ngIf="errors.password">{{errors.password}}</base-error>
+                    <div class="feedback">
+                        <base-error *ngIf="errors.password">{{errors.password}}</base-error>
+                    </div>
                 </div>
-            </div>
-            <div class="flex items-center gap-2 mb-6">
-                <button
-                    class="text-sm whitespace-nowrap border border-gray-700 rounded px-2 py-1 cursor-pointer transition hover:bg-gray-700"
-                    type="button" (click)="generatePassword()">Generate Password</button>
-                <button
-                    class="text-sm whitespace-nowrap border border-gray-700 rounded px-2 py-1 cursor-pointer transition hover:bg-gray-700"
-                    type="button" *ngIf="password.value" (click)="copyPassword()"><i class="text-sm ai-copy"></i>
-                    Copy Password</button>
-            </div>
-
-            <div class="form-control mb-6 required">
-                <label class="label" for="confirm_password">Confirm Password</label>
-                <input class="input" type="password" name="confirm_password" id="confirm_password"
-                    formControlName="confirm_password" passwordToggle confirmPasswordValidator="password" />
-
-                <div class="feedback">
-                    <base-error *ngIf="errors.confirm_password">{{errors.confirm_password}}</base-error>
+                <div class="flex items-center gap-2 mb-6">
+                    <button
+                        class="text-sm whitespace-nowrap border border-gray-700 rounded px-2 py-1 cursor-pointer transition hover:bg-gray-700"
+                        type="button" (click)="generatePassword()">
+                        <i class="text-sm ai-key"></i> Generate Password</button>
+                    <button
+                        class="text-sm whitespace-nowrap border border-gray-700 rounded px-2 py-1 cursor-pointer transition hover:bg-gray-700"
+                        type="button" *ngIf="password.value" (click)="copyPassword()"><i class="text-sm ai-copy"></i>
+                        Copy Password</button>
                 </div>
-            </div>
+            </ng-container>
+
+            <ng-container *ngIf="userForm.controls.confirm_password.enabled">
+                <div class="form-control mb-6 required">
+                    <label class="label" for="confirm_password">Confirm Password</label>
+                    <input class="input" type="password" name="confirm_password" id="confirm_password"
+                        formControlName="confirm_password" passwordToggle confirmPasswordValidator="password" />
+
+                    <div class="feedback">
+                        <base-error *ngIf="errors.confirm_password">{{errors.confirm_password}}</base-error>
+                    </div>
+                </div>
+            </ng-container>
         </section>
 
         <div class="flex gap-4 mt-6 justify-end">
-            <button class="btn btn-outline" type="button" routerLink="../">Cancel</button>
+            <button class="btn btn-outline" type="button" routerLink="/admin/users">Cancel</button>
             <button class="btn" type="submit">Save</button>
         </div>
     </form>

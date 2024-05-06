@@ -1,0 +1,11 @@
+<div class="flex items-center justify-center gap-4 text-center py-4 bg-gray-800">
+    <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(-1)"
+        [class.invisible]="pagination.current <= 1">
+        <i class="ai-arrow-left"></i>
+    </button>
+    <p>Page {{pagination.current}} of {{pagination.max}}</p>
+    <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(1)"
+        [class.invisible]="pagination.current >= pagination.max">
+        <i class="ai-arrow-right"></i>
+    </button>
+</div>

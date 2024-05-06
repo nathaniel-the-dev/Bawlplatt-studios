@@ -1,0 +1,60 @@
+<main-dashboard-layout *ngIf="user">
+    <div class="breadcrumbs">
+        <a routerLink="/admin/users">Users</a>
+        <i class="ai-chevron-right-small"></i>
+        <a routerLink="./">{{user.name}}&apos;s Details</a>
+    </div>
+
+    <!-- Account Details -->
+    <h2 class="text-h5 mb-6">Account Details</h2>
+
+    <table class="w-full">
+        <tr class="border-b border-black bg-gray-800">
+            <th class="py-4 px-4 text-start">Name</th>
+            <td>{{user.name}}</td>
+        </tr>
+        <tr class="border-b border-black bg-gray-800">
+            <th class="py-4 px-4 text-start">Email</th>
+            <td>{{user.email}}</td>
+        </tr>
+        <tr class="border-b border-black bg-gray-800">
+            <th class="py-4 px-4 text-start">Contact Number</th>
+            <td>{{(user.contact_num | mask: '(000) 000-0000') || '&mdash;'}}</td>
+        </tr>
+        <tr class="border-b border-black bg-gray-800">
+            <th class="py-4 px-4 text-start">Role</th>
+            <td><span class="badge" [ngClass]="{'bg-slate-700':user.role?.title === 'admin'}">{{user.role.title}}</span>
+            </td>
+        </tr>
+        <tr class="border-b border-black bg-gray-800">
+            <th class="py-4 px-4 text-start">Verified</th>
+            <td><span class="badge bg-green-900" *ngIf="user.verified">
+                    Yes
+                </span>
+                <span class="badge bg-red-900" *ngIf="!user.verified">
+                    No
+                </span>
+            </td>
+        </tr>
+        <tr class="border-b border-black bg-gray-800">
+            <th class="py-4 px-4 text-start">Active</th>
+            <td><span class="badge bg-green-900" *ngIf="user.active">
+                    Yes
+                </span>
+                <span class="badge bg-red-900" *ngIf="!user.active">
+                    No
+                </span>
+            </td>
+        </tr>
+        <tr class="border-b border-black bg-gray-800">
+            <th class="py-4 px-4 text-start">Date Created</th>
+            <td>{{user.created_at | dateTime: 'both'}}</td>
+        </tr>
+    </table>
+
+    <div class="flex justify-end mt-8">
+        <button class="btn btn-outline" routerLink="/admin/users">Back</button>
+    </div>
+
+    <!-- Recent Activity -->
+</main-dashboard-layout>

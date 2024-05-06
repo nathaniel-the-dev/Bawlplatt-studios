@@ -5,6 +5,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    :is(input, select, textarea):focus {
+        --tw-ring-color: theme(colors.bright-red.600) !important;
+    }
+}
+
 @layer components {
     /* Buttons */
     .btn {
@@ -31,7 +37,7 @@
 
     :is(input, select, textarea).input,
     ng-select.ng-select.select .ng-select-container {
-        @apply px-6 py-3 bg-gray-800 bg-opacity-75 rounded text-white;
+        @apply border-0 px-6 py-3 bg-gray-800 bg-opacity-75 rounded text-white;
     }
 
     ng-select.ng-select.select .ng-value-container {
@@ -46,7 +52,7 @@
     }
 
     .form-control .feedback {
-        @apply text-bright-red-600 relative text-left isolate;
+        @apply text-bright-red-600 relative text-left isolate overflow-hidden;
     }
     .form-control .feedback:has(base-error) {
         @apply h-5;

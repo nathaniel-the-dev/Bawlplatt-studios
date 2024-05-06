@@ -20,9 +20,13 @@
 
 -   Implement user management (for admin only)
 
-    -   [ ] User list page
+    -   User list page
+        -   [x] List users
         -   [ ] Add pagination and filtering
-    -   [ ] Add new user (staff)
+    -   [x] Add new user
+    -   [x] Edit user
+    -   [x] View details
+    -   [x] Disable/delete accounts
 
 -   Implement booking management
 

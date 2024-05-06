@@ -19,6 +19,7 @@ import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { BookingDetailsPage } from './pages/bookings/booking-details/booking-details.page';
 import { RedirectOnlyGuard } from './shared/guards/redirect-only.guard';
 import { UserFormPage } from './pages/users/user-form/user-form.page';
+import { UserDetailsPage } from './pages/users/user-details/user-details.page';
 
 const routes: Route[] = [
     { path: 'login', component: LoginPage },
@@ -67,6 +68,14 @@ const routes: Route[] = [
                     {
                         path: 'new',
                         component: UserFormPage,
+                    },
+                    {
+                        path: 'edit/:id',
+                        component: UserFormPage,
+                    },
+                    {
+                        path: ':id',
+                        component: UserDetailsPage,
                     },
                     {
                         path: '',

@@ -1,66 +1,90 @@
 <main-dashboard-layout heading="Users">
     <button class="btn" routerLink="new" actions><i class="text-h6 ai-plus"></i> Add a user</button>
 
-    <!-- Table -->
-    <div class="min-h-[60vh] mt-8 overflow-x-auto max-w-full">
-        <table class="dashboard-table" *ngIf="users.length && !loading; else notFound">
-            <thead class="">
-                <tr class="">
-                    <th class="">Name</th>
-                    <th class="">Email</th>
-                    <th class="">Role</th>
-                    <th class="">Contact Number</th>
-                    <th class="">Verified</th>
-                    <th class="">Date Created</th>
-                    <th class=""></th>
-                </tr>
-            </thead>
-            <tbody class="">
-                <tr class="" *ngFor="let user of users">
-                    <td class="">
-                        <div class="flex items-center gap-2">
-                            <img class="aspect-square object-cover size-10 rounded-full" [src]="user.avatar" alt="">
-                            <p>{{user.name}}</p>
-                        </div>
-                    </td>
-                    <td class="">
-                        <p>{{user.email || '&mdash;'}}</p>
-                    </td>
-                    <td class="">
-                        <span class="badge" [ngClass]="{'bg-slate-700':user.role?.title === 'admin'}">
-                            {{user.role?.title}}
-                        </span>
-                    </td>
-                    <td class="">
-                        <p>{{(user.contact_num | mask: '(000) 000-0000') || '&mdash;'}}</p>
-                    </td>
-                    <td class="">
-                        <span class="badge bg-green-900" *ngIf="user.verified">
-                            Yes
-                        </span>
-                        <span class="badge bg-red-900" *ngIf="!user.verified">
-                            No
-                        </span>
-                    </td>
-                    <td class="">
-                        <p>{{user.created_at | dateTime: 'both'}}</p>
-                    </td>
-                    <td class="">
-                        <div class="flex items-center gap-3"></div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <ng-template #notFound>
-            <app-spinner *ngIf="loading" />
-
-            <div class="py-12 text-center" *ngIf="!loading">
-                <h2 class="text-h4 mb-6">No Users Found</h2>
-                <p>Users will appear here once you create one.</p>
-                <a class="btn" routerLink="new">Create</a>
-            </div>
-
-        </ng-template>
+    <!-- Filtering -->
+    <div class="flex items-center gap-4 mb-12">
+        <form class="relative w-full" (ngSubmit)="search()">
+            <input class="input peer w-full" type="text" name="search" id="search" placeholder="Search users"
+                [(ngModel)]="searchTerm">
+            <button type="submit"
+                class="input peer-focus-visible:opacity-100 text-almost-black text-h6 top-1/2 right-6 absolute transition-opacity -translate-y-1/2 opacity-75">
+                <i class="ai-search text-white"></i>
+            </button>
+        </form>
     </div>
+
+    <!-- Table -->
+    <ng-container *ngIf="users.length && !loading; else notFound">
+        <div class="min-h-[55vh] mt-8 overflow-x-auto max-w-full">
+            <table class="dashboard-table">
+                <thead class="">
+                    <tr class="">
+                        <th class="!pr-11">Name</th>
+                        <th class="">Email</th>
+                        <th class="">Role</th>
+                        <th class="">Contact Number</th>
+                        <th class="">Verified</th>
+                        <th class=""></th>
+                    </tr>
+                </thead>
+                <tbody class="">
+                    <tr class="" *ngFor="let user of users">
+                        <td class="!pr-11">
+                            <div class="flex items-center gap-2">
+                                <img class="aspect-square object-cover size-10 rounded-full" [src]="user.avatar" alt="">
+                                <p>{{user.name}}</p>
+                            </div>
+                        </td>
+                        <td class="">
+                            <p>{{user.email || '&mdash;'}}</p>
+                        </td>
+                        <td class="">
+                            <span class="badge" [ngClass]="{'bg-slate-700':user.role?.title === 'admin'}">
+                                {{user.role?.title}}
+                            </span>
+                        </td>
+                        <td class="">
+                            <p>{{(user.contact_num | mask: '(000) 000-0000') || '&mdash;'}}</p>
+                        </td>
+                        <td class="">
+                            <span class="badge bg-green-900" *ngIf="user.verified">
+                                Yes
+                            </span>
+                            <span class="badge bg-red-900" *ngIf="!user.verified">
+                                No
+                            </span>
+                        </td>
+                        <td class="">
+                            <div class="flex items-center gap-3">
+                                <button class="" *ngIf="!user.verified" title="Send Verification Email"
+                                    (click)="sendVerificationEmail(user)"><i class="text-h6 ai-envelope"></i></button>
+
+                                <button class="" routerLink="{{user.id}}" title="Details"><i
+                                        class="text-h6 ai-eye-open"></i></button>
+
+                                <button class="" routerLink="edit/{{user.id}}" title="Edit"><i
+                                        class="text-h6 ai-pencil"></i></button>
+
+                                <button class="" title="Disable account" (click)="confirmDisableAccount(user)"><i
+                                        class="text-h6 ai-block"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <app-pagination [pagination]="pagination" (changePage)="changePage($event)"></app-pagination>
+    </ng-container>
+
+    <ng-template #notFound>
+        <app-spinner *ngIf="loading" />
+
+        <div class="py-12 text-center" *ngIf="!loading">
+            <h2 class="text-h4 mb-4">No Users Found</h2>
+            <p class="max-w-prose mx-auto mb-4 text-gray-400" *ngIf="!searchTerm">Users will appear here once you create
+                one.</p>
+            <a class="btn" routerLink="new">Create</a>
+        </div>
+
+    </ng-template>
 </main-dashboard-layout>
