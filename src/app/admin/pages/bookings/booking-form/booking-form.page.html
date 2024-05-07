@@ -1,12 +1,10 @@
 <main-dashboard-layout heading="{{ action | titlecase }} A Booking">
     <div class="breadcrumbs">
-        <a routerLink="../">Bookings</a>
+        <a routerLink="/admin/bookings">Bookings</a>
         <i class="ai-chevron-right-small"></i>
         <a routerLink="./">New</a>
     </div>
 
-    <!-- Add accordion style form -->
-    <!-- <form [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onFormSubmit()" #form="ngForm"> -->
     <form [formGroup]="bookingForm" (ngSubmit)="onFormSubmit()" #form="ngForm">
         <!-- Customer Type Form -->
         <section>
@@ -17,13 +15,13 @@
                     <fieldset class="form-control required">
                         <legend class="label mb-2">Who are you booking for?</legend>
 
-                        <div class="space-x-2">
+                        <div class="space-x-3">
                             <label for="customer_type-{{type.name}}" class="cursor-pointer"
                                 *ngFor="let type of customer_types">
                                 <input type="radio" name="customer_type" id="customer_type-{{type.name}}"
                                     class="peer hidden" [value]="type.id" formControlName="customer_type">
                                 <span
-                                    class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">
+                                    class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border-2 border-red-500 rounded hover:bg-red-100/5">
                                     {{type.name | titlecase}}
                                 </span>
                             </label>
@@ -31,19 +29,15 @@
                         </div>
 
                         <div class="feedback">
-                            <base-error
-                                *ngIf="(form.submitted) && bookingForm.get('customer_type')?.hasError('required')">
-                                Please choose an option
+                            <base-error *ngIf="errors.customer_type">
+                                {{errors.customer_type}}
                             </base-error>
                         </div>
                     </fieldset>
-
-
                 </div>
 
                 <div class="form-control required">
                     <label class="label" for="date_booked">Booked For</label>
-                    <!-- <input class="input" type="text" name="booked_for" id="booked_for" formControlName="booked_for"> -->
                     <ng-select [items]="customers" bindLabel="name" bindValue="id" class="select"
                         formControlName="booked_for" id="booked_for" [clearable]="false">
                         <ng-template ng-option-tmp let-item="item" let-index="index" let-search="name">
@@ -55,9 +49,8 @@
                     </ng-select>
 
                     <div class="feedback">
-                        <base-error
-                            *ngIf="bookingForm.get('booked_for')?.invalid && bookingForm.get('booked_for')?.hasError('async')">
-                            {{bookingForm.get('booked_for')?.errors!['async']}}
+                        <base-error *ngIf="errors.booked_for">
+                            {{errors.booked_for}}
                         </base-error>
                     </div>
                 </div>
@@ -68,16 +61,16 @@
         <section>
             <h2 class="text-h5 my-4">2. Session Information</h2>
 
-            <div class="border-bright-red-500/50 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1"
-                data-expanded="true">
+            <div
+                class="border-bright-red-500/50 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1">
                 <div class="form-control required">
                     <label class="label" for="date_booked">Session Date</label>
-                    <input class="input" type="date" name="date_booked" id="date_booked" formControlName="date_booked">
+                    <input class="input" type="date" name="date_booked" id="date_booked" formControlName="date_booked"
+                        [min]="minDate">
 
                     <div class="feedback">
-                        <base-error
-                            *ngIf="bookingForm.get('date_booked')?.invalid && bookingForm.get('date_booked')?.hasError('async')">
-                            {{bookingForm.get('date_booked')?.errors!['async']}}
+                        <base-error *ngIf="errors.date_booked">
+                            {{errors.date_booked}}
                         </base-error>
                     </div>
                 </div>
@@ -87,69 +80,33 @@
                     <input class="input" type="time" name="time_booked" id="date_booked-time"
                         formControlName="time_booked">
 
-                    <base-error
-                        *ngIf="(form.submitted || bookingForm.get('time_booked')?.dirty) && bookingForm.get('time_booked')?.hasError('required')">
-                        Please select a time
-                    </base-error>
-                    <base-error
-                        *ngIf="(form.submitted || bookingForm.get('time_booked')?.dirty) && bookingForm.get('time_booked')?.hasError('range')">
-                        Can only book a session between 8:00AM - 8:00PM
-                    </base-error>
+                    <div class="feedback">
+                        <base-error *ngIf="errors.time_booked">
+                            {{errors.time_booked}}
+                        </base-error>
+                    </div>
                 </div>
-
-
 
                 <fieldset class="form-control required">
                     <legend class="label mb-4">Duration</legend>
 
-                    <div class="flex flex-wrap gap-3">
-                        <label for="duration-30mins" class="cursor-pointer">
-                            <input class="peer hidden" type="radio" name="duration_in_minutes" id="duration-30mins"
-                                [value]="30" formControlName="duration_in_minutes">
+                    <div class="flex flex-wrap gap-4">
+                        <label for="duration-{{duration.value}}" class="cursor-pointer"
+                            *ngFor="let duration of durations">
+                            <input class="peer hidden" type="radio" name="duration_in_minutes"
+                                id="duration-{{duration.value}}" [value]="duration.value"
+                                formControlName="duration_in_minutes">
                             <span
-                                class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">30
-                                mins.</span>
-                        </label>
-                        <label for="duration-1hr" class="cursor-pointer">
-                            <input class="peer hidden" type="radio" name="duration_in_minutes" id="duration-1hr"
-                                [value]="60" formControlName="duration_in_minutes">
-                            <span
-                                class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">1
-                                hr.</span>
-                        </label>
-                        <label for="duration-2hrs" class="cursor-pointer">
-                            <input class="peer hidden" type="radio" name="duration_in_minutes" id="duration-2hrs"
-                                [value]="120" formControlName="duration_in_minutes">
-                            <span
-                                class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">2
-                                hrs.</span>
-                        </label>
-                        <label for="duration-3hrs" class="cursor-pointer">
-                            <input class="peer hidden" type="radio" name="duration_in_minutes" id="duration-3hrs"
-                                [value]="180" formControlName="duration_in_minutes">
-                            <span
-                                class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">3
-                                hrs.</span>
-                        </label>
-                        <label for="duration-4hrs" class="cursor-pointer">
-                            <input class="peer hidden" type="radio" name="duration_in_minutes" id="duration-4hrs"
-                                [value]="240" formControlName="duration_in_minutes">
-                            <span
-                                class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border border-red-500 rounded">4
-                                hrs.</span>
+                                class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border-2 border-red-500 rounded hover:bg-red-100/5">{{duration.label}}</span>
                         </label>
                     </div>
 
                     <div class="feedback">
-                        <base-error
-                            *ngIf="bookingForm.get('duration')?.invalid && bookingForm.get('duration')?.hasError('async')">
-                            {{bookingForm.get('duration')?.errors!['async']}}
+                        <base-error *ngIf="errors.duration_in_minutes">
+                            {{errors.duration_in_minutes}}
                         </base-error>
                     </div>
                 </fieldset>
-
-
-
             </div>
         </section>
 
@@ -157,33 +114,44 @@
         <section>
             <h2 class="text-h5 my-4">3. Requirements</h2>
 
-            <div class="border-bright-red-500/50 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1"
-                data-expanded="true">
+            <div
+                class="border-bright-red-500/50 py-8 pl-8 my-2 border-l-4 overflow-hidden transition-[max-height] ml-1">
                 <div class="form-control">
                     <label class="label" for="num_of_musicians">Number of Musicians</label>
                     <input class="input w-1/3" type="number" name="num_of_musicians" id="num_of_musicians"
                         formControlName="num_of_musicians">
 
                     <div class="feedback">
-                        <base-error
-                            *ngIf="bookingForm.get('num_of_musicians')?.invalid && bookingForm.get('num_of_musicians')?.hasError('async')">
-                            {{bookingForm.get('num_of_musicians')?.errors!['async']}}
+                        <base-error *ngIf="errors.num_of_musicians">
+                            {{errors.num_of_musicians}}
                         </base-error>
                     </div>
                 </div>
 
-                <div class="form-control">
-                    <label class="label" for="equipment_needed">Equipment Needed</label>
-                    <input class="input" type="text" name="equipment_needed" id="equipment_needed"
-                        formControlName="equipment_needed">
+                <fieldset class="form-control required">
+                    <legend class="label mb-4">Equipment Needed</legend>
+
+                    <div class="flex flex-wrap gap-4">
+                        <div class="border border-gray-400 p-2 rounded"
+                            *ngFor="let item of equipment_available | keyvalue">
+                            <span><i class="ai-music"></i> {{item.key}}</span>
+
+                            <span class="flex items-center justify-center gap-1 text-sm text-gray-400">
+                                <button class="" type="button" (click)="updateEquipmentValue(item.key, 1)"
+                                    [disabled]="!item.value"><i class="ai-plus"></i></button>
+                                <span>{{getEquipmentValue(item.key)}}/{{item.value}}</span>
+                                <button class="" type="button" (click)="updateEquipmentValue(item.key, -1)"
+                                    [disabled]="!item.value"><i class="ai-minus"></i></button>
+                            </span>
+                        </div>
+                    </div>
 
                     <div class="feedback">
-                        <base-error
-                            *ngIf="bookingForm.get('equipment_needed')?.invalid && bookingForm.get('equipment_needed')?.hasError('async')">
-                            {{bookingForm.get('equipment_needed')?.errors!['async']}}
+                        <base-error *ngIf="errors.equipment_needed">
+                            {{errors.equipment_needed}}
                         </base-error>
                     </div>
-                </div>
+                </fieldset>
 
                 <div class="form-control">
                     <label class="label" for="additional_requirements">Additional Requirements</label>
@@ -191,17 +159,16 @@
                         cols="30" rows="5" formControlName="additional_requirements"></textarea>
 
                     <div class="feedback">
-                        <base-error
-                            *ngIf="bookingForm.get('additional_requirements')?.invalid && bookingForm.get('additional_requirements')?.hasError('async')">
-                            {{bookingForm.get('additional_requirements')?.errors!['async']}}
+                        <base-error *ngIf="errors.additional_requirements">
+                            {{errors.additional_requirements}}
                         </base-error>
                     </div>
                 </div>
             </div>
         </section>
 
-        <div class="flex gap-4 mt-4">
-            <button class="btn btn-outline" type="button" routerLink="../">Cancel</button>
+        <div class="flex gap-4 mt-4 justify-end">
+            <button class="btn btn-outline" type="button" routerLink="/admin/bookings">Cancel</button>
             <button class="btn" type="submit"
                 [disabled]="(bookingForm.dirty || form.submitted) && bookingForm.invalid">Finish</button>
         </div>

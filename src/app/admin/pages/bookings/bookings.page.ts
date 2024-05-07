@@ -17,10 +17,7 @@ export class BookingsPage implements OnInit {
     isSearching: boolean = false;
     searchQuery: string = '';
     search(): void {
-        this.isSearching = !!this.searchQuery;
-
-        this.filterOpts.search = this.searchQuery;
-        this.filterOpts.page = 1;
+        this.pagination.current = 1;
         this.getAllBookings();
     }
 
@@ -42,15 +39,14 @@ export class BookingsPage implements OnInit {
     }
 
     // Pagination
-    page: number = 1;
-    totalPages: number = 1;
-    changePage(dir: -1 | 1): void {
-        const newPage =
-            dir === -1
-                ? Math.max(0, this.page + dir)
-                : Math.min(this.totalPages, this.page + dir);
+    public pagination = {
+        current: 1,
+        max: 1,
+        limit: 5,
+    };
 
-        this.filterOpts.page = newPage;
+    public changePage(page: any) {
+        this.pagination.current = page;
         this.getAllBookings();
     }
 
@@ -67,13 +63,6 @@ export class BookingsPage implements OnInit {
         },
     };
 
-    // Accordion options
-    selectedListItem?: number;
-    toggleItemDetails(index: number): void {
-        this.selectedListItem =
-            index !== this.selectedListItem ? index : undefined;
-    }
-
     constructor(
         private apiService: ApiService,
         private toastService: ToastService
@@ -85,54 +74,54 @@ export class BookingsPage implements OnInit {
 
     private async getAllBookings() {
         this.loading = true;
-        const { data } = await this.apiService.supabase
+        const query = this.apiService.supabase
             .from('bookings')
-            .select('*, customer_type(name)');
+            .select('*, customer_type(name), booked_for!inner(name)');
+        if (this.searchQuery) {
+            query.textSearch('booked_for.name', this.searchQuery);
+        }
+
+        const { data } = await this.apiService.paginateQuery(
+            query,
+            this.pagination
+        );
         this.loading = false;
 
         if (data) {
             this.bookings = data;
-            // this.totalPages = (res.data!['page'] as any).maxNumOfPages;
-            // this.page = (res.data!['page'] as any).current;
         }
     }
 
-    toggleBookingValue(
-        id: string,
-        field: 'completed' | 'payed',
-        value: boolean = true
-    ): void {
-        const data = {} as any;
-        data[field] = value;
+    async deleteBooking(id: number): Promise<void> {
+        const confirmation = await this.toastService.openConfirmDeleteModal({
+            title: 'Are you sure you want to delete this booking?',
+            text: `This action cannot be undone.`,
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'No',
+        });
 
-        // const toggleSub = this.apiService
-        //     .approveBooking(id, data)
-        //     .subscribe((res) => {
-        //         if (res.status === 'success') this.getAllBookings();
-        //     });
-        // this.subscriptions.add(toggleSub);
-    }
+        if (!confirmation) return;
 
-    deleteBooking(id: string): void {
-        this.toastService
-            .openConfirmDeleteModal({
-                title: 'Are you sure you want to delete this booking?',
-                text: `This action cannot be undone.`,
-                confirmButtonText: 'Yes, delete',
-                cancelButtonText: 'No',
-            })
-            .then((confirmation: boolean) => {
-                if (!confirmation) return;
+        // Delete booking
+        const { error } = await this.apiService.supabase
+            .from('bookings')
+            .delete()
+            .eq('id', id);
 
-                // const deleteSub = this.apiService
-                //     .deleteBooking(id)
-                //     .subscribe((res) => {
-                //         if (res === null) {
-                //             this.getAllBookings();
-                //             this.selectedListItem = undefined;
-                //         }
-                //     });
-                // this.subscriptions.add(deleteSub);
-            });
+        if (!error) {
+            this.toastService.createToast(
+                'Success',
+                'Booking removed successfully',
+                'success'
+            );
+
+            this.getAllBookings();
+        } else {
+            this.toastService.createToast(
+                'Error',
+                'There was an error deleting the booking',
+                'error'
+            );
+        }
     }
 }

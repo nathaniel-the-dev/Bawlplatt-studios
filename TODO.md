@@ -32,6 +32,7 @@
 
     -   [ ] List table with filtering and sorting
     -   [ ] Create new booking
+        -   Add icons (https://iconscout.com/icon-pack/musical-instruments-4)
     -   [ ] Update booking
     -   [ ] Change booking status
     -   [ ] Delete booking (soft delete)

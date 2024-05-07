@@ -50,7 +50,9 @@ export class UserListPage implements OnInit {
             .order('created_at', { ascending: false });
 
         if (this.searchTerm) {
-            query = query.ilike('name', `%${this.searchTerm}%`);
+            query = query
+                .ilike('name', `%${this.searchTerm}%`)
+                .ilike('email', `%${this.searchTerm}%`);
         }
 
         const { data: profiles } = await this.apiService.paginateQuery(
@@ -70,6 +72,7 @@ export class UserListPage implements OnInit {
     }
 
     public search(): void {
+        this.pagination.current = 1;
         this.getUsers();
     }
 

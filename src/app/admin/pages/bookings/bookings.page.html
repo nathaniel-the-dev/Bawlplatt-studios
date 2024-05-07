@@ -27,66 +27,60 @@
 
 
     <!-- Table -->
-    <div class="min-h-[60vh] overflow-x-auto">
-        <table class="dashboard-table" *ngIf="bookings.length && !loading; else notFound">
-            <thead class="">
-                <tr class="">
-                    <th class="">Booked For</th>
-                    <th class="">Date Booked</th>
-                    <th class="">Duration</th>
-                    <th class="">Cost</th>
-                    <th class="">Booked On</th>
-                    <th class="">Status</th>
-                    <th class="">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="">
-                <tr class="" *ngFor="let booking of bookings">
-                    <td class="">
-                        <p>{{booking.customer_type?.name || '-'}}</p>
-                        <p>{{booking.booked_for?.name || '-'}}</p>
-                    </td>
-                    <td class="">
-                        <p>{{booking.date_booked | dateTime: 'date'}}</p>
-                        <p>{{booking.time_booked | dateTime: 'time'}}</p>
-                    </td>
-                    <td class="">
-                        <p>{{(booking.duration_in_minutes | duration) || '-'}}</p>
-                    </td>
-                    <td class="">
-                        <p>{{booking.transaction?.amount || '-'}}</p>
-                    </td>
-                    <td class="">
-                        <p>{{booking.created_at | dateTime: 'date'}}</p>
-                        <p>{{booking.created_at | dateTime: 'time'}}</p>
-                    </td>
-                    <td class="">
-                        <p>{{booking.status}}</p>
-                    </td>
-                    <td class="">
-                        <div class="flex items-center gap-3">
-                            <button class="btn btn-sm btn-primary" routerLink="edit/{{booking.id}}"><i
-                                    class="ai-pencil"></i></button>
-                            <button class="btn btn-sm btn-primary" routerLink="{{booking.id}}"><i
-                                    class="ai-arrow-right"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <div>
+        <div class="min-h-[60vh] overflow-x-auto">
+            <table class="dashboard-table" *ngIf="bookings.length && !loading; else notFound">
+                <thead class="">
+                    <tr class="">
+                        <th class="">Booked For</th>
+                        <th class="">Date Booked</th>
+                        <th class="">Duration</th>
+                        <th class="">Cost</th>
+                        <th class="">Booked On</th>
+                        <th class="">Status</th>
+                        <th class="">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="">
+                    <tr class="" *ngFor="let booking of bookings">
+                        <td class="">
+                            <p>{{booking.customer_type?.name || '-'}}</p>
+                            <p>{{booking.booked_for?.name || '-'}}</p>
+                        </td>
+                        <td class="">
+                            <p>{{booking.date_booked | dateTime: 'date'}}</p>
+                            <p>{{booking.time_booked | dateTime: 'time'}}</p>
+                        </td>
+                        <td class="">
+                            <p>{{(booking.duration_in_minutes | duration) || '-'}}</p>
+                        </td>
+                        <td class="">
+                            <p>{{booking.transaction?.amount || '-'}}</p>
+                        </td>
+                        <td class="">
+                            <p>{{booking.created_at | dateTime: 'date'}}</p>
+                            <p>{{booking.created_at | dateTime: 'time'}}</p>
+                        </td>
+                        <td class="">
+                            <p>{{booking.status}}</p>
+                        </td>
+                        <td class="">
+                            <div class="flex items-center gap-3">
+                                <button class="" routerLink="{{booking.id}}"><i
+                                        class="text-h6 ai-eye-open"></i></button>
+                                <button class="" routerLink="edit/{{booking.id}}"><i
+                                        class="text-h6 ai-pencil"></i></button>
 
-    <!-- Pagination -->
-    <div class="flex items-center justify-center gap-4">
-        <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(-1)"
-            [class.invisible]="page <= 1">
-            <i class="ai-arrow-left"></i>
-        </button>
-        <p>Page {{page}} of {{totalPages}}</p>
-        <button class="rounded-full py-0.5 px-1.5 hover:bg-gray-800 bg-opacity-50" (click)="changePage(1)"
-            [class.invisible]="page >= totalPages">
-            <i class="ai-arrow-right"></i>
-        </button>
+                                <button class="" (click)="deleteBooking(booking.id)"><i
+                                        class="text-h6 ai-trash-bin"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <app-pagination [pagination]="pagination" (changePage)="changePage($event)"></app-pagination>
     </div>
 
     <!-- No Bookings Found -->
@@ -96,7 +90,7 @@
         <div class="py-12 text-center" *ngIf="!loading">
             <h2 class="text-h4 mb-6">No Bookings Found</h2>
 
-            <div [ngSwitch]="isSearching">
+            <div [ngSwitch]="!!searchQuery">
                 <div *ngSwitchCase="true">
                     <p class="max-w-prose mx-auto">No bookings for that search term were found. Try searching by a
                         different name.</p>

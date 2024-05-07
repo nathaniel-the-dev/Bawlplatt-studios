@@ -29,21 +29,21 @@ export class BookingFormPage implements OnInit {
 
     public bookingForm = this.fb.group({
         // Customer type
-        customer_type: [null, [Validators.required]],
-        booked_for: [null, [Validators.required]],
+        customer_type: [null as string | null, [Validators.required]],
+        booked_for: [null as string | null, [Validators.required]],
 
         // Session information
-        date_booked: [null, [Validators.required]],
+        date_booked: [null as string | null, [Validators.required]],
         time_booked: [
-            null,
+            null as string | null,
             [Validators.required, ValidateTime('08:00', '20:00')],
         ],
-        duration_in_minutes: [null, [Validators.required]],
+        duration_in_minutes: [null as string | null, [Validators.required]],
 
         // Requirements
-        num_of_musicians: [null, [Validators.required]],
-        equipment_needed: [null], // Format: {drums: 2, guitar: 1}
-        additional_requirements: [null],
+        num_of_musicians: [null as string | null, [Validators.required]],
+        equipment_needed: [{} as Partial<typeof this.equipment_available>], // Format: {drums: 2, guitar: 1}
+        additional_requirements: [null as string | null],
     });
 
     public errors: FormErrors = {
@@ -57,10 +57,32 @@ export class BookingFormPage implements OnInit {
         additional_requirements: '',
     };
 
+    // Form settings
     public customer_types: any[] = [];
     public customers: any[] = [];
+    public durations = [
+        { value: 30, label: '30 mins.' },
+        { value: 60, label: '1 hr.' },
+        { value: 120, label: '2 hrs.' },
+        { value: 180, label: '3 hrs.' },
+        { value: 240, label: '4 hrs.' },
+    ];
+    public equipment_available = {
+        guitars: 3,
+        drums: 2,
+        pianos: 2,
+        bass: 1,
+        microphones: 5,
+    };
+
+    get minDate() {
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        return date.toISOString().split('T')[0];
+    }
 
     public action: 'add' | 'edit' = 'add';
+    private bookingId?: string;
 
     constructor(
         private apiService: ApiService,
@@ -72,6 +94,7 @@ export class BookingFormPage implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        // Set form options
         this.setFormOptions();
 
         // Get booking data if attempting to edit
@@ -111,6 +134,25 @@ export class BookingFormPage implements OnInit {
             });
     }
 
+    getEquipmentValue(key: string) {
+        let label = key as keyof typeof this.equipment_available;
+        return this.bookingForm.controls.equipment_needed.value?.[label] || 0;
+    }
+
+    updateEquipmentValue(key: string, value: number) {
+        const control = this.bookingForm.controls.equipment_needed;
+
+        control.setValue({
+            ...control.value,
+            [key]: Math.min(
+                Math.max((this.getEquipmentValue(key) || 0) + value, 0),
+                this.equipment_available[
+                    key as keyof typeof this.equipment_available
+                ]
+            ),
+        });
+    }
+
     public async onFormSubmit(): Promise<void> {
         const formResponse = this.validatorService.validate<
             typeof this.bookingForm
@@ -121,22 +163,6 @@ export class BookingFormPage implements OnInit {
             return;
         }
 
-        // ! Remove later
-        const mockBooking = {
-            customer_type: 1,
-            booked_for: 2,
-
-            // Session information
-            date_booked: '2024-04-30',
-            time_booked: '08:00:00',
-            duration_in_minutes: 60,
-
-            // Requirements
-            num_of_musicians: 3,
-            equipment_needed: { drums: 2, guitar: 1 },
-            additional_requirements: 'Make sure autotune and reverb are on.',
-        };
-
         // Send the corresponding request based on the action
         if (this.action === 'add') await this.createBooking();
         if (this.action === 'edit') await this.updateBooking();
@@ -145,8 +171,9 @@ export class BookingFormPage implements OnInit {
     private async createBooking() {
         const res = await this.apiService.supabase
             .from('bookings')
-            .insert(this.bookingForm.value);
-        if (res.status === 200) {
+            .insert([this.bookingForm.value]);
+
+        if (res.status === 201) {
             this.router.navigateByUrl('/admin/bookings');
             this.toastService.createToast(
                 'Booking Created',
@@ -156,50 +183,33 @@ export class BookingFormPage implements OnInit {
     }
 
     private async updateBooking() {
-        // TODO : Update booking
-    }
+        // Update booking
+        const res = await this.apiService.supabase
+            .from('bookings')
+            .update(this.bookingForm.value)
+            .eq('id', this.bookingId);
 
-    private getBookingFromParams(id: string) {
-        // Get booking data
-        // const bookingSub = this.apiService
-        //     .getBookingById(id)
-        //     .subscribe((res) => {
-        //         // Populate fields with provided data and enable required forms
-        //         this.booking = res.data!['booking'];
-        //         if (this.booking.customer_type === 'artist') {
-        //             this._populateValues(this.artistForm, this.booking.artist);
-        //             this._setFormState(this.artistForm, 'enabled');
-        //         }
-        //         if (this.booking.customer_type === 'band') {
-        //             this._populateValues(this.bandForm, this.booking.band);
-        //             this._setFormState(this.bandForm, 'enabled');
-        //         }
-        //         this._populateValues(this.bookingForm, this.booking);
-        //         // Switch action to 'edit'
-        //         this.action = 'edit';
-        //     });
-        // this.subscriptions.add(bookingSub);
-    }
-
-    private _populateValues(form: FormGroup, data: any) {
-        const keys = Object.keys(data);
-        const obj: any = {};
-
-        Object.keys(form.value).forEach((control) => {
-            if (keys.includes(control)) obj[control] = data[control];
-            else obj[control] = null;
-        });
-
-        if (obj.start_date) {
-            obj.start_time = new Date(obj.start_date)
-                .toISOString()
-                .split('T')[1]
-                .slice(0, 5);
-            obj.start_date = new Date(obj.start_date)
-                .toISOString()
-                .split('T')[0];
+        if (res.status === 204) {
+            this.router.navigateByUrl('/admin/bookings');
+            this.toastService.createToast(
+                'Booking Updated',
+                'The session was updated successfully'
+            );
         }
+    }
 
-        form.patchValue(obj);
+    private async getBookingFromParams(id: string) {
+        // Get booking data
+        const { data: booking } = await this.apiService.supabase
+            .from('bookings')
+            .select('*')
+            .eq('id', id)
+            .maybeSingle();
+
+        if (!booking) this.router.navigateByUrl('/404');
+        else {
+            this.bookingId = id;
+            this.bookingForm.patchValue(booking);
+        }
     }
 }

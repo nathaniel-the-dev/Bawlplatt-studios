@@ -1,8 +1,56 @@
-<main-dashboard-layout heading="{Booking Title}">
+<main-dashboard-layout heading="Booking Details" *ngIf="booking">
     <div class="breadcrumbs">
-        <a routerLink="../">Bookings</a>
+        <a routerLink="/admin/bookings">Bookings</a>
         <i class="ai-chevron-right-small"></i>
         <a routerLink="./">Details</a>
     </div>
+
+    <section class="mb-8">
+        <h2 class="text-h5 mb-6">Customer</h2>
+
+        <table class="w-full">
+            <tr class="border-b border-black bg-gray-800">
+                <th class="py-4 px-4 text-start">Booked For</th>
+                <td>
+                    <div class="flex items-center gap-2">
+                        <img src="{{booking.booked_for.avatar}}" alt=""
+                            class="w-8 rounded-full aspect-square object-cover">
+                        <span>{{booking.booked_for.name}}</span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="border-b border-black bg-gray-800">
+                <th class="py-4 px-4 text-start">Customer Type</th>
+                <td>{{booking.customer_type.name | titlecase}}</td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-h5 mb-6">Session</h2>
+
+        <table class="w-full">
+            <tr class="border-b border-black bg-gray-800">
+                <th class="py-4 px-4 text-start">Date Booked</th>
+                <td>
+                    {{booking.date_booked | dateTime: 'date'}}
+                </td>
+            </tr>
+            <tr class="border-b border-black bg-gray-800">
+                <th class="py-4 px-4 text-start">Time Booked</th>
+                <td>
+                    {{booking.time_booked | dateTime: 'time'}}
+                </td>
+            </tr>
+            <tr class="border-b border-black bg-gray-800">
+                <th class="py-4 px-4 text-start">Duration</th>
+                <td>
+                    {{(booking.duration_in_minutes | duration) || '-'}}
+                </td>
+            </tr>
+
+            <!-- TODO Add the rest of the details -->
+        </table>
+    </section>
 
 </main-dashboard-layout>
