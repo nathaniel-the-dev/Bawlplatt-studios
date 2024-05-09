@@ -18,7 +18,7 @@ Bawlplatt Studios is a music rehearsal studio based in urban Jamaica. The owners
 
 ## Preview
 
-Visit [https://bawlplattstudios.com/](https://bawlplattstudios.com/) to see the live demo.
+[Visit to see the live demo](https://bawlplatt-studios.netlify.app/)
 
 ## License
 
