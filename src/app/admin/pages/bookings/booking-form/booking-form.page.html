@@ -134,14 +134,15 @@
                     <div class="flex flex-wrap gap-4">
                         <div class="border border-gray-400 p-2 rounded"
                             *ngFor="let item of equipment_available | keyvalue">
-                            <span><i class="ai-music"></i> {{item.key}}</span>
+                            <span><lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
+                                {{item.key}}</span>
 
-                            <span class="flex items-center justify-center gap-1 text-sm text-gray-400">
+                            <span class="flex items-center justify-between gap-1 text-sm text-gray-400">
                                 <button class="" type="button" (click)="updateEquipmentValue(item.key, 1)"
-                                    [disabled]="!item.value"><i class="ai-plus"></i></button>
-                                <span>{{getEquipmentValue(item.key)}}/{{item.value}}</span>
+                                    [disabled]="!item.value.limit"><i class="ai-plus"></i></button>
+                                <span>{{getEquipmentLimit(item.key)}}/{{item.value.limit}}</span>
                                 <button class="" type="button" (click)="updateEquipmentValue(item.key, -1)"
-                                    [disabled]="!item.value"><i class="ai-minus"></i></button>
+                                    [disabled]="!item.value.limit"><i class="ai-minus"></i></button>
                             </span>
                         </div>
                     </div>

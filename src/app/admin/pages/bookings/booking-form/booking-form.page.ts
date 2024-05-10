@@ -1,15 +1,15 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import {
-    FormBuilder,
-    FormGroup,
-    FormGroupDirective,
-    Validators,
-} from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroupDirective, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
+import {
+    AVAILABLE_EQUIPMENT,
+    BOOKING_DURATIONS,
+    MAX_MUSICIANS_COUNT,
+} from 'src/app/shared/config/constants';
 
 type FormErrors = Record<
     keyof Omit<
@@ -17,6 +17,13 @@ type FormErrors = Record<
         'id'
     >,
     string
+>;
+
+type EquipmentNeeded = Partial<
+    Record<
+        keyof typeof BookingFormPage.prototype.equipment_available,
+        number | undefined
+    >
 >;
 
 @Component({
@@ -41,8 +48,11 @@ export class BookingFormPage implements OnInit {
         duration_in_minutes: [null as string | null, [Validators.required]],
 
         // Requirements
-        num_of_musicians: [null as string | null, [Validators.required]],
-        equipment_needed: [{} as Partial<typeof this.equipment_available>], // Format: {drums: 2, guitar: 1}
+        num_of_musicians: [
+            null as string | null,
+            [Validators.required, Validators.max(MAX_MUSICIANS_COUNT)],
+        ],
+        equipment_needed: [{} as EquipmentNeeded],
         additional_requirements: [null as string | null],
     });
 
@@ -60,20 +70,8 @@ export class BookingFormPage implements OnInit {
     // Form settings
     public customer_types: any[] = [];
     public customers: any[] = [];
-    public durations = [
-        { value: 30, label: '30 mins.' },
-        { value: 60, label: '1 hr.' },
-        { value: 120, label: '2 hrs.' },
-        { value: 180, label: '3 hrs.' },
-        { value: 240, label: '4 hrs.' },
-    ];
-    public equipment_available = {
-        guitars: 3,
-        drums: 2,
-        pianos: 2,
-        bass: 1,
-        microphones: 5,
-    };
+    public durations = BOOKING_DURATIONS;
+    public equipment_available = AVAILABLE_EQUIPMENT;
 
     get minDate() {
         const date = new Date();
@@ -134,7 +132,7 @@ export class BookingFormPage implements OnInit {
             });
     }
 
-    getEquipmentValue(key: string) {
+    getEquipmentLimit(key: string): number {
         let label = key as keyof typeof this.equipment_available;
         return this.bookingForm.controls.equipment_needed.value?.[label] || 0;
     }
@@ -145,10 +143,10 @@ export class BookingFormPage implements OnInit {
         control.setValue({
             ...control.value,
             [key]: Math.min(
-                Math.max((this.getEquipmentValue(key) || 0) + value, 0),
+                Math.max(this.getEquipmentLimit(key) + value, 0),
                 this.equipment_available[
                     key as keyof typeof this.equipment_available
-                ]
+                ].limit
             ),
         });
     }

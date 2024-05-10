@@ -170,7 +170,14 @@ export class ApiService {
 
     async logout(): Promise<boolean> {
         const { error } = await supabase.auth.signOut();
-        if (error) this.handleErrors(error);
-        return Boolean(error);
+        if (error) {
+            this.handleErrors(error);
+            return false;
+        }
+
+        this.user = null;
+        this.user$.next(this.user);
+
+        return true;
     }
 }

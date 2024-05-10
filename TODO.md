@@ -31,8 +31,8 @@
 -   Implement booking management
 
     -   [ ] List table with filtering and sorting
-    -   [ ] Create new booking
-        -   Add icons (https://iconscout.com/icon-pack/musical-instruments-4)
+    -   [x] Create new booking
+        -   Add validation for dates and times
     -   [ ] Update booking
     -   [ ] Change booking status
     -   [ ] Delete booking (soft delete)

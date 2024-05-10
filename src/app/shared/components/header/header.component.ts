@@ -5,6 +5,7 @@ import {
     ViewChild,
     ElementRef,
 } from '@angular/core';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-header',
@@ -18,7 +19,11 @@ export class HeaderComponent implements AfterViewInit {
     private prevScrollPosition: number = 0;
     public showMenu = false;
 
-    constructor() {}
+    get isAuthenticated() {
+        return !!this.apiService.user;
+    }
+
+    constructor(private apiService: ApiService) {}
 
     ngAfterViewInit(): void {
         if (this.hideOnScroll)

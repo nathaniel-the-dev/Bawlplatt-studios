@@ -9,7 +9,8 @@
                 <li><a class="nav-link" routerLink="/home">Home</a></li>
                 <li><a class="nav-link" routerLink="/about">About</a></li>
                 <li><a class="nav-link" routerLink="/contact">Contact Us</a></li>
-                <li><a class="btn py-2.5 ml-2" routerLink="/booking/new">Book Now</a></li>
+                <li><a class="btn py-2.5 ml-2" [routerLink]="isAuthenticated ? '/booking/new' : '/login'">Book Now</a>
+                </li>
             </ul>
 
             <button class="lg:hidden scale-125" (click)="toggleMenu()">
@@ -30,6 +31,6 @@
         </li>
         <li><a class="nav-link" routerLink="/about">About</a></li>
         <li><a class="nav-link" routerLink="/contact">Contact Us</a></li>
-        <li><a class="btn py-2.5 ml-2" routerLink="/booking/new">Book Now</a></li>
+        <li><a class="btn py-2.5 ml-2" [routerLink]="isAuthenticated ? '/booking/new' : '/login'">Book Now</a></li>
     </ul>
 </div>

@@ -4,7 +4,7 @@
     </nav>
 
     <header class="flex items-center justify-between mb-6" *ngIf="heading">
-        <h2 class="text-h3">{{heading | titlecase}}</h2>
+        <h2 class="text-h3 font-heading">{{heading | titlecase}}</h2>
 
         <ng-content select="[actions]"></ng-content>
     </header>

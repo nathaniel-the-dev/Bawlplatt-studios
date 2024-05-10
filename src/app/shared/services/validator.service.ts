@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
+import errors from '../config/errors';
 
 @Injectable({
     providedIn: 'root',
@@ -72,6 +73,12 @@ export class ValidatorService {
         if (!value) return '';
 
         let fieldName = field;
+        if (
+            errors.validations.hasOwnProperty(field) &&
+            errors.validations[field].hasOwnProperty(key)
+        ) {
+            return errors.validations[field][key];
+        }
 
         // Separate field names with spaces
         fieldName = fieldName.replace(/([A-Z])/g, ' $1').trim();

@@ -11,6 +11,14 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { DurationPipe } from './pipes/duration.pipe';
 import { NgxMaskModule } from 'ngx-mask';
 import { PasswordToggleDirective } from './directives/password-toggle.directive';
+import {
+    LucideAngularModule,
+    Guitar,
+    Speaker,
+    Drum,
+    Piano,
+    Mic2,
+} from 'lucide-angular';
 
 const declarations = [
     ErrorComponent,
@@ -26,7 +34,12 @@ const declarations = [
     FooterComponent,
 ];
 
-const modules: any[] = [RouterModule, NgSelectModule, NgxMaskModule.forRoot()];
+const modules: any[] = [
+    RouterModule,
+    NgSelectModule,
+    NgxMaskModule.forRoot(),
+    LucideAngularModule.pick({ Guitar, Speaker, Drum, Piano, Mic2 }),
+];
 
 @NgModule({
     declarations: [...declarations],

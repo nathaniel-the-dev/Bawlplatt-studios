@@ -4,7 +4,7 @@
     <div class="py-16">
         <h1 class="text-h2 mb-4 text-center">Book a session</h1>
 
-        <div class="w-full max-w-xl px-12 py-4 mx-auto bg-gray-800 bg-opacity-50">
+        <div class="rounded-lg w-full max-w-xl px-12 pb-4 pt-6 mx-auto bg-gray-800 bg-opacity-50">
             <form class="" [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onBookingFormSubmit()">
 
                 <div class="flex items-center justify-between gap-4 mb-8" *ngIf="currentStep < 4">

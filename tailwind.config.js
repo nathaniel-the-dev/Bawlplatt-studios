@@ -1,3 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: ["./src/**/*.{html,ts}"],
@@ -5,23 +7,26 @@ module.exports = {
         container: {
             center: true,
             padding: {
-                lg: "4rem",
                 DEFAULT: "1rem",
+                sm: "2rem",
+                lg: "4rem",
+                xl: "5rem",
+                "2xl": "6rem",
             },
         },
 
-        fontSize: {
-            h1: "3.815rem",
-            h2: "3.052rem",
-            h3: "2.441rem",
-            h4: "1.953rem",
-            h5: "1.563rem",
-            h6: "1.25rem",
-            base: "16px",
-            sm: "0.8rem",
-        },
-
         extend: {
+            fontSize: {
+                h1: "3.815rem",
+                h2: "3.052rem",
+                h3: "2.441rem",
+                h4: "1.953rem",
+                h5: "1.563rem",
+                h6: "1.25rem",
+                base: "16px",
+                sm: "0.8rem",
+            },
+
             colors: {
                 "bright-red": {
                     50: "#ff7373",
@@ -39,8 +44,10 @@ module.exports = {
                 "almost-black": "#0A0808",
                 "cream-white": "#F9F4E1",
             },
+
             fontFamily: {
-                body: ['"Poppins"', "sans-serif"],
+                heading: ['"Sintony"', ...defaultTheme.fontFamily.sans],
+                body: ['"Poppins"', ...defaultTheme.fontFamily.sans],
             },
         },
     },

@@ -5,11 +5,17 @@ import { HomePage } from './pages/home/home.page';
 import { AboutPage } from './pages/about/about.page';
 import { ContactPage } from './pages/contact/contact.page';
 import { MakeBookingPage } from './pages/make-booking/make-booking.page';
+import { LoginPage } from './pages/auth/login/login.page';
+import { RegisterPage } from './pages/auth/register/register.page';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
     { path: 'about', component: AboutPage },
     { path: 'contact', component: ContactPage },
+
+    { path: 'login', component: LoginPage },
+    { path: 'register', component: RegisterPage },
+
     { path: 'booking/new', component: MakeBookingPage },
 
     {

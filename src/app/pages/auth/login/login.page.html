@@ -1,0 +1,57 @@
+<app-header></app-header>
+
+<main class="min-h-screen flex items-center justify-center">
+
+    <div class="bg-gray-900 rounded-lg py-8 px-12 shadow w-full max-w-md">
+        <div class="text-center mb-6">
+            <h2 class="text-h2">Login</h2>
+            <p>Log into your account</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" #form="ngForm">
+            <div class="form-control max-w-full">
+                <label class="label" for="email">Email</label>
+                <input class="input" type="email" name="email" id="email" formControlName="email" required />
+
+                <div class="feedback">
+                    <base-error *ngIf="errors.email">
+                        {{errors.email}}
+                    </base-error>
+                </div>
+            </div>
+            <div class="form-control max-w-full">
+                <label class="label" for="password">Password</label>
+                <input class="input" type="password" name="password" id="password" formControlName="password"
+                    required />
+                <div class="feedback">
+                    <base-error *ngIf="errors.password">
+                        {{errors.password}}
+                    </base-error>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary w-full">Login</button>
+
+                <p class="text-center mt-2">Don't have an account? <a class="text-bright-red-300 hover:underline"
+                        routerLink="/register">Register</a></p>
+            </div>
+
+            <hr class="my-8 border-almost-black" />
+
+            <div class="flex items-center justify-center gap-6">
+                <button class="" (click)="handleSocialLogin('google')"><img class="size-8"
+                        src="/assets/logos/google.png" alt="Google"></button>
+                <button class="" (click)="handleSocialLogin('facebook')"><img class="size-8"
+                        src="/assets/logos/facebook.png" alt="Facebook"></button>
+                <button class="" (click)="handleSocialLogin('twitter')"><img class="size-8" src="/assets/logos/x.png"
+                        alt="X"></button>
+            </div>
+
+        </form>
+    </div>
+
+
+</main>
+
+<app-footer></app-footer>

@@ -12,6 +12,10 @@
 }
 
 @layer components {
+    :is(h1, h2, h3, h4, h5, h6) {
+        @apply font-heading;
+    }
+
     /* Buttons */
     .btn {
         @apply bg-bright-red-600 hover:bg-bright-red-400 inline-flex items-center justify-center gap-2 px-4 py-3 tracking-wide text-center text-white transition rounded cursor-pointer shadow;

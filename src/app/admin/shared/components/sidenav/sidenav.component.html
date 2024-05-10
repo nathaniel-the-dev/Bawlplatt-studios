@@ -8,7 +8,7 @@
         <ul class="flex flex-col mb-auto space-y-2">
             <ng-container *ngFor="let item of menuItems">
                 <li *ngIf="item.roles.includes(user?.user_metadata['roles']?.title )"><a
-                        class="hover:bg-gray-900 flex items-center w-full gap-3 px-6 py-1.5 rounded transition-colors"
+                        class="font-heading hover:bg-gray-900 flex items-center w-full gap-3 px-6 py-1.5 rounded transition-colors"
                         [routerLink]="item.path" routerLinkActive="!bg-bright-red-500">
                         <i class="text-h5 {{item.icon}}"></i>
                         {{item.name}}
