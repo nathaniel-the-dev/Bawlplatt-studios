@@ -2,7 +2,7 @@
 
 ## About
 
-Bawlplatt Studios is a music rehearsal studio based in urban Jamaica. The owners have been using the traditional method of booking sessions (pen and paper) and are looking for a more modern and efficient way to manage the booking process.
+Bawlplatt Studios is a music rehearsal studio. The owners have been using the traditional method of booking sessions (pen and paper) and are looking for a more modern and efficient way to manage the booking process.
 
 ## Features
 
