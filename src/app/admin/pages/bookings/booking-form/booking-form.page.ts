@@ -152,7 +152,7 @@ export class BookingFormPage implements OnInit {
     }
 
     public async onFormSubmit(): Promise<void> {
-        const formResponse = this.validatorService.validate<
+        const formResponse = this.validatorService.validateForm<
             typeof this.bookingForm
         >(this.bookingForm, this.formRef);
 

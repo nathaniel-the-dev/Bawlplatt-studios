@@ -19,6 +19,7 @@ import {
     Piano,
     Mic2,
 } from 'lucide-angular';
+import { StatusIndicatorComponent } from './components/status-indicator/status-indicator.component';
 
 const declarations = [
     ErrorComponent,
@@ -32,6 +33,7 @@ const declarations = [
 
     HeaderComponent,
     FooterComponent,
+    StatusIndicatorComponent,
 ];
 
 const modules: any[] = [

@@ -41,10 +41,9 @@ export class LoginPage implements OnInit {
     }
 
     async onSubmit() {
-        const formResponse = this.validatorService.validate<typeof this.form>(
-            this.form,
-            this.formRef
-        );
+        const formResponse = this.validatorService.validateForm<
+            typeof this.form
+        >(this.form, this.formRef);
         if (!formResponse.valid) {
             this.errors = formResponse.errors;
             return;

@@ -12,9 +12,13 @@ export default <Errors>{
         email: {
             required: 'Please enter an email',
             email: 'Not a valid email address',
+            unique: 'Email already in use',
         },
         password: {
             required: 'Please enter a password',
+        },
+        confirm_password: {
+            required: 'Please confirm your password',
         },
 
         // Bookings

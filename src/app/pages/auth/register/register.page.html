@@ -1,55 +1,93 @@
 <app-header></app-header>
 
-<main class="min-h-screen flex items-center justify-center">
+<main class="min-h-screen flex items-center justify-center py-24">
 
-    <div class="bg-gray-900 rounded-lg py-8 px-12 shadow w-full max-w-md">
-        <div class="text-center mb-6">
-            <h2 class="text-h2">Login</h2>
-            <p>Log into your account</p>
-        </div>
+    <div class="bg-gray-900 rounded-lg py-8 px-12 shadow w-full max-w-xl">
+        <ng-container *ngIf="formMode === 'signup'">
+            <div class="text-center mb-6">
+                <h2 class="text-h2 mb-2">Create an account</h2>
+                <p>Create an account with us today to start benefiting from our amazing services!</p>
+            </div>
 
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" #form="ngForm">
-            <div class="form-control max-w-full">
-                <label class="label" for="email">Email</label>
-                <input class="input" type="email" name="email" id="email" formControlName="email" required />
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" #form="ngForm">
+                <div class="form-control max-w-full">
+                    <label class="label" for="email">Email</label>
+                    <input class="input" type="email" name="email" id="email" formControlName="email" required />
 
-                <div class="feedback">
-                    <base-error *ngIf="errors.email">
-                        {{errors.email}}
-                    </base-error>
+                    <div class="feedback">
+                        <base-error *ngIf="errors.email">
+                            {{errors.email}}
+                        </base-error>
+                    </div>
+                </div>
+
+                <div class="flex max-md:flex-col gap-4 items-start">
+                    <div class="form-control grow">
+                        <label class="label" for="password">Password</label>
+                        <input class="input w-full" type="password" name="password" id="password"
+                            formControlName="password" required passwordToggle />
+                        <div class="feedback">
+                            <base-error *ngIf="errors.password">
+                                {{errors.password}}
+                            </base-error>
+                        </div>
+                    </div>
+
+                    <div class="form-control grow">
+                        <label class="label" for="confirm_password">Confirm Password</label>
+                        <input class="input w-full" type="password" name="confirm_password" id="confirm_password"
+                            formControlName="confirm_password" required confirmPasswordValidator passwordToggle />
+                        <div class="feedback">
+                            <base-error *ngIf="errors.confirm_password">
+                                {{errors.confirm_password}}
+                            </base-error>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary w-full" [disabled]="formStatus === 'loading'">
+                        <app-status-indicator [status]="formStatus"></app-status-indicator>
+                        Sign Up
+                    </button>
+                    <p class="text-gray-500 text-sm mt-2">By signing up, you agree to our <a
+                            class="text-bright-red-300 hover:underline" routerLink="#">Privacy
+                            Policy</a> and <a class="text-bright-red-300 hover:underline" routerLink="#">Terms of
+                            Conditions</a>.</p>
+
+                    <p class="mt-4"><a class="text-bright-red-300 hover:underline" routerLink="/login">
+                            I already have an account</a></p>
+                </div>
+
+                <div class="text-divider text-gray-500 my-6">
+                    or continue with
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button type="button"
+                        class="inline-flex items-center gap-2 rounded border-2 transition-colors py-2 px-3 hover:bg-white/10"
+                        (click)="handleSocialLogin('google')"><i class="ai-google-fill text-h5"></i>
+                        Google</button>
+                    <button type="button"
+                        class="inline-flex items-center gap-2 rounded border-2 transition-colors py-2 px-3 hover:bg-white/10"
+                        (click)="handleSocialLogin('facebook')"><i class="ai-facebook-fill text-h5"></i>
+                        Facebook</button>
+                </div>
+            </form>
+        </ng-container>
+
+        <ng-container *ngIf="formMode === 'submitted'">
+            <div>
+                <div class="text-center mb-6">
+                    <h2 class="text-h2 mb-4">Thank you for signing up!</h2>
+                    <p class="text-gray-300">Please check your email to activate your account.</p>
+                    <div class="mt-6">
+                        <button class="btn btn-primary" (click)="formMode = 'signup'">Okay</button>
+                    </div>
                 </div>
             </div>
-
-            <div class="form-control max-w-full">
-                <label class="label" for="password">Password</label>
-                <input class="input" type="password" name="password" id="password" formControlName="password"
-                    required />
-                <div class="feedback">
-                    <base-error *ngIf="errors.password">
-                        {{errors.password}}
-                    </base-error>
-                </div>
-            </div>
-
-            <div class="form-actions">
-                <button class="btn btn-primary w-full">Login</button>
-
-                <p class="text-center mt-2">Don't have an account? <a class="text-bright-red-300 hover:underline"
-                        routerLink="/register">Register</a></p>
-            </div>
-
-            <hr class="my-8 border-almost-black" />
-
-            <div class="flex items-center justify-center gap-3">
-                <div>(Google)</div>
-                <div>(Facebook)</div>
-                <div>(X)</div>
-            </div>
-
-        </form>
+        </ng-container>
     </div>
-
-
 </main>
 
 <app-footer></app-footer>

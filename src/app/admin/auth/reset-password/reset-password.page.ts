@@ -46,9 +46,9 @@ export class ResetPasswordPage {
     }
 
     async onSubmit() {
-        const formResponse = this.validatorService.validate<typeof this.form>(
-            this.form
-        );
+        const formResponse = this.validatorService.validateForm<
+            typeof this.form
+        >(this.form);
 
         if (!formResponse.valid) {
             this.errors = formResponse.errors;

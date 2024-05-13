@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Provider } from '@supabase/supabase-js';
@@ -10,7 +10,7 @@ import { ValidatorService } from 'src/app/shared/services/validator.service';
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.css'],
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
     loginForm = this.fb.group({
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]],
@@ -21,6 +21,8 @@ export class LoginPage {
         password: '',
     };
 
+    public formStatus: any = '';
+
     constructor(
         private apiService: ApiService,
         private validatorService: ValidatorService,
@@ -28,9 +30,15 @@ export class LoginPage {
         private fb: FormBuilder
     ) {}
 
+    ngOnInit(): void {
+        this.validatorService.validateOnInput(this.loginForm, (errors) => {
+            this.errors = errors;
+        });
+    }
+
     async onSubmit() {
         try {
-            const formResponse = this.validatorService.validate<
+            const formResponse = this.validatorService.validateForm<
                 typeof this.loginForm
             >(this.loginForm);
             if (!formResponse.valid) {
@@ -38,15 +46,19 @@ export class LoginPage {
                 return;
             }
 
+            this.formStatus = 'loading';
             const response =
                 await this.apiService.supabase.auth.signInWithPassword({
                     email: this.loginForm.value.email!,
                     password: this.loginForm.value.password!,
                 });
             if (response.error) throw response.error;
+
             console.log(response);
+            this.formStatus = 'success';
         } catch (error) {
             console.error(error);
+            this.formStatus = 'error';
         }
     }
 

@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { AbstractControl, FormGroup, FormGroupDirective } from '@angular/forms';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import errors from '../config/errors';
 
 @Injectable({
     providedIn: 'root',
 })
-export class ValidatorService {
-    public errors$ = new Subject<any>();
+export class ValidatorService implements OnDestroy {
+    public errors$ = new BehaviorSubject<{ [k: string]: string }>({});
     private subscriptions = new Subscription();
 
     constructor() {}
@@ -21,16 +21,47 @@ export class ValidatorService {
         cb: (errors: any) => void,
         ref?: FormGroupDirective
     ) {
+        for (let name in form.controls) {
+            // Get associated control
+            const control = form.get(name);
+            if (!control) continue;
+
+            this.subscriptions.add(
+                control.valueChanges.subscribe(() => {
+                    this.validateControl(control, name, ref);
+                })
+            );
+        }
+
         this.subscriptions.add(
-            form.valueChanges.subscribe(() => {
-                const errors = this.validate<typeof form>(form, ref).errors;
-                this.errors$.next(errors);
+            this.errors$.subscribe((errors) => {
                 cb(errors);
             })
         );
     }
 
-    public validate<TForm extends FormGroup = FormGroup>(
+    public validateControl(
+        control: AbstractControl,
+        name: string,
+        formRef?: FormGroupDirective
+    ) {
+        if (!formRef || formRef.submitted)
+            if (control?.invalid) {
+                // Only get the first error for each control
+                const [key, value] = Object.entries(control!.errors!)[0];
+                this.errors$.next({
+                    ...this.errors$.getValue(),
+                    [name]: this.formatErrorMessage(name, key, value),
+                });
+            } else if (control.valid) {
+                this.errors$.next({
+                    ...this.errors$.getValue(),
+                    [name]: '',
+                });
+            }
+    }
+
+    public validateForm<TForm extends FormGroup = FormGroup>(
         form: TForm,
         ref?: FormGroupDirective
     ) {
@@ -50,14 +81,11 @@ export class ValidatorService {
                 if (control?.invalid) {
                     // Validate each input control
                     const [key, value] = Object.entries(control!.errors!)[0];
-                    (errors as any)[name] = (() => {
-                        let errorMessage = this.formatErrorMessage(
-                            name,
-                            key,
-                            value
-                        );
-                        return errorMessage;
-                    })();
+                    (errors as any)[name] = this.formatErrorMessage(
+                        name,
+                        key,
+                        value
+                    );
                 }
         }
 
@@ -72,7 +100,6 @@ export class ValidatorService {
     private formatErrorMessage(field: string, key: string, value: any) {
         if (!value) return '';
 
-        let fieldName = field;
         if (
             errors.validations.hasOwnProperty(field) &&
             errors.validations[field].hasOwnProperty(key)
@@ -80,6 +107,7 @@ export class ValidatorService {
             return errors.validations[field][key];
         }
 
+        let fieldName = field;
         // Separate field names with spaces
         fieldName = fieldName.replace(/([A-Z])/g, ' $1').trim();
         // Remove underscores or hyphens

@@ -32,7 +32,8 @@ export class PasswordToggleDirective implements AfterViewInit {
         this.renderer.setProperty(btn, 'type', 'button');
         this.renderer.setStyle(btn, 'font-size', btnSize + 'px');
         this.renderer.addClass(btn, 'transition-opacity');
-        this.renderer.addClass(btn, 'opacity-50');
+        this.renderer.addClass(btn, 'opacity-0');
+        this.renderer.addClass(btn, 'peer-hover:opacity-80');
         this.renderer.addClass(btn, 'hover:opacity-80');
         btn.setAttribute('tabindex', '-1');
         btn.setAttribute('aria-hidden', 'true');
@@ -58,6 +59,7 @@ export class PasswordToggleDirective implements AfterViewInit {
 
         // Add button to DOM
         this.renderer.addClass(this.el.nativeElement, '!pr-10');
+        this.renderer.addClass(this.el.nativeElement, 'peer');
         this.renderer.addClass(this.el.nativeElement.parentElement, 'relative');
         this.el.nativeElement.insertAdjacentElement('afterend', btn);
     }

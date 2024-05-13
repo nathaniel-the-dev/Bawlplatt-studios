@@ -86,7 +86,7 @@ export class UserFormPage implements OnInit, AfterViewInit {
     }
 
     async onSubmit() {
-        const formResponse = this.validatorService.validate<
+        const formResponse = this.validatorService.validateForm<
             typeof this.userForm
         >(this.userForm, this.form);
 
@@ -120,7 +120,7 @@ export class UserFormPage implements OnInit, AfterViewInit {
         const userRes = await this.apiService.admin.createUser({
             email: this.userForm.value.email!,
             password: this.userForm.value.password!,
-            email_confirm: false,
+            email_confirm: true,
         });
         if (userRes.error) throw userRes.error;
 

@@ -13,7 +13,7 @@
 
 @layer components {
     :is(h1, h2, h3, h4, h5, h6) {
-        @apply font-heading;
+        @apply font-heading leading-none mb-2;
     }
 
     /* Buttons */
@@ -105,6 +105,21 @@
     /* Badges */
     .badge {
         @apply inline-block whitespace-nowrap tracking-wider rounded bg-blue-900 text-white uppercase px-2 py-1 text-center align-baseline text-sm leading-none;
+    }
+
+    /* Dividers */
+    .text-divider {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .text-divider::before,
+    .text-divider::after {
+        content: "";
+        height: 1px;
+        background-color: currentColor;
+        flex-grow: 1;
     }
 }
 

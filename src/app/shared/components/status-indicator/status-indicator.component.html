@@ -1,0 +1,9 @@
+<ng-container [ngSwitch]="status">
+    <div role="status" *ngSwitchCase="'loading'">
+        <svg aria-hidden="true" class="animate-spin w-6 h-6" [ngStyle]="{'fill': color, 'color': bgColor}">
+            <use href="/assets/svgs/spinner.svg#spinner" />
+        </svg>
+        <span class="sr-only">Loading...</span>
+    </div>
+    <i *ngSwitchCase="'success'" class="ai-check"></i>
+</ng-container>

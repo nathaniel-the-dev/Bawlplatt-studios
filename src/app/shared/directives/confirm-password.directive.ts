@@ -17,11 +17,15 @@ import {
     ],
 })
 export class ConfirmPasswordValidatorDirective implements Validator {
-    @Input('confirmPasswordValidator') passwordControlName: string = 'password';
+    private defaultPasswordControlName = 'password';
+    @Input('confirmPasswordValidator') passwordControlName: string =
+        this.defaultPasswordControlName;
 
     validate(control: AbstractControl): ValidationErrors | null {
         const password: AbstractControl | null | undefined =
-            control.parent?.get(this.passwordControlName);
+            control.parent?.get(
+                this.passwordControlName || this.defaultPasswordControlName
+            );
 
         if (!password || control.value === password.value) {
             return null;

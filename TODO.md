@@ -4,6 +4,7 @@
 
 -   [ ] Fix validation showing up when input wasn't even touched
 -   [ ] Update Auth Policies for each table (Supabase)
+-   [ ] Differentiate login pages for admin and customer
 
 ## Admin Portal
 
@@ -66,7 +67,8 @@
 
 -   Login / Register
 
-    -   [ ] Verify OTP
+    -   [ ] Verify email
+    -   [ ] Forgot password
 
 -   [ ] My Bookings
 -   [ ] Profile

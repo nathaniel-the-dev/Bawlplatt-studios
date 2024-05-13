@@ -2,10 +2,10 @@
 
 <main class="min-h-screen flex items-center justify-center">
 
-    <div class="bg-gray-900 rounded-lg py-8 px-12 shadow w-full max-w-md">
+    <div class="bg-gray-900 rounded-lg py-8 px-12 shadow w-full max-w-lg">
         <div class="text-center mb-6">
-            <h2 class="text-h2">Login</h2>
-            <p>Log into your account</p>
+            <h2 class="text-h2 mb-2">Welcome Back</h2>
+            <p>Welcome back to Bawlplatt Studios. Please log in to access all the awesome features!</p>
         </div>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" #form="ngForm">
@@ -21,8 +21,8 @@
             </div>
             <div class="form-control max-w-full">
                 <label class="label" for="password">Password</label>
-                <input class="input" type="password" name="password" id="password" formControlName="password"
-                    required />
+                <input class="input" type="password" name="password" id="password" formControlName="password" required
+                    passwordToggle />
                 <div class="feedback">
                     <base-error *ngIf="errors.password">
                         {{errors.password}}
@@ -31,21 +31,28 @@
             </div>
 
             <div class="form-actions">
-                <button class="btn btn-primary w-full">Login</button>
+                <button class="btn btn-primary w-full" [disabled]="formStatus === 'loading'">
+                    <app-status-indicator [status]="formStatus" />
+                    <span>Login</span>
+                </button>
 
-                <p class="text-center mt-2">Don't have an account? <a class="text-bright-red-300 hover:underline"
-                        routerLink="/register">Register</a></p>
+                <p class="text-center mt-2 text-gray-300">Don't have an account? <a
+                        class="text-bright-red-300 hover:underline" routerLink="/register">Sign up</a></p>
             </div>
 
-            <hr class="my-8 border-almost-black" />
+            <div class="text-divider text-gray-500 my-6">
+                or continue with
+            </div>
 
-            <div class="flex items-center justify-center gap-6">
-                <button class="" (click)="handleSocialLogin('google')"><img class="size-8"
-                        src="/assets/logos/google.png" alt="Google"></button>
-                <button class="" (click)="handleSocialLogin('facebook')"><img class="size-8"
-                        src="/assets/logos/facebook.png" alt="Facebook"></button>
-                <button class="" (click)="handleSocialLogin('twitter')"><img class="size-8" src="/assets/logos/x.png"
-                        alt="X"></button>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button type="button"
+                    class="inline-flex items-center gap-2 rounded border-2 transition-colors py-2 px-3 hover:bg-white/10"
+                    (click)="handleSocialLogin('google')"><i class="ai-google-fill text-h5"></i>
+                    Google</button>
+                <button type="button"
+                    class="inline-flex items-center gap-2 rounded border-2 transition-colors py-2 px-3 hover:bg-white/10"
+                    (click)="handleSocialLogin('facebook')"><i class="ai-facebook-fill text-h5"></i>
+                    Facebook</button>
             </div>
 
         </form>
