@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Provider } from '@supabase/supabase-js';
 import errorMessages from 'src/app/shared/config/errors';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { ToastService } from 'src/app/shared/services/toast.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
 
 @Component({
@@ -17,6 +17,7 @@ export class RegisterPage implements OnInit {
         password: ['', [Validators.required]],
         confirm_password: ['', [Validators.required]],
     });
+    code = '';
 
     errors = {
         email: '',
@@ -25,12 +26,13 @@ export class RegisterPage implements OnInit {
     };
 
     customerRoleId: string = '';
-    formMode: 'signup' | 'submitted' = 'signup';
+    formMode: 'signup' | 'submitted' | 'verified' = 'signup';
     formStatus: 'loading' | 'success' | 'error' | '' = '';
 
     constructor(
         private apiService: ApiService,
         private validatorService: ValidatorService,
+        private toast: ToastService,
         private fb: FormBuilder
     ) {}
 
@@ -64,22 +66,15 @@ export class RegisterPage implements OnInit {
 
             // Sign user up
             this.formStatus = 'loading';
-            const secretToken = Math.floor(100000 + Math.random() * 900000);
-            const response = await this.apiService.supabase.auth.signUp({
-                email: this.registerForm.value.email!,
-                password: this.registerForm.value.password!,
-                options: {
-                    emailRedirectTo:
-                        window.location.origin + `verified/${secretToken}`,
-                },
-            });
-            if (response.error) throw response.error;
 
             // Check if email is a unique email
-            if (
-                response.data.user?.email === this.registerForm.value.email &&
-                response.data.user?.email_confirmed_at !== null
-            ) {
+            const { data: profile } = await this.apiService.supabase
+                .from('profiles')
+                .select('id')
+                .eq('email', this.registerForm.value.email)
+                .maybeSingle();
+
+            if (profile) {
                 this.formStatus = 'error';
                 this.registerForm.controls.email.setErrors({
                     unique: true,
@@ -89,10 +84,77 @@ export class RegisterPage implements OnInit {
                 return;
             }
 
+            // Create account
+            const {
+                data: { user },
+                error,
+            } = await this.apiService.supabase.auth.signUp({
+                email: this.registerForm.value.email!,
+                password: this.registerForm.value.password!,
+            });
+            if (error) throw error;
+            await this.apiService.supabase.auth.signOut();
+
+            // Create user profile
+            const { error: profileError } = await this.apiService.supabase
+                .from('profiles')
+                .insert([
+                    {
+                        email: this.registerForm.value.email!,
+                        role: this.customerRoleId,
+                        uuid: user?.id,
+                    },
+                ]);
+            if (profileError) {
+                this.apiService.admin.deleteUser(user!.id);
+                throw profileError;
+            }
+
+            // Send an OTP to the user's email
+            const res = await this.apiService.supabase.auth.signInWithOtp({
+                email: this.registerForm.value.email!,
+                options: {
+                    shouldCreateUser: false,
+                },
+            });
+            if (res.error) throw res.error;
+
             // Notify user of success and let them know to check email for verification
-            this.formStatus = 'success';
+            this.formStatus = '';
             this.formMode = 'submitted';
         } catch (error) {
+            console.error(error);
+            this.formStatus = 'error';
+            this.toast.createToast(
+                'Something went wrong',
+                'There was an error creating your account',
+                'error'
+            );
+        }
+    }
+
+    async onVerify() {
+        this.formStatus = 'loading';
+
+        // Verify OTP code
+        try {
+            const { data, error } =
+                await this.apiService.supabase.auth.verifyOtp({
+                    email: this.registerForm.value.email!,
+                    token: this.code,
+                    type: 'email',
+                });
+            if (error) throw error;
+
+            // Set user as verified
+            this.apiService.supabase.auth.updateUser({
+                data: { verified_at: new Date() },
+            });
+
+            // Notify user and redirect to dashboard
+            this.formStatus = '';
+            this.formMode = 'verified';
+        } catch (error: any) {
             console.error(error);
             this.formStatus = 'error';
         }
@@ -106,8 +168,13 @@ export class RegisterPage implements OnInit {
                 });
             if (response.error) throw response.error;
             console.log(response);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
+            this.toast.createToast(
+                'Something went wrong',
+                'There was an error creating your account',
+                'error'
+            );
         }
     }
 }

@@ -76,3 +76,50 @@
 -   [ ] FAQ
 -   [ ] Privacy Policy
 -   [ ] Terms and Conditions
+
+
+
+#### Audit log example 
+```json
+{
+  "_id": {
+    "$oid": "6513532559cb8bbfcbded5ec"
+  },
+  "ref_id": {
+    "$oid": "6513532559cb8bbfcbded5ea"
+  },
+  "model_name": "news",
+  "action_type": "create",
+  "updated_fields": [
+    {
+      "field": "title",
+      "old_value": "",
+      "new_value": "Test"
+    },
+    {
+      "field": "content",
+      "old_value": "",
+      "new_value": "<p>This is a test</p>"
+    },
+    {
+      "field": "author",
+      "old_value": "",
+      "new_value": "64df82c1a489eafaf4c08146"
+    },
+    {
+      "field": "type",
+      "old_value": "",
+      "new_value": "draft"
+    }
+  ],
+  "created_by": {
+    "$oid": "64a813e0ab507a27b59b94dc"
+  },
+  "createdAt": {
+    "$date": "2023-09-26T21:54:45.391Z"
+  },
+  "updatedAt": {
+    "$date": "2023-09-26T21:54:45.391Z"
+  },
+  "__v": 0
+}```

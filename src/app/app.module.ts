@@ -18,7 +18,8 @@ import { ToastService } from './shared/services/toast.service';
 import { ValidatorService } from './shared/services/validator.service';
 import { LoginPage } from './pages/auth/login/login.page';
 import { RegisterPage } from './pages/auth/register/register.page';
-import { VerifyEmailPage } from './pages/auth/verify-email/verify-email.page';
+import { CustomerDashboardPage } from './pages/customer-dashboard/customer-dashboard.page';
+import { CustomerBookingsPage } from './pages/customer-dashboard/bookings/bookings.page';
 
 @NgModule({
     declarations: [
@@ -31,7 +32,8 @@ import { VerifyEmailPage } from './pages/auth/verify-email/verify-email.page';
         MakeBookingPage,
         LoginPage,
         RegisterPage,
-        VerifyEmailPage,
+        CustomerDashboardPage,
+        CustomerBookingsPage,
     ],
     imports: [
         BrowserModule,

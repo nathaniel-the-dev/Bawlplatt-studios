@@ -9,10 +9,17 @@ interface Errors {
 export default <Errors>{
     validations: {
         // Auth
+        name: {
+            required: 'Please enter your name',
+        },
         email: {
             required: 'Please enter an email',
             email: 'Not a valid email address',
             unique: 'Email already in use',
+        },
+        contact_num: {
+            required: 'Please enter a phone number',
+            mask: 'Not a valid phone number',
         },
         password: {
             required: 'Please enter a password',

@@ -1,13 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup, FormGroupDirective } from '@angular/forms';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import errors from '../config/errors';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ValidatorService implements OnDestroy {
-    public errors$ = new BehaviorSubject<{ [k: string]: string }>({});
+    public errors$ = new Subject<Record<string, string>>();
+    private _errors: Record<string, string> = {};
     private subscriptions = new Subscription();
 
     constructor() {}
@@ -45,20 +46,25 @@ export class ValidatorService implements OnDestroy {
         name: string,
         formRef?: FormGroupDirective
     ) {
-        if (!formRef || formRef.submitted)
-            if (control?.invalid) {
+        if (!formRef || formRef.submitted) {
+            if (control?.invalid && control?.dirty) {
                 // Only get the first error for each control
                 const [key, value] = Object.entries(control!.errors!)[0];
-                this.errors$.next({
-                    ...this.errors$.getValue(),
+                this._errors = {
+                    ...this._errors,
                     [name]: this.formatErrorMessage(name, key, value),
-                });
-            } else if (control.valid) {
-                this.errors$.next({
-                    ...this.errors$.getValue(),
-                    [name]: '',
-                });
+                };
+                this.errors$.next(this._errors);
             }
+
+            if (control.valid) {
+                this._errors = {
+                    ...this._errors,
+                    [name]: '',
+                };
+                this.errors$.next(this._errors);
+            }
+        }
     }
 
     public validateForm<TForm extends FormGroup = FormGroup>(
@@ -69,6 +75,8 @@ export class ValidatorService implements OnDestroy {
             keyof TForm['controls'],
             string
         >;
+
+        form.markAsDirty();
 
         for (let name in form.controls) {
             // Get associated control

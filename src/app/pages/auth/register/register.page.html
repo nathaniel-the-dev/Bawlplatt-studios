@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button class="btn btn-primary w-full" [disabled]="formStatus === 'loading'">
+                    <button class="btn btn-primary w-full" type="submit" [disabled]="formStatus === 'loading'">
                         <app-status-indicator [status]="formStatus"></app-status-indicator>
                         Sign Up
                     </button>
@@ -78,13 +78,25 @@
 
         <ng-container *ngIf="formMode === 'submitted'">
             <div>
-                <div class="text-center mb-6">
-                    <h2 class="text-h2 mb-4">Thank you for signing up!</h2>
-                    <p class="text-gray-300">Please check your email to activate your account.</p>
-                    <div class="mt-6">
-                        <button class="btn btn-primary" (click)="formMode = 'signup'">Okay</button>
+                <form class="text-center mb-6" (ngSubmit)="onVerify()">
+                    <h2 class="text-h2 mb-4">Confirm Your Email</h2>
+                    <p class="text-gray-300 mb-6">We have sent a code to your email.</p>
+
+                    <div class="form-control mx-auto">
+                        <label class="label" for="code">Code</label>
+                        <input class="input" type="text" name="code" id="code" required placeholder="000000"
+                            mask="000000" [(ngModel)]="code" />
                     </div>
-                </div>
+
+                    <div class="mt-6 space-y-4">
+                        <button class="btn btn-primary w-full" type="submit" [disabled]="formStatus === 'loading'">
+                            <app-status-indicator [status]="formStatus"></app-status-indicator>
+                            Verify
+                        </button>
+                        <p><button>Resend Code</button></p>
+                        <p><button>Back</button></p>
+                    </div>
+                </form>
             </div>
         </ng-container>
     </div>

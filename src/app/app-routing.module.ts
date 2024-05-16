@@ -7,7 +7,10 @@ import { ContactPage } from './pages/contact/contact.page';
 import { MakeBookingPage } from './pages/make-booking/make-booking.page';
 import { LoginPage } from './pages/auth/login/login.page';
 import { RegisterPage } from './pages/auth/register/register.page';
-import { VerifyEmailPage } from './pages/auth/verify-email/verify-email.page';
+import { CustomerDashboardPage } from './pages/customer-dashboard/customer-dashboard.page';
+import { CustomerBookingsPage } from './pages/customer-dashboard/bookings/bookings.page';
+import { AuthRequiredGuard } from './shared/guards/auth-required.guard';
+import { HasPermissionGuard } from './shared/guards/has-permission.guard';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
@@ -16,9 +19,17 @@ const routes: Routes = [
 
     { path: 'login', component: LoginPage },
     { path: 'register', component: RegisterPage },
-    { path: 'verified/:token', component: VerifyEmailPage },
 
     { path: 'booking/new', component: MakeBookingPage },
+    {
+        path: 'dashboard',
+        component: CustomerDashboardPage,
+        children: [{ path: 'bookings', component: CustomerBookingsPage }],
+        canActivate: [
+            AuthRequiredGuard('/login'),
+            HasPermissionGuard('customer'),
+        ],
+    },
 
     {
         path: 'admin',

@@ -90,7 +90,6 @@ export class ApiService {
                                     contact_num:
                                         user.user_metadata['contact_num'],
                                     avatar: user.user_metadata['avatar'],
-                                    verified: Boolean(user.email_confirmed_at),
                                 })
                                 .eq('uuid', user.id);
                         }

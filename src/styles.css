@@ -13,7 +13,7 @@
 
 @layer components {
     :is(h1, h2, h3, h4, h5, h6) {
-        @apply font-heading leading-none mb-2;
+        @apply font-heading leading-none mb-3;
     }
 
     /* Buttons */
@@ -35,13 +35,14 @@
     label.label {
         @apply w-fit;
     }
-    .form-control.required .label::after {
-        @apply content-['*'] text-red-500;
+    .form-control.required .label::after,
+    .label:has(+ .input:required)::after {
+        @apply ml-0.5 content-['*'] text-red-500;
     }
 
     :is(input, select, textarea).input,
     ng-select.ng-select.select .ng-select-container {
-        @apply border-0 px-6 py-3 bg-gray-800 bg-opacity-75 rounded text-white;
+        @apply border-0 px-6 py-3 bg-gray-800 bg-opacity-75 rounded text-white shadow-sm;
     }
 
     ng-select.ng-select.select .ng-value-container {
@@ -90,14 +91,12 @@
     .dashboard-table thead th {
         @apply whitespace-nowrap uppercase text-start px-2.5 py-2;
     }
-
     .dashboard-table tbody {
         @apply divide-y-2 divide-gray-800 bg-gray-900;
     }
     .dashboard-table tbody td {
         @apply px-2.5 py-4 whitespace-nowrap text-gray-100 font-medium text-[0.9rem];
     }
-
     .dashboard-table :is(thead, tbody) :is(th, td):first-child {
         @apply pl-6;
     }

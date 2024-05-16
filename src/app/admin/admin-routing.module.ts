@@ -6,9 +6,9 @@ import { BookingsPage } from './pages/bookings/bookings.page';
 import { DashboardLayoutPage } from './pages/layout.page';
 import { HistoryPage } from './pages/history/history.page';
 import { ProfilePage } from './pages/profile/profile.page';
-import { AuthRequiredGuard } from './shared/guards/auth-required.guard';
+import { AuthRequiredGuard } from '../shared/guards/auth-required.guard';
 import { CalendarPage } from './pages/calendar/calendar.page';
-import { HasPermissionGuard } from './shared/guards/has-permission.guard';
+import { HasPermissionGuard } from '../shared/guards/has-permission.guard';
 import { UserListPage } from './pages/users/user-list/user-list.page';
 import { TransactionsPage } from './pages/transactions/transactions.page';
 import { ReportsPage } from './pages/reports/reports.page';
@@ -107,7 +107,10 @@ const routes: Route[] = [
 
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
-        canActivate: [AuthRequiredGuard, HasPermissionGuard('admin', 'staff')],
+        canActivate: [
+            AuthRequiredGuard('/admin/login'),
+            HasPermissionGuard('admin', 'staff'),
+        ],
     },
 ];
 

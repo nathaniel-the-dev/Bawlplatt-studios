@@ -6,12 +6,17 @@ import { Router } from '@angular/router';
     providedIn: 'root',
 })
 export class PermissionsService {
+    // Add guard to check if user is verified
+    async isVerified(apiService: ApiService) {
+        return apiService.user?.user_metadata['verified_at'] ? true : false;
+    }
+
     async canLoad(apiService: ApiService, router: Router) {
         // Check is user is logged in
         const user = apiService.user || (await apiService.getCurrentUser());
 
         // If not, redirect to login
-        if (!user) return router.parseUrl('/admin/login');
+        if (!user) return false;
         return true;
     }
 
