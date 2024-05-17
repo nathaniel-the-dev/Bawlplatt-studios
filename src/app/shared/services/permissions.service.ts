@@ -8,15 +8,20 @@ import { Router } from '@angular/router';
 export class PermissionsService {
     // Add guard to check if user is verified
     async isVerified(apiService: ApiService) {
-        return apiService.user?.user_metadata['verified_at'] ? true : false;
+        return apiService.user?.user_metadata['profile']?.verified_at
+            ? true
+            : false;
     }
 
-    async canLoad(apiService: ApiService, router: Router) {
+    async canLoad(apiService: ApiService) {
         // Check is user is logged in
         const user = apiService.user || (await apiService.getCurrentUser());
 
         // If not, redirect to login
-        if (!user) return false;
+        if (!user) {
+            await apiService.logout();
+            return false;
+        }
         return true;
     }
 
@@ -30,13 +35,13 @@ export class PermissionsService {
 
         const user = apiService.user || (await apiService.getCurrentUser(true));
 
-        return (
-            (user?.user_metadata['roles'] &&
-                allowedRoles.some(
-                    (role: string) => role === user.user_metadata['roles'].title
-                )) ||
-            router.parseUrl('/404')
-        );
+        const isAllowed =
+            user?.user_metadata['profile']?.role &&
+            allowedRoles.some(
+                (role: string) =>
+                    role === user.user_metadata['profile']?.role.title
+            );
+        return isAllowed || router.parseUrl('/404');
     }
 
     constructor() {}

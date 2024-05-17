@@ -20,6 +20,8 @@ import { LoginPage } from './pages/auth/login/login.page';
 import { RegisterPage } from './pages/auth/register/register.page';
 import { CustomerDashboardPage } from './pages/customer-dashboard/customer-dashboard.page';
 import { CustomerBookingsPage } from './pages/customer-dashboard/bookings/bookings.page';
+import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
+import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
 
 @NgModule({
     declarations: [
@@ -34,6 +36,8 @@ import { CustomerBookingsPage } from './pages/customer-dashboard/bookings/bookin
         RegisterPage,
         CustomerDashboardPage,
         CustomerBookingsPage,
+        PrivacyPolicyPage,
+        TermsAndCondPage,
     ],
     imports: [
         BrowserModule,

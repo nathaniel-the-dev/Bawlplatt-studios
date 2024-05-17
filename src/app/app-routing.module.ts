@@ -11,6 +11,8 @@ import { CustomerDashboardPage } from './pages/customer-dashboard/customer-dashb
 import { CustomerBookingsPage } from './pages/customer-dashboard/bookings/bookings.page';
 import { AuthRequiredGuard } from './shared/guards/auth-required.guard';
 import { HasPermissionGuard } from './shared/guards/has-permission.guard';
+import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
+import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
@@ -46,6 +48,9 @@ const routes: Routes = [
         loadChildren: () =>
             import('./admin/admin.module').then((m) => m.AdminModule),
     },
+
+    { path: 'privacy-policy', component: PrivacyPolicyPage },
+    { path: 'terms-and-conditions', component: TermsAndCondPage },
 
     { path: 'not-allowed', component: NotFoundPage },
     { path: '', redirectTo: 'home', pathMatch: 'full' },

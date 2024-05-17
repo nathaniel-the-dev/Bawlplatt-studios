@@ -9,7 +9,7 @@ export function AuthRequiredGuard(redirectUrl: string) {
         const apiService = inject(ApiService);
         const router = inject(Router);
 
-        const canLoad = await permissionService.canLoad(apiService, router);
+        const canLoad = await permissionService.canLoad(apiService);
         const isVerified = await permissionService.isVerified(apiService);
 
         return (canLoad && isVerified) || router.parseUrl(redirectUrl);

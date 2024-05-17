@@ -21,7 +21,10 @@
         @apply bg-bright-red-600 hover:bg-bright-red-400 inline-flex items-center justify-center gap-2 px-4 py-3 tracking-wide text-center text-white transition rounded cursor-pointer shadow;
     }
     .btn-outline {
-        @apply bg-transparent text-current outline-2 outline-bright-red-500 outline outline-offset-[-2px] hover:bg-gray-600 hover:bg-opacity-25;
+        @apply bg-transparent text-current outline-2 outline-bright-red-500 outline outline-offset-[-2px] hover:bg-gray-600/25;
+    }
+    .btn-ghost {
+        @apply bg-transparent text-current hover:bg-gray-600/25;
     }
     .btn:disabled {
         @apply bg-gray-600 cursor-default;
@@ -119,6 +122,11 @@
         height: 1px;
         background-color: currentColor;
         flex-grow: 1;
+    }
+
+    /* Avatar */
+    .avatar {
+        @apply aspect-square object-cover h-10 rounded-full;
     }
 }
 

@@ -67,7 +67,7 @@
 
 -   Login / Register
 
-    -   [ ] Verify email
+    -   [x] Verify email
     -   [ ] Forgot password
 
 -   [ ] My Bookings
@@ -77,10 +77,9 @@
 -   [ ] Privacy Policy
 -   [ ] Terms and Conditions
 
+#### Audit log example
 
-
-#### Audit log example 
-```json
+````json
 {
   "_id": {
     "$oid": "6513532559cb8bbfcbded5ec"
@@ -123,3 +122,4 @@
   },
   "__v": 0
 }```
+````

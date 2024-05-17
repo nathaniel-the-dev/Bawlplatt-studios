@@ -26,6 +26,10 @@ const supabase = createClient(
                 },
                 removeItem: (key: string) => localforage.removeItem(key),
             },
+            debug(message, ...args) {
+                if (!environment.production && environment.debug)
+                    console.log(message, ...args);
+            },
         },
     }
 );
@@ -47,8 +51,10 @@ let authSubscription: any = null;
     providedIn: 'root',
 })
 export class ApiService {
-    public user: User | null = null;
-    public user$ = new BehaviorSubject<typeof this.user>(null);
+    public user$ = new BehaviorSubject<User | null>(null);
+    public get user() {
+        return this.user$?.getValue();
+    }
 
     public supabase = supabase;
     public superAdmin = superAdminClient;
@@ -63,42 +69,25 @@ export class ApiService {
                 switch (e) {
                     case 'INITIAL_SESSION':
                     case 'TOKEN_REFRESHED':
-                        const meta_data = await this.getUserProfileData(
-                            user.id
-                        );
-                        if (meta_data) {
-                            // TODO Change to upsert
+                        const profile = await this.getUserProfileData(user.id);
+                        if (profile && profile.verified_at) {
                             const res = await supabase.auth.updateUser({
                                 data: {
-                                    name: meta_data.name,
-                                    role: meta_data.role.title,
-                                    contact_num: meta_data.contact_num,
-                                    avatar:
-                                        meta_data.avatar ||
-                                        `https://api.dicebear.com/8.x/initials/svg?seed=${meta_data.name}`,
-                                    active: meta_data.active,
+                                    profile: {
+                                        ...profile,
+                                        avatar:
+                                            profile.avatar ||
+                                            `https://api.dicebear.com/8.x/initials/svg?seed=${profile.name}`,
+                                    },
                                 },
                             });
                             user = res.data.user || user;
                         }
                         break;
-
-                    case 'USER_UPDATED':
-                        await supabase
-                            .from('profiles')
-                            .update({
-                                name: user.user_metadata['name'],
-                                email: user.email,
-                                contact_num: user.user_metadata['contact_num'],
-                                avatar: user.user_metadata['avatar'],
-                            })
-                            .eq('uuid', user.id);
-                        break;
                 }
             }
 
-            this.user = user || null;
-            this.user$.next(this.user);
+            this.user$.next(user || null);
         });
     }
 
@@ -162,6 +151,7 @@ export class ApiService {
     /**
      * Retrieves the current user from the Supabase authentication service.
      *
+     * @param {boolean} fromSession - Whether to retrieve the user from the session.
      * @return {Promise<User | null>} The current user object.
      */
     async getCurrentUser(fromSession?: boolean): Promise<AuthUser | null> {
@@ -185,9 +175,7 @@ export class ApiService {
             this.handleErrors(error);
             return false;
         }
-
-        this.user = null;
-        this.user$.next(this.user);
+        this.user$.next(null);
 
         return true;
     }

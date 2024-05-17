@@ -13,9 +13,15 @@
                 <li><a class="nav-link" routerLink="/contact">Contact Us</a></li>
             </ul>
 
-            <ul class="max-lg:hidden flex items-center gap-3" *ngIf="isAuthenticated">
-                <li><a class="btn btn-outline py-2.5" routerLink="/login">Login</a></li>
-                <li><a class="btn py-2.5" routerLink="/login">Sign Up</a></li>
+            <ul class="max-lg:hidden flex items-center gap-3" *ngIf="!user">
+                <li><a class="btn btn-ghost py-2.5" routerLink="/login">Login</a></li>
+                <li><a class="btn py-2.5" routerLink="/register">Sign Up</a></li>
+            </ul>
+            <ul class="max-lg:hidden flex items-center gap-3" *ngIf="user">
+                <li><a class="btn btn-ghost py-2.5" routerLink="/dashboard">
+                        My Bookings
+                    </a></li>
+                <li><a class="btn py-2.5" routerLink="/booking/new">Book Now</a></li>
             </ul>
 
             <button class="lg:hidden scale-125" (click)="toggleMenu()">
@@ -32,10 +38,9 @@
     </button>
 
     <ul class="grid gap-6">
-        <li><a class="nav-link" routerLink="/home">Home</a>
-        </li>
+        <li><a class="nav-link" routerLink="/home">Home</a></li>
         <li><a class="nav-link" routerLink="/about">About</a></li>
         <li><a class="nav-link" routerLink="/contact">Contact Us</a></li>
-        <li><a class="btn py-2.5 ml-2" [routerLink]="isAuthenticated ? '/booking/new' : '/login'">Book Now</a></li>
+        <li><a class="btn py-2.5 ml-2" [routerLink]="'/login'">Login</a></li>
     </ul>
 </div>

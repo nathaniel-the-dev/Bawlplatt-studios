@@ -18,8 +18,7 @@
 
         <a class="hover:bg-gray-900 flex items-center w-full gap-3 px-4 py-1.5 rounded" routerLink="profile"
             routerLinkActive="!bg-bright-red-500" *ngIf="user">
-            <img class="aspect-square object-cover h-10 rounded-full" [src]="profileImage"
-                [alt]="user.user_metadata['name']">
+            <img class="avatar" [src]="profileImage" [alt]="user.user_metadata['name']">
             <span class="max-w-[10ch] overflow-hidden">{{user.user_metadata['name']}}</span>
         </a>
         <a class="hover:bg-gray-900 inline-flex items-center justify-between gap-2 px-4 py-2 rounded mt-2"
