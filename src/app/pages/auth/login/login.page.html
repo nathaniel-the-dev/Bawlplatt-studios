@@ -1,61 +1,86 @@
 <app-header></app-header>
 
-<main class="min-h-screen flex items-center justify-center">
+<main class="flex items-center justify-center min-h-screen">
 
-    <div class="bg-gray-900 rounded-lg py-8 px-12 shadow w-full max-w-lg">
-        <div class="text-center mb-6">
-            <h2 class="text-h2 mb-2">Welcome Back</h2>
-            <p>Welcome back to Bawlplatt Studios. Please log in to access all the awesome features!</p>
-        </div>
+    <div class="w-full max-w-lg px-12 py-8 bg-gray-900 rounded-lg shadow">
+        <ng-container *ngIf="formMode === 'login'">
+            <div class="mb-6 text-center">
+                <h2 class="text-h2 mb-2">Welcome Back</h2>
+                <p>Welcome back to Bawlplatt Studios. Please log in to access all the awesome features!</p>
+            </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" #form="ngForm">
-            <div class="form-control max-w-full">
-                <label class="label" for="email">Email</label>
-                <input class="input" type="email" name="email" id="email" formControlName="email" required />
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" #form="ngForm">
+                <div class="form-control max-w-full">
+                    <label class="label" for="email">Email</label>
+                    <input class="input" type="email" name="email" id="email" formControlName="email" required />
 
-                <div class="feedback">
-                    <base-error *ngIf="errors.email">
-                        {{errors.email}}
-                    </base-error>
+                    <div class="feedback">
+                        <base-error *ngIf="errors.email">
+                            {{errors.email}}
+                        </base-error>
+                    </div>
                 </div>
-            </div>
-            <div class="form-control max-w-full">
-                <label class="label" for="password">Password</label>
-                <input class="input" type="password" name="password" id="password" formControlName="password" required
-                    passwordToggle />
-                <div class="feedback">
-                    <base-error *ngIf="errors.password">
-                        {{errors.password}}
-                    </base-error>
+                <div class="form-control max-w-full">
+                    <label class="label" for="password">Password</label>
+                    <input class="input" type="password" name="password" id="password" formControlName="password"
+                        required passwordToggle />
+                    <div class="feedback">
+                        <base-error *ngIf="errors.password">
+                            {{errors.password}}
+                        </base-error>
+                    </div>
                 </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary w-full" [disabled]="formStatus === 'loading'">
+                        <app-status-indicator [status]="formStatus" />
+                        <span>Login</span>
+                    </button>
+
+                    <p class="mt-2 text-center text-gray-300">Don't have an account? <a
+                            class="text-bright-red-300 hover:underline" routerLink="/register">Sign up</a></p>
+                </div>
+
+                <div class="text-divider my-6 text-gray-500">
+                    or continue with
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button type="button"
+                        class="hover:bg-white/10 inline-flex items-center gap-2 px-3 py-2 transition-colors border-2 rounded"
+                        (click)="handleSocialLogin('google')"><i class="ai-google-fill text-h5"></i>
+                        Google</button>
+                    <button type="button"
+                        class="hover:bg-white/10 inline-flex items-center gap-2 px-3 py-2 transition-colors border-2 rounded"
+                        (click)="handleSocialLogin('facebook')"><i class="ai-facebook-fill text-h5"></i>
+                        Facebook</button>
+                </div>
+            </form>
+        </ng-container>
+
+        <ng-container *ngIf="formMode === 'verify'">
+            <div class="mb-6">
+                <h2 class="text-h2 mb-4">Confirm Your Email</h2>
+                <p class="text-gray-300">We have sent a code to your email.</p>
             </div>
 
-            <div class="form-actions">
-                <button class="btn btn-primary w-full" [disabled]="formStatus === 'loading'">
-                    <app-status-indicator [status]="formStatus" />
-                    <span>Login</span>
-                </button>
+            <form class="text-center" (ngSubmit)="onVerify()">
+                <div class="form-control mx-auto">
+                    <label class="label" for="code">Code</label>
+                    <input class="input" type="text" name="code" id="code" required placeholder="000000" mask="000000"
+                        [(ngModel)]="code" />
+                </div>
 
-                <p class="text-center mt-2 text-gray-300">Don't have an account? <a
-                        class="text-bright-red-300 hover:underline" routerLink="/register">Sign up</a></p>
-            </div>
-
-            <div class="text-divider text-gray-500 my-6">
-                or continue with
-            </div>
-
-            <div class="flex flex-wrap justify-center gap-3">
-                <button type="button"
-                    class="inline-flex items-center gap-2 rounded border-2 transition-colors py-2 px-3 hover:bg-white/10"
-                    (click)="handleSocialLogin('google')"><i class="ai-google-fill text-h5"></i>
-                    Google</button>
-                <button type="button"
-                    class="inline-flex items-center gap-2 rounded border-2 transition-colors py-2 px-3 hover:bg-white/10"
-                    (click)="handleSocialLogin('facebook')"><i class="ai-facebook-fill text-h5"></i>
-                    Facebook</button>
-            </div>
-
-        </form>
+                <div class="mt-6 space-y-4">
+                    <button class="btn btn-primary w-full" type="submit" [disabled]="formStatus === 'loading'">
+                        <app-status-indicator [status]="formStatus"></app-status-indicator>
+                        Verify
+                    </button>
+                    <p><button type="button">Resend Code</button></p>
+                    <p><button type="button">Back</button></p>
+                </div>
+            </form>
+        </ng-container>
     </div>
 
 
