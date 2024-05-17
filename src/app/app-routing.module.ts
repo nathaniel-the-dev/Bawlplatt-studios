@@ -31,7 +31,10 @@ const routes: Routes = [
     {
         path: 'dashboard',
         component: CustomerDashboardPage,
-        children: [{ path: 'bookings', component: CustomerBookingsPage }],
+        children: [
+            { path: 'bookings', component: CustomerBookingsPage },
+            { path: '', redirectTo: 'bookings', pathMatch: 'full' },
+        ],
         canActivate: [
             AuthRequiredGuard('/login'),
             HasPermissionGuard('customer'),

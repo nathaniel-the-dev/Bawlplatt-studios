@@ -15,12 +15,14 @@ export class LoginPage implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]],
     });
+    code = '';
 
     errors = {
         email: '',
         password: '',
     };
 
+    formMode: 'login' | 'submitted' | 'verify' = 'login';
     public formStatus: any = '';
 
     constructor(
@@ -54,11 +56,54 @@ export class LoginPage implements OnInit {
                 });
             if (response.error) throw response.error;
 
-            console.log(response);
-            this.formStatus = 'success';
+            if (!response.data?.user?.user_metadata['verified_at']) {
+                this.formMode = 'verify';
+
+                this.apiService.supabase.auth.signOut();
+
+                this.apiService.supabase.auth.signInWithOtp({
+                    email: this.loginForm.value.email!,
+                    options: {
+                        shouldCreateUser: false,
+                    },
+                });
+            } else {
+                this.router.navigate(['/dashboard']);
+            }
+            this.formStatus = '';
         } catch (error) {
             console.error(error);
             this.formStatus = 'error';
+        }
+    }
+
+    async onVerify() {
+        try {
+            this.formStatus = 'loading';
+
+            const { error } = await this.apiService.supabase.auth.verifyOtp({
+                email: this.loginForm.value.email!,
+                token: this.code,
+                type: 'email',
+            });
+            if (error) throw error;
+
+            const { error: updateError } =
+                await this.apiService.supabase.auth.updateUser({
+                    data: {
+                        verified_at: new Date(),
+                    },
+                });
+            if (updateError) {
+                this.apiService.supabase.auth.signOut();
+                throw updateError;
+            }
+
+            this.formStatus = '';
+            this.router.navigate(['/dashboard']);
+        } catch (error) {
+            this.formStatus = 'error';
+            console.error(error);
         }
     }
 
