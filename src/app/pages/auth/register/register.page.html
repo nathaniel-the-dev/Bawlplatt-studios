@@ -78,14 +78,20 @@
 
         <ng-container *ngIf="formMode === 'submitted'">
             <div>
-                <form class="text-center mb-6" (ngSubmit)="onVerify()">
+                <form [formGroup]="verifyForm" class="text-center mb-6" (ngSubmit)="onVerify()">
                     <h2 class="text-h2 mb-4">Confirm Your Email</h2>
                     <p class="text-gray-300 mb-6">We have sent a code to your email.</p>
 
                     <div class="form-control mx-auto">
-                        <label class="label" for="code">Code</label>
-                        <input class="input" type="text" name="code" id="code" required placeholder="000000"
-                            mask="000000" [(ngModel)]="code" />
+                        <label class="label" for="otp">Code</label>
+                        <input class="input" type="text" name="otp" id="otp" required placeholder="000000" mask="000000"
+                            formControlName="otp" />
+
+                        <div class="feedback">
+                            <base-error *ngIf="verifyErrors.otp">
+                                {{verifyErrors.otp}}
+                            </base-error>
+                        </div>
                     </div>
 
                     <div class="mt-6 space-y-4">

@@ -28,6 +28,12 @@ export default <Errors>{
             required: 'Please confirm your password',
         },
 
+        // OTP
+        otp: {
+            required: 'Please enter a code',
+            invalid: 'Code has expired or is invalid',
+        },
+
         // Bookings
         customer_type: {
             required: 'Please select your customer type',

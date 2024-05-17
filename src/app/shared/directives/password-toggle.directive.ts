@@ -28,7 +28,7 @@ export class PasswordToggleDirective implements AfterViewInit {
         // Create toggle button
         const btn: HTMLButtonElement = this.renderer.createElement('button');
         let btnSize = 16 * 1.5;
-        btn.innerHTML = '<i class="ai-eye-open"></i>';
+        btn.innerHTML = '<i class="ai-eye-slashed"></i>';
         this.renderer.setProperty(btn, 'type', 'button');
         this.renderer.setStyle(btn, 'font-size', btnSize + 'px');
         this.renderer.addClass(btn, 'transition-opacity');
@@ -72,10 +72,10 @@ export class PasswordToggleDirective implements AfterViewInit {
 
         if (this.type === 'password') {
             this.type = 'text';
-            btn.innerHTML = '<i class="ai-eye-slashed"></i>';
+            btn.innerHTML = '<i class="ai-eye-open"></i>';
         } else {
             this.type = 'password';
-            btn.innerHTML = '<i class="ai-eye-open"></i>';
+            btn.innerHTML = '<i class="ai-eye-slashed"></i>';
         }
     }
 }

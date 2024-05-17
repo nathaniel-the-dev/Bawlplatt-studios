@@ -117,7 +117,7 @@ export class UserFormPage implements OnInit, AfterViewInit {
 
     private async createUser() {
         // Create user
-        const userRes = await this.apiService.admin.createUser({
+        const userRes = await this.apiService.superAdmin.createUser({
             email: this.userForm.value.email!,
             password: this.userForm.value.password!,
             email_confirm: true,
@@ -155,7 +155,7 @@ export class UserFormPage implements OnInit, AfterViewInit {
     private async updateUser() {
         let emailChanged = this.userForm.value.email !== this.originalEmail;
         if (emailChanged) {
-            const userRes = await this.apiService.admin.updateUserById(
+            const userRes = await this.apiService.superAdmin.updateUserById(
                 this.userForm.value.id!,
                 {
                     email: this.userForm.value.email!,

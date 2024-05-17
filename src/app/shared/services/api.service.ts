@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AuthUser, createClient, User } from '@supabase/supabase-js';
+import {
+    AuthChangeEvent,
+    AuthUser,
+    createClient,
+    Session,
+    User,
+} from '@supabase/supabase-js';
 import { environment } from 'src/environments/environment';
 import localforage from 'localforage';
 import { BehaviorSubject } from 'rxjs';
@@ -45,59 +51,65 @@ export class ApiService {
     public user$ = new BehaviorSubject<typeof this.user>(null);
 
     public supabase = supabase;
-    public admin = superAdminClient;
+    public superAdmin = superAdminClient;
 
     constructor() {
         // Ensure auth subscription is initialized once (Singleton)
+        this.onAuthStateChanged(async (e, session) => {
+            let user = session?.user;
+
+            // Store user profile data only on initial session and user updates
+            if (user) {
+                switch (e) {
+                    case 'INITIAL_SESSION':
+                    case 'TOKEN_REFRESHED':
+                        const meta_data = await this.getUserProfileData(
+                            user.id
+                        );
+                        if (meta_data) {
+                            // TODO Change to upsert
+                            const res = await supabase.auth.updateUser({
+                                data: {
+                                    name: meta_data.name,
+                                    role: meta_data.role.title,
+                                    contact_num: meta_data.contact_num,
+                                    avatar:
+                                        meta_data.avatar ||
+                                        `https://api.dicebear.com/8.x/initials/svg?seed=${meta_data.name}`,
+                                    active: meta_data.active,
+                                },
+                            });
+                            user = res.data.user || user;
+                        }
+                        break;
+
+                    case 'USER_UPDATED':
+                        await supabase
+                            .from('profiles')
+                            .update({
+                                name: user.user_metadata['name'],
+                                email: user.email,
+                                contact_num: user.user_metadata['contact_num'],
+                                avatar: user.user_metadata['avatar'],
+                            })
+                            .eq('uuid', user.id);
+                        break;
+                }
+            }
+
+            this.user = user || null;
+            this.user$.next(this.user);
+        });
+    }
+
+    private onAuthStateChanged(
+        cb: (e: AuthChangeEvent, session: Session | null) => Promise<void>
+    ) {
         if (!authSubscription) {
             const {
                 data: { subscription },
             } = supabase.auth.onAuthStateChange((e, session) => {
-                setTimeout(async () => {
-                    let user = session?.user;
-
-                    // Store user profile data only on initial session and user updates
-                    if (user) {
-                        if (
-                            e === 'INITIAL_SESSION' ||
-                            e === 'TOKEN_REFRESHED'
-                        ) {
-                            const meta_data = await this.getUserMetaData(
-                                user.id
-                            );
-                            if (meta_data) {
-                                // TODO Change to upsert
-                                const res = await supabase.auth.updateUser({
-                                    data: {
-                                        name: meta_data.name,
-                                        role: meta_data.role.title,
-                                        contact_num: meta_data.contact_num,
-                                        avatar:
-                                            meta_data.avatar ||
-                                            `https://api.dicebear.com/8.x/initials/svg?seed=${meta_data.name}&backgroundColor=000000`,
-                                    },
-                                });
-                                user = res.data.user || user;
-                            }
-                        }
-
-                        if (e === 'USER_UPDATED') {
-                            await supabase
-                                .from('profiles')
-                                .update({
-                                    name: user.user_metadata['name'],
-                                    email: user.email,
-                                    contact_num:
-                                        user.user_metadata['contact_num'],
-                                    avatar: user.user_metadata['avatar'],
-                                })
-                                .eq('uuid', user.id);
-                        }
-                    }
-
-                    this.user = user || null;
-                    this.user$.next(this.user);
-                }, 0);
+                setTimeout(() => cb(e, session), 0);
             });
             authSubscription = subscription;
         }
@@ -158,7 +170,7 @@ export class ApiService {
             : (await supabase.auth.getSession()).data.session?.user || null;
     }
 
-    async getUserMetaData(user_id: string) {
+    async getUserProfileData(user_id: string) {
         const { data: profile } = await supabase
             .from('profiles')
             .select('*, role:roles(title)')

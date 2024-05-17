@@ -102,7 +102,10 @@ export class UserListPage implements OnInit {
         if (!confirmation) return;
 
         // Disable account
-        const res = await this.apiService.admin.deleteUser(user.uuid, true);
+        const res = await this.apiService.superAdmin.deleteUser(
+            user.uuid,
+            true
+        );
         if (res.error) {
             this.toastService.createToast('Something went wrong', '', 'error');
             return;

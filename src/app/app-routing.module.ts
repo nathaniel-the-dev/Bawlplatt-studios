@@ -20,7 +20,14 @@ const routes: Routes = [
     { path: 'login', component: LoginPage },
     { path: 'register', component: RegisterPage },
 
-    { path: 'booking/new', component: MakeBookingPage },
+    {
+        path: 'booking/new',
+        component: MakeBookingPage,
+        canActivate: [
+            AuthRequiredGuard('/login'),
+            HasPermissionGuard('customer'),
+        ],
+    },
     {
         path: 'dashboard',
         component: CustomerDashboardPage,

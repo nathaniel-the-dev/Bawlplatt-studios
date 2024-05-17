@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Provider } from '@supabase/supabase-js';
+import errors from 'src/app/shared/config/errors';
 import errorMessages from 'src/app/shared/config/errors';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
@@ -17,7 +19,13 @@ export class RegisterPage implements OnInit {
         password: ['', [Validators.required]],
         confirm_password: ['', [Validators.required]],
     });
-    code = '';
+
+    verifyForm = this.fb.group({
+        otp: ['', [Validators.required, Validators.minLength(6)]],
+    });
+    verifyErrors = {
+        otp: '',
+    };
 
     errors = {
         email: '',
@@ -33,7 +41,8 @@ export class RegisterPage implements OnInit {
         private apiService: ApiService,
         private validatorService: ValidatorService,
         private toast: ToastService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private router: Router
     ) {}
 
     ngOnInit(): void {
@@ -93,7 +102,7 @@ export class RegisterPage implements OnInit {
                 password: this.registerForm.value.password!,
             });
             if (error) throw error;
-            await this.apiService.supabase.auth.signOut();
+            this.apiService.logout();
 
             // Create user profile
             const { error: profileError } = await this.apiService.supabase
@@ -106,7 +115,7 @@ export class RegisterPage implements OnInit {
                     },
                 ]);
             if (profileError) {
-                this.apiService.admin.deleteUser(user!.id);
+                this.apiService.superAdmin.deleteUser(user!.id);
                 throw profileError;
             }
 
@@ -138,25 +147,65 @@ export class RegisterPage implements OnInit {
 
         // Verify OTP code
         try {
-            const { data, error } =
-                await this.apiService.supabase.auth.verifyOtp({
-                    email: this.registerForm.value.email!,
-                    token: this.code,
-                    type: 'email',
-                });
-            if (error) throw error;
+            // Run validations
+            const formResponse = this.validatorService.validateForm<
+                typeof this.verifyForm
+            >(this.verifyForm);
+            if (!formResponse.valid) {
+                this.verifyErrors = formResponse.errors;
+                return;
+            }
+
+            const {
+                data: { user },
+                error,
+            } = await this.apiService.supabase.auth.verifyOtp({
+                email: this.registerForm.value.email!,
+                token: this.verifyForm.value.otp!,
+                type: 'email',
+            });
+            if (error) {
+                throw error;
+            }
 
             // Set user as verified
-            this.apiService.supabase.auth.updateUser({
-                data: { verified_at: new Date() },
-            });
+            this.apiService.supabase
+                .from('profiles')
+                .update({
+                    verified_at: new Date(),
+                })
+                .eq('uuid', user!.id);
 
             // Notify user and redirect to dashboard
             this.formStatus = '';
-            this.formMode = 'verified';
+            this.toast.createToast(
+                'Welcome to Bawlplatt Studios',
+                'Your account has been created successfully',
+                'success'
+            );
+            this.router.navigate(['dashboard']);
+        } catch (error: any) {
+            this.verifyErrors.otp = errors.validations['otp']['invalid'];
+            this.formStatus = 'error';
+        }
+    }
+
+    async resendCode() {
+        try {
+            const res = await this.apiService.supabase.auth.signInWithOtp({
+                email: this.registerForm.value.email!,
+                options: {
+                    shouldCreateUser: false,
+                },
+            });
+            if (res.error) throw res.error;
         } catch (error: any) {
             console.error(error);
-            this.formStatus = 'error';
+            this.toast.createToast(
+                'Something went wrong',
+                'There was an error sending your token. Please try again in a minute.',
+                'error'
+            );
         }
     }
 
