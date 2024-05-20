@@ -1,3 +1,5 @@
+export const SITE_NAME = 'Bawlplatt Studios';
+
 export const BOOKING_DURATIONS = [
     { value: 30, label: '30 mins.' },
     { value: 60, label: '1 hr.' },

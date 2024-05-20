@@ -6,7 +6,6 @@
 
         <div class="rounded-lg w-full max-w-xl px-12 pb-4 pt-6 mx-auto bg-gray-800 bg-opacity-50">
             <form class="" [formGroup]="bookingForm" (ngSubmit)="bookingForm.valid && onBookingFormSubmit()">
-
                 <div class="flex items-center justify-between gap-4 mb-8" *ngIf="currentStep < 4">
                     <span
                         class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
@@ -35,8 +34,8 @@
                                     class="peer hidden" formControlName="customer_type">
 
                                 <div class="peer-checked:-translate-y-6 transition">
-                                    <img class="rounded-lg" src="/assets/images/form-artist.jpg" alt="An artist">
-                                    <h3 class="text-center">An Artist</h3>
+                                    <img class="rounded-lg mb-2" src="/assets/images/form-artist.jpg" alt="An artist">
+                                    <p class="text-center">An Artist</p>
                                 </div>
                             </label>
 
@@ -45,8 +44,8 @@
                                     class="peer hidden" formControlName="customer_type">
 
                                 <div class="peer-checked:-translate-y-6 transition">
-                                    <img class="rounded-lg" src="/assets/images/form-band.jpg" alt="A band">
-                                    <h3 class="text-center">A Band</h3>
+                                    <img class="rounded-lg mb-2" src="/assets/images/form-band.jpg" alt="A band">
+                                    <p class="text-center">A Band</p>
                                 </div>
                             </label>
                         </div>

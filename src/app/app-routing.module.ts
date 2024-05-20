@@ -13,11 +13,16 @@ import { AuthRequiredGuard } from './shared/guards/auth-required.guard';
 import { HasPermissionGuard } from './shared/guards/has-permission.guard';
 import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
 import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
+import { SITE_NAME } from './shared/config/constants';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
-    { path: 'about', component: AboutPage },
-    { path: 'contact', component: ContactPage },
+    { path: 'about', component: AboutPage, title: SITE_NAME + ' | About Us' },
+    {
+        path: 'contact',
+        component: ContactPage,
+        title: SITE_NAME + ' | Contact Us',
+    },
 
     { path: 'login', component: LoginPage },
     { path: 'register', component: RegisterPage },
@@ -34,7 +39,11 @@ const routes: Routes = [
         path: 'dashboard',
         component: CustomerDashboardPage,
         children: [
-            { path: 'bookings', component: CustomerBookingsPage },
+            {
+                path: 'bookings',
+                component: CustomerBookingsPage,
+                title: SITE_NAME + ' | My Bookings',
+            },
             { path: '', redirectTo: 'bookings', pathMatch: 'full' },
         ],
         canActivate: [
@@ -49,8 +58,16 @@ const routes: Routes = [
             import('./admin/admin.module').then((m) => m.AdminModule),
     },
 
-    { path: 'privacy-policy', component: PrivacyPolicyPage },
-    { path: 'terms-and-conditions', component: TermsAndCondPage },
+    {
+        path: 'privacy-policy',
+        component: PrivacyPolicyPage,
+        title: SITE_NAME + ' | Privacy Policy',
+    },
+    {
+        path: 'terms-and-conditions',
+        component: TermsAndCondPage,
+        title: SITE_NAME + ' | Terms and Conditions',
+    },
 
     { path: 'not-allowed', component: NotFoundPage },
     { path: '', redirectTo: 'home', pathMatch: 'full' },

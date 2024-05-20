@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Provider } from '@supabase/supabase-js';
+import errorMessages from 'src/app/shared/config/errors';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
 
@@ -56,7 +57,9 @@ export class LoginPage implements OnInit {
                 });
             if (response.error) throw response.error;
 
-            if (!response.data?.user?.user_metadata['verified_at']) {
+            if (
+                !response.data?.user?.user_metadata['profile']?.['verified_at']
+            ) {
                 this.formMode = 'verify';
 
                 this.apiService.supabase.auth.signOut();
@@ -71,8 +74,15 @@ export class LoginPage implements OnInit {
                 this.router.navigate(['/dashboard']);
             }
             this.formStatus = '';
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            if (error.message === 'Invalid login credentials') {
+                this.loginForm.controls.email.setErrors({
+                    async: errorMessages.validations['email']['async'],
+                });
+                this.loginForm.controls.email.updateValueAndValidity();
+                this.errors.email = errorMessages.validations['email']['async'];
+            }
+
             this.formStatus = 'error';
         }
     }

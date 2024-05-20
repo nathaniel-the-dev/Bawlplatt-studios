@@ -11,14 +11,20 @@
     }
 }
 
+body {
+    @apply bg-almost-black;
+    color: hsl(236, 22%, 90%);
+}
+
 @layer components {
     :is(h1, h2, h3, h4, h5, h6) {
         @apply font-heading leading-none mb-3;
+        color: hsl(236, 22%, 94%);
     }
 
     /* Buttons */
     .btn {
-        @apply bg-bright-red-600 hover:bg-bright-red-400 inline-flex items-center justify-center gap-2 px-4 py-3 tracking-wide text-center text-white transition rounded cursor-pointer shadow;
+        @apply bg-bright-red-600 hover:bg-bright-red-400 inline-flex items-center justify-center gap-2 px-4 py-3 tracking-wide text-center  transition rounded cursor-pointer shadow;
     }
     .btn-outline {
         @apply bg-transparent text-current outline-2 outline-bright-red-500 outline outline-offset-[-2px] hover:bg-gray-600/25;
@@ -32,7 +38,7 @@
 
     /* Form Controls */
     .form-control {
-        @apply grid w-full max-w-xs gap-1 mb-6 text-white;
+        @apply grid w-full max-w-xs gap-1 mb-6;
     }
 
     label.label {
@@ -45,7 +51,7 @@
 
     :is(input, select, textarea).input,
     ng-select.ng-select.select .ng-select-container {
-        @apply border-0 px-6 py-3 bg-gray-800 bg-opacity-75 rounded text-white shadow-sm;
+        @apply border-0 px-6 py-3 bg-gray-800 bg-opacity-75 rounded  shadow-sm;
     }
 
     ng-select.ng-select.select .ng-value-container {
@@ -106,7 +112,7 @@
 
     /* Badges */
     .badge {
-        @apply inline-block whitespace-nowrap tracking-wider rounded bg-blue-900 text-white uppercase px-2 py-1 text-center align-baseline text-sm leading-none;
+        @apply inline-block whitespace-nowrap tracking-wider rounded bg-blue-900  uppercase px-2 py-1 text-center align-baseline text-sm leading-none;
     }
 
     /* Dividers */
@@ -133,8 +139,4 @@
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     appearance: none;
-}
-
-:is(h1, h2, h3, h4, h5, h6) {
-    @apply text-white;
 }

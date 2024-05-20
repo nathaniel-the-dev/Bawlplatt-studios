@@ -16,6 +16,7 @@ export default <Errors>{
             required: 'Please enter an email',
             email: 'Not a valid email address',
             unique: 'Email already in use',
+            async: 'Invalid login credentials. Please check your email or password',
         },
         contact_num: {
             required: 'Please enter a phone number',
