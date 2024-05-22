@@ -1,15 +1,28 @@
-import {
-    UntypedFormBuilder,
-    UntypedFormGroup,
-    Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Booking } from 'src/app/shared/models/booking';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { ValidateTime } from 'src/app/shared/validators/time.validator';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ApiService } from 'src/app/shared/services/api.service';
+import {
+    AVAILABLE_EQUIPMENT,
+    BOOKING_DURATIONS,
+    MAX_MUSICIANS_COUNT,
+} from 'src/app/shared/config/constants';
+import * as tempo from '@formkit/tempo';
+import { ValidatorService } from 'src/app/shared/services/validator.service';
+
+type FormErrors<TForm extends FormGroup> = Record<
+    keyof TForm['controls'],
+    string
+>;
+
+type EquipmentNeeded = Partial<
+    Record<
+        keyof typeof MakeBookingPage.prototype.equipment_available,
+        number | undefined
+    >
+>;
 
 @Component({
     selector: 'app-make-booking',
@@ -29,113 +42,121 @@ import { ApiService } from 'src/app/shared/services/api.service';
 })
 export class MakeBookingPage implements OnInit, OnDestroy {
     currentStep: 1 | 2 | 3 | 4 = 1;
-    changeSlide(dir: -1 | 1): void {
-        this.currentStep += dir;
-    }
 
     bookingForm = this.fb.group({
-        customer_type: [null, [Validators.required]],
-
-        artist: this.fb.group({
-            name: [null, [Validators.required]],
-            email: [null, [Validators.required, Validators.email]],
-            contact_num: [null, [Validators.required]],
+        // Customer type
+        customer: this.fb.group({
+            customer_type: [null as string | null, [Validators.required]],
+            booked_for: [null as string | null, [Validators.required]],
         }),
 
-        band: this.fb.group({
-            group_name: [null, [Validators.required]],
-            group_size: [null, [Validators.required, Validators.min(1)]],
-            lead_name: [null, [Validators.required]],
-            lead_email: [null, [Validators.required, Validators.email]],
-            lead_contact_num: [null, [Validators.required]],
+        // Session information
+        session: this.fb.group({
+            date_booked: [null as string | null, [Validators.required]],
+            time_booked: [
+                null as string | null,
+                [Validators.required, ValidateTime('08:00', '20:00')],
+            ],
+            duration_in_minutes: [null as string | null, [Validators.required]],
         }),
 
-        num_of_instruments: [null, Validators.min(0)],
-        start_date: [null, Validators.required],
-        start_time: [
-            null,
-            [Validators.required, ValidateTime('08:00', '20:00')],
-        ],
-        duration: [null, [Validators.required, Validators.max(4)]],
-        message: [null, Validators.maxLength(255)],
+        // Requirements
+        requirements: this.fb.group({
+            num_of_musicians: [
+                null as string | null,
+                [Validators.required, Validators.max(MAX_MUSICIANS_COUNT)],
+            ],
+            equipment_needed: [{} as EquipmentNeeded],
+            additional_requirements: [null as string | null],
+        }),
     });
-    get artistForm(): UntypedFormGroup {
-        return this.bookingForm.get('artist') as UntypedFormGroup;
-    }
-    get bandForm(): UntypedFormGroup {
-        return this.bookingForm.get('band') as UntypedFormGroup;
-    }
+
+    errors = {
+        customer: {} as FormErrors<typeof this.customerForm>,
+        session: {} as FormErrors<typeof this.sessionForm>,
+        requirements: {} as FormErrors<typeof this.requirementsForm>,
+    };
+
+    public customer_types: any[] = [];
+    public durations = BOOKING_DURATIONS;
+    public equipment_available = AVAILABLE_EQUIPMENT;
 
     private subscriptions = new Subscription();
 
+    get customerForm() {
+        return this.bookingForm.controls.customer;
+    }
+    get sessionForm() {
+        return this.bookingForm.controls.session;
+    }
+    get requirementsForm() {
+        return this.bookingForm.controls.requirements;
+    }
+
+    get minDate() {
+        return tempo.format(tempo.addDay(tempo.date(), 1), 'YYYY-MM-DD');
+    }
+
     constructor(
         private apiService: ApiService,
-        private errorService: ErrorService,
-        private fb: UntypedFormBuilder
+        private validator: ValidatorService,
+        private fb: FormBuilder
     ) {}
 
     ngOnInit(): void {
-        this._setFormState(this.artistForm, 'disabled');
-        this._setFormState(this.bandForm, 'disabled');
+        // Set default values
+        this.setDefaultFormValues();
 
-        const changesSub = this.bookingForm.valueChanges.subscribe((data) => {
-            switch (data.customer_type) {
-                case 'artist':
-                    this._setFormState(this.artistForm, 'enabled');
-                    this._setFormState(this.bandForm, 'disabled');
-                    break;
-                case 'band':
-                    this._setFormState(this.bandForm, 'enabled');
-                    this._setFormState(this.artistForm, 'disabled');
-                    break;
-            }
-        });
-        this.subscriptions.add(changesSub);
+        // Get customer types
+        this.getCustomerTypes();
     }
+
     ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
     }
 
-    onBookingFormSubmit(): void {
-        // Convert separate date and time to one value
-        let start_date =
-            this.bookingForm.controls['start_date'].value &&
-            new Date(
-                this.bookingForm.controls['start_date'].value +
-                    ' ' +
-                    this.bookingForm.controls['start_time'].value
-            );
-
-        // Add the data to the booking
-        const booking = {
-            ...this.bookingForm.value,
-
-            start_date: start_date,
-            start_time: undefined,
-        } as Booking;
-
-        // const bookingSub = this.apiService
-        //     .createBooking(booking)
-        //     .subscribe((res) => {
-        //         if (res.status === 'success') this.changeSlide(1);
-        //         if (
-        //             res.status === 'fail' &&
-        //             res.error!.type === 'ValidationError'
-        //         )
-        //             this.errorService.handleValidationError(
-        //                 res,
-        //                 this.bookingForm
-        //             );
-        //     });
-        // this.subscriptions.add(bookingSub);
+    private setDefaultFormValues() {
+        let userID = this.apiService.user?.user_metadata['profile']?.id;
+        this.customerForm.controls.booked_for.setValue(userID);
     }
 
-    private _setFormState(
-        form: UntypedFormGroup,
-        state: 'enabled' | 'disabled'
-    ): void {
-        state === 'enabled'
-            ? form.enable({ emitEvent: false })
-            : form.disable({ emitEvent: false });
+    next(form: any): void {
+        if (form && form.invalid) return;
+        this.currentStep = Math.min(3, this.currentStep + 1) as 1 | 2 | 3;
+    }
+
+    back() {
+        this.currentStep = Math.max(1, this.currentStep - 1) as 1 | 2 | 3 | 4;
+    }
+
+    private async getCustomerTypes() {
+        const { data } = await this.apiService.supabase
+            .from('customer_type')
+            .select('*');
+        if (!data?.length) return;
+
+        data.forEach(async (type: any) => {
+            const {
+                data: { publicUrl },
+            } = this.apiService.supabase.storage
+                .from('customer_types')
+                .getPublicUrl(type.image);
+
+            type.image = publicUrl;
+        });
+
+        this.customer_types = data;
+    }
+
+    async onBookingFormSubmit(): Promise<void> {
+        try {
+            let booking = {
+                ...this.customerForm.value,
+                ...this.sessionForm.value,
+                ...this.requirementsForm.value,
+            };
+        } catch (error) {
+            console.error(error);
+        }
     }
 }

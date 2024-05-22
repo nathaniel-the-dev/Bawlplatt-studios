@@ -10,6 +10,7 @@ import {
     BOOKING_DURATIONS,
     MAX_MUSICIANS_COUNT,
 } from 'src/app/shared/config/constants';
+import * as tempo from '@formkit/tempo';
 
 type FormErrors = Record<
     keyof Omit<
@@ -74,9 +75,7 @@ export class BookingFormPage implements OnInit {
     public equipment_available = AVAILABLE_EQUIPMENT;
 
     get minDate() {
-        const date = new Date();
-        date.setDate(date.getDate() + 1);
-        return date.toISOString().split('T')[0];
+        return tempo.format(tempo.addDay(new Date(), 1), 'YYYY-MM-DD');
     }
 
     public action: 'add' | 'edit' = 'add';
@@ -114,22 +113,26 @@ export class BookingFormPage implements OnInit {
 
     private setFormOptions() {
         // Get customer types
-        this.apiService.supabase
-            .from('customer_type')
-            .select('*')
-            .then(({ data }) => {
-                if (data) this.customer_types = data;
-            });
+        this.getCustomerTypes();
 
         // Get customers
-        this.apiService.supabase
+        this.getCustomerList();
+    }
+
+    private async getCustomerList() {
+        const { data } = await this.apiService.supabase
             .from('profiles')
             .select('id, name, avatar, active, role:roles!inner(title)')
             .in('role.title', ['admin', 'customer'])
-            .eq('active', true)
-            .then(({ data }) => {
-                if (data) this.customers = data;
-            });
+            .eq('active', true);
+        if (data) this.customers = data;
+    }
+
+    private async getCustomerTypes() {
+        const { data } = await this.apiService.supabase
+            .from('customer_type')
+            .select('*');
+        if (data) this.customer_types = data;
     }
 
     getEquipmentLimit(key: string): number {
