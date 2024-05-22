@@ -149,6 +149,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     }
 
     async onBookingFormSubmit(): Promise<void> {
+        // TODO: Show confirmation page and proceed to payment
         try {
             let booking = {
                 ...this.customerForm.value,
