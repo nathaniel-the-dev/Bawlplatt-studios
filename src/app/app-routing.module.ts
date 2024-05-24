@@ -14,6 +14,8 @@ import { HasPermissionGuard } from './shared/guards/has-permission.guard';
 import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
 import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
 import { SITE_NAME } from './shared/config/constants';
+import { CheckoutPage } from './pages/checkout/checkout.page';
+import { RedirectOnlyGuard } from './admin/shared/guards/redirect-only.guard';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
@@ -31,6 +33,15 @@ const routes: Routes = [
         path: 'booking/new',
         component: MakeBookingPage,
         canActivate: [
+            AuthRequiredGuard('/login'),
+            HasPermissionGuard('customer'),
+        ],
+    },
+    {
+        path: 'booking/new/checkout',
+        component: CheckoutPage,
+        canActivate: [
+            RedirectOnlyGuard,
             AuthRequiredGuard('/login'),
             HasPermissionGuard('customer'),
         ],

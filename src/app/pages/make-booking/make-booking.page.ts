@@ -11,6 +11,7 @@ import {
 } from 'src/app/shared/config/constants';
 import * as tempo from '@formkit/tempo';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
+import { Router } from '@angular/router';
 
 type FormErrors<TForm extends FormGroup> = Record<
     keyof TForm['controls'],
@@ -41,7 +42,7 @@ type EquipmentNeeded = Partial<
     ],
 })
 export class MakeBookingPage implements OnInit, OnDestroy {
-    currentStep: 1 | 2 | 3 | 4 = 1;
+    currentStep: 1 | 2 | 3 | 4 | 5 = 1;
 
     bookingForm = this.fb.group({
         // Customer type
@@ -100,6 +101,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     constructor(
         private apiService: ApiService,
         private validator: ValidatorService,
+        private router: Router,
         private fb: FormBuilder
     ) {}
 
@@ -122,11 +124,15 @@ export class MakeBookingPage implements OnInit, OnDestroy {
 
     next(form: any): void {
         if (form && form.invalid) return;
-        this.currentStep = Math.min(3, this.currentStep + 1) as 1 | 2 | 3;
+        this.currentStep = Math.min(5, this.currentStep + 1) as 1 | 2 | 3 | 4;
     }
 
     back() {
-        this.currentStep = Math.max(1, this.currentStep - 1) as 1 | 2 | 3 | 4;
+        this.currentStep = Math.max(1, this.currentStep - 1) as 1 | 2 | 3;
+    }
+
+    toCheckout() {
+        this.router.navigateByUrl('/booking/new/checkout');
     }
 
     private async getCustomerTypes() {
@@ -146,6 +152,27 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         });
 
         this.customer_types = data;
+    }
+
+    getEquipmentLimit(key: string): number {
+        let label = key as keyof typeof this.equipment_available;
+        return (
+            this.requirementsForm.controls.equipment_needed.value?.[label] || 0
+        );
+    }
+
+    updateEquipmentValue(key: string, value: number) {
+        const control = this.requirementsForm.controls.equipment_needed;
+
+        control.setValue({
+            ...control.value,
+            [key]: Math.min(
+                Math.max(this.getEquipmentLimit(key) + value, 0),
+                this.equipment_available[
+                    key as keyof typeof this.equipment_available
+                ].limit
+            ),
+        });
     }
 
     async onBookingFormSubmit(): Promise<void> {

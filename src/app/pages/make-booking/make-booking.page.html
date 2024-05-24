@@ -6,7 +6,7 @@
 
         <div class="rounded-lg w-full max-w-xl px-12 pb-4 pt-10 mx-auto bg-gray-800 bg-opacity-50">
             <div class="" [formGroup]="bookingForm">
-                <div class="flex items-center justify-between gap-4 mb-8" *ngIf="currentStep < 4">
+                <div class="flex items-center justify-between gap-4 mb-8">
                     <div class="relative">
                         <p class="text-center absolute -top-6 left-1/2 -translate-x-1/2 text-sm">Customer</p>
                         <span
@@ -30,6 +30,15 @@
                         <span
                             class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
                             [class.bg-bright-red-500]="currentStep >= 3">3</span>
+                    </div>
+
+                    <hr class="border-bright-red-500 grow border-2">
+
+                    <div class="relative">
+                        <p class="text-center absolute -top-6 left-1/2 -translate-x-1/2 text-sm">Confirmation</p>
+                        <span
+                            class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
+                            [class.bg-bright-red-500]="currentStep >= 4">4</span>
                     </div>
                 </div>
 
@@ -103,6 +112,27 @@
                             </div>
                         </div>
 
+                        <fieldset class="form-control required">
+                            <legend class="label mb-4">Duration</legend>
+
+                            <div class="flex flex-wrap gap-4">
+                                <label for="duration-{{duration.value}}" class="cursor-pointer"
+                                    *ngFor="let duration of durations">
+                                    <input class="peer hidden" type="radio" name="duration_in_minutes"
+                                        id="duration-{{duration.value}}" [value]="duration.value"
+                                        formControlName="duration_in_minutes">
+                                    <span
+                                        class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border-2 border-red-500 rounded hover:bg-red-100/5">{{duration.label}}</span>
+                                </label>
+                            </div>
+
+                            <div class="feedback">
+                                <base-error *ngIf="errors.session.duration_in_minutes">
+                                    {{errors.session.duration_in_minutes}}
+                                </base-error>
+                            </div>
+                        </fieldset>
+
                         <div class="flex justify-end gap-2 mt-8">
                             <button class="btn btn-outline" type="button" (click)="back()">Back</button>
                             <button class="btn" type="submit" [disabled]="sessionForm.invalid">Next</button>
@@ -113,27 +143,78 @@
                         @changeSlide class="slide" *ngIf="currentStep === 3">
                         <h1 class="text-h5 mb-6">Requirements</h1>
 
+                        <div class="form-control">
+                            <label class="label" for="num_of_musicians">Number of Musicians</label>
+                            <input class="input w-1/3" type="number" name="num_of_musicians" id="num_of_musicians"
+                                formControlName="num_of_musicians">
+
+                            <div class="feedback">
+                                <base-error *ngIf="errors.requirements.num_of_musicians">
+                                    {{errors.requirements.num_of_musicians}}
+                                </base-error>
+                            </div>
+                        </div>
+
+                        <fieldset class="form-control required">
+                            <legend class="label mb-4">Equipment Needed</legend>
+
+                            <div class="flex flex-wrap gap-4">
+                                <div class="border border-gray-400 p-2 rounded"
+                                    *ngFor="let item of equipment_available | keyvalue">
+                                    <span><lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
+                                        {{item.key}}</span>
+
+                                    <span class="flex items-center justify-between gap-1 text-sm text-gray-400">
+                                        <button class="" type="button" (click)="updateEquipmentValue(item.key, 1)"
+                                            [disabled]="!item.value.limit"><i class="ai-plus"></i></button>
+                                        <span>{{getEquipmentLimit(item.key)}}/{{item.value.limit}}</span>
+                                        <button class="" type="button" (click)="updateEquipmentValue(item.key, -1)"
+                                            [disabled]="!item.value.limit"><i class="ai-minus"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="feedback">
+                                <base-error *ngIf="errors.requirements.equipment_needed">
+                                    {{errors.requirements.equipment_needed}}
+                                </base-error>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-control">
+                            <label class="label" for="additional_requirements">Additional Requirements</label>
+                            <textarea class="input resize-none" name="additional_requirements"
+                                id="additional_requirements" cols="30" rows="5"
+                                formControlName="additional_requirements"></textarea>
+
+                            <div class="feedback">
+                                <base-error *ngIf="errors.requirements.additional_requirements">
+                                    {{errors.requirements.additional_requirements}}
+                                </base-error>
+                            </div>
+                        </div>
 
 
                         <div class="flex justify-end gap-2 mt-8">
                             <button class="btn btn-outline" type="button" (click)="back()">Back</button>
-                            <button class="btn" type="submit" [disabled]="requirementsForm.invalid">Finish</button>
+                            <button class="btn" type="submit" [disabled]="requirementsForm.invalid">Next</button>
                         </div>
                     </form>
 
                     <section @changeSlide class="slide flex items-center justify-center" *ngIf="currentStep === 4">
                         <div class="text-center">
-                            <i class="ai-circle-check text-[4.5rem] text-bright-red-300"></i>
+                            <!-- <i class="ai-circle-check text-[4.5rem] text-bright-red-300"></i> -->
 
-                            <h1 class="text-h4 mt-2 mb-4">Your session has been booked</h1>
+                            <h1 class="text-h4 mt-2 mb-4">Confirm Your Booking</h1>
 
-                            <p class="mb-8 leading-relaxed">
-                                For more information, email us at <a
-                                    class="text-bright-red-300">bawlplatt@studios.com</a> by or calling <a
-                                    class="text-bright-red-300">(876)981-1201</a>.
-                            </p>
+                            <p class="mb-4">Please confirm your booking details below.</p>
 
-                            <button class="btn" type="button" routerLink="/home">Okay</button>
+                            <!-- <base-table [data]="bookingData"></base-table> -->
+
+                            <div class="flex justify-end gap-2 mt-8">
+                                <button class="btn btn-outline" type="button" (click)="back()">Back</button>
+                                <button class="btn" (click)="toCheckout()">Proceed to checkout</button>
+                            </div>
                         </div>
                     </section>
                 </div>

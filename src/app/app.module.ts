@@ -22,6 +22,7 @@ import { CustomerDashboardPage } from './pages/customer-dashboard/customer-dashb
 import { CustomerBookingsPage } from './pages/customer-dashboard/bookings/bookings.page';
 import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
 import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
+import { CheckoutPage } from './pages/checkout/checkout.page';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
         CustomerBookingsPage,
         PrivacyPolicyPage,
         TermsAndCondPage,
+        CheckoutPage,
     ],
     imports: [
         BrowserModule,
