@@ -71,7 +71,7 @@ export class LoginPage implements OnInit {
                     },
                 });
             } else {
-                this.router.navigate(['/dashboard']);
+                this.router.navigate(['/']);
             }
             this.formStatus = '';
         } catch (error: any) {

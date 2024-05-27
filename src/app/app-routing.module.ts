@@ -30,18 +30,18 @@ const routes: Routes = [
     { path: 'register', component: RegisterPage },
 
     {
-        path: 'booking/new',
-        component: MakeBookingPage,
+        path: 'booking/new/checkout',
+        component: CheckoutPage,
         canActivate: [
+            RedirectOnlyGuard,
             AuthRequiredGuard('/login'),
             HasPermissionGuard('customer'),
         ],
     },
     {
-        path: 'booking/new/checkout',
-        component: CheckoutPage,
+        path: 'booking/new',
+        component: MakeBookingPage,
         canActivate: [
-            RedirectOnlyGuard,
             AuthRequiredGuard('/login'),
             HasPermissionGuard('customer'),
         ],

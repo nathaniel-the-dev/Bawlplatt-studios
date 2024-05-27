@@ -1,7 +1,7 @@
 <app-header></app-header>
 
 <div class="min-h-screen">
-    <div class="py-16">
+    <div class="py-24">
         <h1 class="text-h2 mb-4 text-center">Book a session</h1>
 
         <div class="rounded-lg w-full max-w-xl px-12 pb-4 pt-10 mx-auto bg-gray-800 bg-opacity-50">
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="min-h-[25rem] relative">
-                    <form [formGroup]="customerForm" (ngSubmit)="customerForm.valid && next(customerForm)" @changeSlide
+                    <form [formGroup]="customerForm" (ngSubmit)="customerForm.valid && next('customer')" @changeSlide
                         class="slide" *ngIf="currentStep === 1">
                         <h1 class="text-h5 mb-8 text-center">Who are you booking for?</h1>
 
@@ -55,9 +55,10 @@
                                         [value]="type.id" class="peer hidden" formControlName="customer_type">
 
                                     <div
-                                        class="rounded-lg overflow-hidden peer-checked:-translate-y-6 peer-checked:border-4 border-red-500 border-0 transition">
-                                        <img class="mb-2 rounded-lg" [src]="type.image" [alt]="type.name">
-                                        <p class="text-center">{{type.name | titlecase}}</p>
+                                        class="rounded-lg peer-checked:-translate-y-4 peer-checked:outline-4 outline-dashed outline-red-500 outline-0 transition relative">
+                                        <img class="rounded-lg h-[13rem]" [src]="type.image" [alt]="type.name">
+                                        <p class="text-center absolute -bottom-8 left-1/2 -translate-x-1/2">{{type.name
+                                            | titlecase}}</p>
                                     </div>
                                 </label>
                             </ng-container>
@@ -78,13 +79,14 @@
                             </base-error>
                         </div>
 
-                        <div class="flex justify-end gap-2 mt-8">
-                            <button type="button" class="btn btn-outline" routerLink="/home">Cancel</button>
-                            <button type="submit" class="btn" [disabled]="customerForm.invalid">Next</button>
+                        <div class="flex justify-end gap-2 mt-16">
+                            <button type="button" class="btn btn-ghost bg-gray-600/10"
+                                routerLink="/home">Cancel</button>
+                            <button type="submit" class="btn">Next</button>
                         </div>
                     </form>
 
-                    <form [formGroup]="sessionForm" (ngSubmit)="sessionForm.valid && next(sessionForm)" @changeSlide
+                    <form [formGroup]="sessionForm" (ngSubmit)="sessionForm.valid && next('session')" @changeSlide
                         class="slide" *ngIf="currentStep === 2">
                         <h1 class="text-h5 mb-6">About The Session</h1>
 
@@ -134,12 +136,12 @@
                         </fieldset>
 
                         <div class="flex justify-end gap-2 mt-8">
-                            <button class="btn btn-outline" type="button" (click)="back()">Back</button>
-                            <button class="btn" type="submit" [disabled]="sessionForm.invalid">Next</button>
+                            <button class="btn btn-ghost bg-gray-600/10" type="button" (click)="back()">Back</button>
+                            <button class="btn" type="submit">Next</button>
                         </div>
                     </form>
 
-                    <form [formGroup]="requirementsForm" (ngSubmit)="requirementsForm.valid && next(requirementsForm)"
+                    <form [formGroup]="requirementsForm" (ngSubmit)="requirementsForm.valid && next('requirements')"
                         @changeSlide class="slide" *ngIf="currentStep === 3">
                         <h1 class="text-h5 mb-6">Requirements</h1>
 
@@ -158,11 +160,11 @@
                         <fieldset class="form-control required">
                             <legend class="label mb-4">Equipment Needed</legend>
 
-                            <div class="flex flex-wrap gap-4">
-                                <div class="border border-gray-400 p-2 rounded"
+                            <div class="flex flex-col flex-wrap gap-4 max-h-60">
+                                <div class="border border-gray-400 p-2 rounded w-fit"
                                     *ngFor="let item of equipment_available | keyvalue">
-                                    <span><lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
-                                        {{item.key}}</span>
+                                    <p class=""><lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
+                                        {{item.key}}</p>
 
                                     <span class="flex items-center justify-between gap-1 text-sm text-gray-400">
                                         <button class="" type="button" (click)="updateEquipmentValue(item.key, 1)"
@@ -196,8 +198,8 @@
 
 
                         <div class="flex justify-end gap-2 mt-8">
-                            <button class="btn btn-outline" type="button" (click)="back()">Back</button>
-                            <button class="btn" type="submit" [disabled]="requirementsForm.invalid">Next</button>
+                            <button class="btn btn-ghost bg-gray-600/10" type="button" (click)="back()">Back</button>
+                            <button class="btn" type="submit">Next</button>
                         </div>
                     </form>
 
@@ -212,7 +214,8 @@
                             <!-- <base-table [data]="bookingData"></base-table> -->
 
                             <div class="flex justify-end gap-2 mt-8">
-                                <button class="btn btn-outline" type="button" (click)="back()">Back</button>
+                                <button class="btn btn-ghost bg-gray-600/10" type="button"
+                                    (click)="back()">Back</button>
                                 <button class="btn" (click)="toCheckout()">Proceed to checkout</button>
                             </div>
                         </div>

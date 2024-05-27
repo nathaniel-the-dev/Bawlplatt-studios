@@ -9,6 +9,7 @@ export const BOOKING_DURATIONS = [
 ];
 
 export const AVAILABLE_EQUIPMENT = {
+    microphones: { limit: 5, icon: 'mic2' },
     guitars: {
         limit: 3,
         icon: 'guitar',
@@ -16,7 +17,6 @@ export const AVAILABLE_EQUIPMENT = {
     drums: { limit: 2, icon: 'drum' },
     pianos: { limit: 2, icon: 'piano' },
     bass: { limit: 1, icon: 'speaker' },
-    microphones: { limit: 5, icon: 'mic2' },
 };
 
 export const MAX_MUSICIANS_COUNT = 10;

@@ -122,8 +122,18 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         this.customerForm.controls.booked_for.setValue(userID);
     }
 
-    next(form: any): void {
-        if (form && form.invalid) return;
+    next(formName: 'customer' | 'session' | 'requirements'): void {
+        const form = this.bookingForm.get(formName) as FormGroup | null;
+
+        if (!formName || !form) return;
+
+        let formResponse = this.validator.validateForm<typeof form>(form);
+        if (!formResponse.valid) {
+            this.errors[formName] = formResponse.errors as any;
+            console.log(this.errors);
+            return;
+        }
+
         this.currentStep = Math.min(5, this.currentStep + 1) as 1 | 2 | 3 | 4;
     }
 

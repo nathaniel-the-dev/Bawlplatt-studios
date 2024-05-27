@@ -2,9 +2,10 @@
 
 ## Bugfixes
 
--   [ ] Fix validation showing up when input wasn't even touched
 -   [ ] Update Auth Policies for each table (Supabase)
 -   [ ] Differentiate login pages for admin and customer
+
+-   [ ] Fix validations missing from
 
 ## Admin Portal
 
