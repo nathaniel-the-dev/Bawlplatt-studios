@@ -2,6 +2,13 @@
 
 <main class="min-h-screen py-32">
     <div class="container">
+        <nav class="mb-6 border-b">
+            <ul class="flex items-center gap-6">
+                <li><a class="nav-link" routerLink="/customer-dashboard/booking">My Bookings</a></li>
+                <li><a class="nav-link" routerLink="/customer-dashboard/profile">My Account</a></li>
+            </ul>
+        </nav>
+
         <router-outlet></router-outlet>
     </div>
 </main>

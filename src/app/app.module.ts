@@ -23,6 +23,7 @@ import { CustomerBookingsPage } from './pages/customer-dashboard/bookings/bookin
 import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
 import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
 import { CheckoutPage } from './pages/checkout/checkout.page';
+import { FaqPage } from './pages/faq/faq.page';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { CheckoutPage } from './pages/checkout/checkout.page';
         PrivacyPolicyPage,
         TermsAndCondPage,
         CheckoutPage,
+        FaqPage,
     ],
     imports: [
         BrowserModule,

@@ -16,10 +16,12 @@ import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
 import { SITE_NAME } from './shared/config/constants';
 import { CheckoutPage } from './pages/checkout/checkout.page';
 import { RedirectOnlyGuard } from './admin/shared/guards/redirect-only.guard';
+import { FaqPage } from './pages/faq/faq.page';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
     { path: 'about', component: AboutPage, title: SITE_NAME + ' | About Us' },
+    { path: 'faq', component: FaqPage, title: SITE_NAME + ' | FAQ' },
     {
         path: 'contact',
         component: ContactPage,

@@ -28,6 +28,7 @@ module.exports = {
             },
 
             colors: {
+                "cream-white": "#F9F4E1",
                 "bright-red": {
                     50: "#ff7373",
                     100: "#ff6969",
@@ -42,7 +43,7 @@ module.exports = {
                 },
                 "brownish-gray": "#120E0E",
                 "almost-black": "#0A0808",
-                "cream-white": "#F9F4E1",
+                black: "#0A0808",
             },
 
             fontFamily: {
