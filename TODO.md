@@ -78,6 +78,11 @@
 -   [ ] Privacy Policy
 -   [ ] Terms and Conditions
 
+#### Braintree API keys
+
+-   Api: rm82b8ggpqcs4k35
+-   SDK: sandbox_s9xgnv22_p7hg4x4szrkz2kzw
+
 #### Audit log example
 
 ````json
