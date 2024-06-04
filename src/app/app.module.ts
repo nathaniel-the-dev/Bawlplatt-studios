@@ -24,6 +24,8 @@ import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
 import { TermsAndCondPage } from './pages/terms-and-cond/terms-and-cond.page';
 import { CheckoutPage } from './pages/checkout/checkout.page';
 import { FaqPage } from './pages/faq/faq.page';
+import { CustomerProfilePage } from './pages/customer-dashboard/profile/profile.page';
+import { ForgotPasswordPage } from './pages/auth/forgot-password/forgot-password.page';
 
 @NgModule({
     declarations: [
@@ -42,6 +44,8 @@ import { FaqPage } from './pages/faq/faq.page';
         TermsAndCondPage,
         CheckoutPage,
         FaqPage,
+        CustomerProfilePage,
+        ForgotPasswordPage,
     ],
     imports: [
         BrowserModule,

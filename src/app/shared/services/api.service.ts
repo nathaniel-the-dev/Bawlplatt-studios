@@ -9,6 +9,13 @@ import {
 import { environment } from 'src/environments/environment';
 import localforage from 'localforage';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
+
+interface Pagination {
+    current: number;
+    max: number;
+    limit: number;
+}
 
 localforage.config({
     driver: localforage.INDEXEDDB,
@@ -51,6 +58,7 @@ let authSubscription: any = null;
     providedIn: 'root',
 })
 export class ApiService {
+    public isCustomerAuthenticated$ = new BehaviorSubject<boolean>(false);
     public user$ = new BehaviorSubject<User | null>(null);
     public get user() {
         return this.user$?.getValue();
@@ -59,8 +67,11 @@ export class ApiService {
     public supabase = supabase;
     public superAdmin = superAdminClient;
 
-    constructor() {
-        // Ensure auth subscription is initialized once (Singleton)
+    constructor(private router: Router) {
+        this.handleAuthStateChanges();
+    }
+
+    private handleAuthStateChanges() {
         this.onAuthStateChanged(async (e, session) => {
             let user = session?.user;
 
@@ -88,12 +99,16 @@ export class ApiService {
             }
 
             this.user$.next(user || null);
+            this.isCustomerAuthenticated$.next(
+                user?.user_metadata?.['profile'].role === 'customer'
+            );
         });
     }
 
     private onAuthStateChanged(
         cb: (e: AuthChangeEvent, session: Session | null) => Promise<void>
     ) {
+        // Ensure auth subscription is initialized once (Singleton)
         if (!authSubscription) {
             const {
                 data: { subscription },
@@ -104,7 +119,10 @@ export class ApiService {
         }
     }
 
-    public async paginateQuery(query: any, pagination: any): Promise<any> {
+    public async paginateQuery(
+        query: any,
+        pagination: Pagination
+    ): Promise<any> {
         let rangeStart = pagination.limit * (pagination.current - 1);
         let rangeEnd = pagination.limit * pagination.current - 1;
 
@@ -169,14 +187,14 @@ export class ApiService {
         return profile;
     }
 
-    async logout(): Promise<boolean> {
+    async logout(redirectTo?: string): Promise<boolean> {
         const { error } = await supabase.auth.signOut();
         if (error) {
             this.handleErrors(error);
             return false;
         }
         this.user$.next(null);
-
+        if (redirectTo) this.router.navigateByUrl(redirectTo);
         return true;
     }
 }

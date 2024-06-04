@@ -30,8 +30,10 @@
                         </base-error>
                     </div>
                 </div>
+                <p class="text-end -mt-6 text-sm"><a routerLink="/forgot-password" class="text-bright-red-300">Forgot
+                        password?</a></p>
 
-                <div class="form-actions">
+                <div class="form-actions mt-6">
                     <button class="btn btn-primary w-full" [disabled]="formStatus === 'loading'">
                         <app-status-indicator [status]="formStatus" />
                         <span>Login</span>
@@ -64,11 +66,16 @@
                 <p class="text-gray-300">We have sent a code to your email.</p>
             </div>
 
-            <form class="text-center" (ngSubmit)="onVerify()">
+            <form [formGroup]="verifyForm" class="text-center" (ngSubmit)="onVerify()">
                 <div class="form-control mx-auto">
                     <label class="label" for="code">Code</label>
                     <input class="input" type="text" name="code" id="code" required placeholder="000000" mask="000000"
-                        [(ngModel)]="code" />
+                        formControlName="otp" />
+                    <div class="feedback">
+                        <base-error *ngIf="verifyErrors.otp">
+                            {{verifyErrors.otp}}
+                        </base-error>
+                    </div>
                 </div>
 
                 <div class="mt-6 space-y-4">
@@ -76,8 +83,8 @@
                         <app-status-indicator [status]="formStatus"></app-status-indicator>
                         Verify
                     </button>
-                    <p><button type="button">Resend Code</button></p>
-                    <p><button type="button">Back</button></p>
+                    <p><button type="button" (click)="resendCode()">Resend Code</button></p>
+                    <p><button type="button" (click)="back()">Back</button></p>
                 </div>
             </form>
         </ng-container>

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Provider } from '@supabase/supabase-js';
 import errorMessages from 'src/app/shared/config/errors';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { ToastService } from 'src/app/shared/services/toast.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
 
 @Component({
@@ -16,7 +17,13 @@ export class LoginPage implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]],
     });
-    code = '';
+
+    verifyForm = this.fb.group({
+        otp: ['', [Validators.required, Validators.minLength(6)]],
+    });
+    verifyErrors = {
+        otp: '',
+    };
 
     errors = {
         email: '',
@@ -30,12 +37,16 @@ export class LoginPage implements OnInit {
         private apiService: ApiService,
         private validatorService: ValidatorService,
         private router: Router,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private toast: ToastService
     ) {}
 
     ngOnInit(): void {
         this.validatorService.validateOnInput(this.loginForm, (errors) => {
             this.errors = errors;
+        });
+        this.validatorService.validateOnInput(this.verifyForm, (errors) => {
+            this.verifyErrors = errors;
         });
     }
 
@@ -71,6 +82,7 @@ export class LoginPage implements OnInit {
                     },
                 });
             } else {
+                this.apiService.isCustomerAuthenticated$.next(true);
                 this.router.navigate(['/']);
             }
             this.formStatus = '';
@@ -89,11 +101,20 @@ export class LoginPage implements OnInit {
 
     async onVerify() {
         try {
+            // Run validations
+            const formResponse = this.validatorService.validateForm<
+                typeof this.verifyForm
+            >(this.verifyForm);
+            if (!formResponse.valid) {
+                this.verifyErrors = formResponse.errors;
+                return;
+            }
+
             this.formStatus = 'loading';
 
             const { error } = await this.apiService.supabase.auth.verifyOtp({
                 email: this.loginForm.value.email!,
-                token: this.code,
+                token: this.verifyForm.value.otp!,
                 type: 'email',
             });
             if (error) throw error;
@@ -109,11 +130,33 @@ export class LoginPage implements OnInit {
                 throw updateError;
             }
 
+            this.apiService.isCustomerAuthenticated$.next(true);
             this.formStatus = '';
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/']);
         } catch (error) {
             this.formStatus = 'error';
-            console.error(error);
+            this.verifyErrors.otp = errorMessages.validations['otp']['invalid'];
+        }
+    }
+
+    async resendCode() {
+        try {
+            this.formStatus = 'loading';
+            const res = await this.apiService.supabase.auth.signInWithOtp({
+                email: this.loginForm.value.email!,
+                options: {
+                    shouldCreateUser: false,
+                },
+            });
+            if (res.error) throw res.error;
+            this.formStatus = '';
+        } catch (error: any) {
+            this.formStatus = 'error';
+            this.toast.createToast(
+                'Something went wrong',
+                'There was an error sending your token. Please try again in a minute.',
+                'error'
+            );
         }
     }
 
@@ -122,11 +165,19 @@ export class LoginPage implements OnInit {
             const response =
                 await this.apiService.supabase.auth.signInWithOAuth({
                     provider,
+                    options: {
+                        redirectTo: window.location.origin + '/login',
+                    },
                 });
             if (response.error) throw response.error;
             console.log(response);
         } catch (error) {
             console.error(error);
         }
+    }
+
+    public back() {
+        this.verifyForm.reset();
+        this.formMode = 'login';
     }
 }

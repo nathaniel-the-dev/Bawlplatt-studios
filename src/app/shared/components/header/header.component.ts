@@ -19,8 +19,8 @@ export class HeaderComponent implements AfterViewInit {
     private prevScrollPosition: number = 0;
     public showMenu = false;
 
-    get user() {
-        return this.apiService.user;
+    get isCustomerLoggedIn() {
+        return this.apiService.isCustomerAuthenticated$;
     }
 
     constructor(private apiService: ApiService) {}

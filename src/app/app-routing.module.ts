@@ -17,6 +17,8 @@ import { SITE_NAME } from './shared/config/constants';
 import { CheckoutPage } from './pages/checkout/checkout.page';
 import { RedirectOnlyGuard } from './admin/shared/guards/redirect-only.guard';
 import { FaqPage } from './pages/faq/faq.page';
+import { CustomerProfilePage } from './pages/customer-dashboard/profile/profile.page';
+import { ForgotPasswordPage } from './pages/auth/forgot-password/forgot-password.page';
 
 const routes: Routes = [
     { path: 'home', component: HomePage },
@@ -30,6 +32,7 @@ const routes: Routes = [
 
     { path: 'login', component: LoginPage },
     { path: 'register', component: RegisterPage },
+    { path: 'forgot-password', component: ForgotPasswordPage },
 
     {
         path: 'booking/new/checkout',
@@ -56,6 +59,11 @@ const routes: Routes = [
                 path: 'bookings',
                 component: CustomerBookingsPage,
                 title: SITE_NAME + ' | My Bookings',
+            },
+            {
+                path: 'profile',
+                component: CustomerProfilePage,
+                title: SITE_NAME + ' | My Profile',
             },
             { path: '', redirectTo: 'bookings', pathMatch: 'full' },
         ],

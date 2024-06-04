@@ -201,6 +201,7 @@ export class RegisterPage implements OnInit {
             });
 
             // Get additional details from the user
+            this.apiService.isCustomerAuthenticated$.next(true);
             this.formMode = 'completeSignup';
             this.formStatus = '';
         } catch (error: any) {

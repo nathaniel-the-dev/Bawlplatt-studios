@@ -2,11 +2,13 @@
 
 <main class="min-h-screen py-32">
     <div class="container">
-        <nav class="mb-6 border-b">
+        <nav class="mb-6 border-b border-white/10 flex items-center justify-between">
             <ul class="flex items-center gap-6">
-                <li><a class="nav-link" routerLink="/customer-dashboard/booking">My Bookings</a></li>
-                <li><a class="nav-link" routerLink="/customer-dashboard/profile">My Account</a></li>
+                <li><a class="nav-link py-2" routerLink="bookings" routerLinkActive="active">My Bookings</a></li>
+                <li><a class="nav-link py-2" routerLink="profile" routerLinkActive="active">My Account</a></li>
             </ul>
+
+            <button (click)="logout()">Logout <i class="ai-door"></i></button>
         </nav>
 
         <router-outlet></router-outlet>
