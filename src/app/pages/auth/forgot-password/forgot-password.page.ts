@@ -31,7 +31,8 @@ export class ForgotPasswordPage implements OnInit {
         confirmPassword: ['', [Validators.required]],
     });
     resetErrors = {
-        email: '',
+        password: '',
+        confirmPassword: '',
     };
 
     formMode: 'forgot' | 'verify' | 'reset' = 'forgot';
@@ -69,14 +70,14 @@ export class ForgotPasswordPage implements OnInit {
             // Check if email is a unique email
             const { data: profile, error: profileError } =
                 await this.apiService.supabase
-                    .from('profiles, roles!inner(title)')
-                    .select('id')
+                    .from('profiles')
+                    .select('id, roles!inner(title)')
                     .eq('email', this.forgotForm.value.email)
-                    .eq('role.title', 'customer')
+                    .eq('roles.title', 'customer')
                     .maybeSingle();
             if (profileError) throw profileError;
 
-            if (profile) {
+            if (!profile) {
                 this.formStatus = 'error';
                 this.forgotForm.controls.email.setErrors({
                     not_found: true,
@@ -129,7 +130,6 @@ export class ForgotPasswordPage implements OnInit {
             });
             if (response.error) throw response.error;
 
-            this.apiService.logout();
             this.formStatus = '';
             this.formMode = 'reset';
         } catch (error) {
@@ -161,7 +161,17 @@ export class ForgotPasswordPage implements OnInit {
 
     async resetPassword() {
         try {
+            // Run validations
+            const formResponse = this.validatorService.validateForm<
+                typeof this.resetForm
+            >(this.resetForm);
+            if (!formResponse.valid) {
+                this.resetErrors = formResponse.errors;
+                return;
+            }
+
             this.formStatus = 'loading';
+            // TODO: Fix password not being updated
             const response = await this.apiService.supabase.auth.updateUser({
                 data: {
                     password: this.resetForm.value.password,
@@ -169,10 +179,30 @@ export class ForgotPasswordPage implements OnInit {
             });
             if (response.error) throw response.error;
 
+            console.log(response);
+
             this.formStatus = '';
-            this.router.navigate(['/']);
+            // this.router.navigate(['/']);
             this.apiService.isCustomerAuthenticated$.next(true);
-        } catch (error) {
+
+            this.toast.createToast(
+                'Success',
+                'Your password has been successfully reset.',
+                'success'
+            );
+        } catch (error: any) {
+            this.formStatus = 'error';
+
+            if (error.message.startsWith('ApiError')) {
+                this.resetErrors.password =
+                    errorMessages.validations['password']['invalid'];
+            } else {
+                this.toast.createToast(
+                    'Something went wrong',
+                    'There was an error resetting your password. Please try again in a minute.',
+                    'error'
+                );
+            }
             console.log(error);
         }
     }

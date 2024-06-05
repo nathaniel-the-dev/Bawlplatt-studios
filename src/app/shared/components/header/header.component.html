@@ -8,10 +8,10 @@
             </div>
 
             <ul class="max-lg:hidden flex items-center gap-6">
-                <li><a class="nav-link" routerLink="/home">Home</a></li>
-                <li><a class="nav-link" routerLink="/about">About</a></li>
-                <li><a class="nav-link" routerLink="/faq">FAQ</a></li>
-                <li><a class="nav-link" routerLink="/contact">Contact Us</a></li>
+                <li><a class="nav-link" routerLinkActive="active" routerLink="/home">Home</a></li>
+                <li><a class="nav-link" routerLinkActive="active" routerLink="/about">About</a></li>
+                <li><a class="nav-link" routerLinkActive="active" routerLink="/faq">FAQ</a></li>
+                <li><a class="nav-link" routerLinkActive="active" routerLink="/contact">Contact Us</a></li>
             </ul>
 
             <ul class="max-lg:hidden flex items-center gap-3" *ngIf="!(isCustomerLoggedIn | async)">
@@ -19,12 +19,12 @@
                 <li><a class="btn py-2" routerLink="/register">Sign Up</a></li>
             </ul>
             <ul class="max-lg:hidden flex items-center gap-3" *ngIf="(isCustomerLoggedIn | async)">
-                <li><a class="btn py-2" routerLink="/booking/new">Book Now</a></li>
-                <li class="relative group">
+                <li class="">
                     <a class="btn btn-ghost py-2" routerLink="/dashboard">
                         Profile
                     </a>
                 </li>
+                <li><a class="btn py-2" routerLink="/booking/new">Book Now</a></li>
             </ul>
 
             <button class="lg:hidden scale-125" (click)="toggleMenu()">

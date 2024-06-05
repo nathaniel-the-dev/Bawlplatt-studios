@@ -43,8 +43,8 @@
                 </div>
 
                 <div class="min-h-[25rem] relative">
-                    <form [formGroup]="customerForm" (ngSubmit)="customerForm.valid && next('customer')" @changeSlide
-                        class="slide" *ngIf="currentStep === 1">
+                    <form [formGroup]="customerForm" (ngSubmit)="next('customer')" @changeSlide class="slide"
+                        *ngIf="currentStep === 1">
                         <h1 class="text-h5 mb-8 text-center">Who are you booking for?</h1>
 
                         <div class="flex justify-center gap-8">
@@ -52,10 +52,10 @@
                                 <label class="cursor-pointer" for="customer_type-{{type.name}}"
                                     *ngFor="let type of customer_types">
                                     <input type="radio" name="customer_type" id="customer_type-{{type.name}}"
-                                        [value]="type.id" class="peer hidden" formControlName="customer_type">
+                                        [value]="type.id" class="peer sr-only" formControlName="customer_type">
 
                                     <div
-                                        class="rounded-lg peer-checked:-translate-y-4 peer-checked:outline-4 outline-dashed outline-red-500 outline-0 transition relative">
+                                        class="rounded-lg  peer-checked:-translate-y-4 peer-checked:outline-4 peer-focus-visible:outline-gray-100/10 outline-dashed peer-checked:outline-red-500 outline-0 transition relative">
                                         <img class="rounded-lg h-[13rem]" [src]="type.image" [alt]="type.name">
                                         <p class="text-center absolute -bottom-8 left-1/2 -translate-x-1/2">{{type.name
                                             | titlecase}}</p>
@@ -73,7 +73,7 @@
                                 </div>
                             </ng-template>
                         </div>
-                        <div class="feedback">
+                        <div class="feedback text-bright-red-500 mt-12">
                             <base-error *ngIf="errors.customer.customer_type">
                                 {{errors.customer.customer_type}}
                             </base-error>
@@ -86,14 +86,14 @@
                         </div>
                     </form>
 
-                    <form [formGroup]="sessionForm" (ngSubmit)="sessionForm.valid && next('session')" @changeSlide
-                        class="slide" *ngIf="currentStep === 2">
+                    <form [formGroup]="sessionForm" (ngSubmit)="next('session')" @changeSlide class="slide"
+                        *ngIf="currentStep === 2">
                         <h1 class="text-h5 mb-6">About The Session</h1>
 
                         <div class="form-control required">
                             <label class="label" for="date_booked">Session Date</label>
                             <input class="input" type="date" name="date_booked" id="date_booked"
-                                formControlName="date_booked" [min]="minDate">
+                                formControlName="date_booked" [min]="minDate" required>
 
                             <div class="feedback">
                                 <base-error *ngIf="errors.session.date_booked">
@@ -105,7 +105,7 @@
                         <div class="form-control required">
                             <label class="label" for="time_booked">Session Time</label>
                             <input class="input" type="time" name="time_booked" id="time_booked"
-                                formControlName="time_booked">
+                                formControlName="time_booked" required>
 
                             <div class="feedback">
                                 <base-error *ngIf="errors.session.time_booked">
@@ -141,14 +141,14 @@
                         </div>
                     </form>
 
-                    <form [formGroup]="requirementsForm" (ngSubmit)="requirementsForm.valid && next('requirements')"
-                        @changeSlide class="slide" *ngIf="currentStep === 3">
+                    <form [formGroup]="requirementsForm" (ngSubmit)="next('requirements')" @changeSlide class="slide"
+                        *ngIf="currentStep === 3">
                         <h1 class="text-h5 mb-6">Requirements</h1>
 
-                        <div class="form-control">
+                        <div class="form-control required">
                             <label class="label" for="num_of_musicians">Number of Musicians</label>
                             <input class="input w-1/3" type="number" name="num_of_musicians" id="num_of_musicians"
-                                formControlName="num_of_musicians">
+                                formControlName="num_of_musicians" required>
 
                             <div class="feedback">
                                 <base-error *ngIf="errors.requirements.num_of_musicians">
@@ -157,23 +157,32 @@
                             </div>
                         </div>
 
-                        <fieldset class="form-control required">
+                        <fieldset class="form-control">
                             <legend class="label mb-4">Equipment Needed</legend>
 
-                            <div class="flex flex-col flex-wrap gap-4 max-h-60">
-                                <div class="border border-gray-400 p-2 rounded w-fit"
-                                    *ngFor="let item of equipment_available | keyvalue">
-                                    <p class=""><lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
-                                        {{item.key}}</p>
-
-                                    <span class="flex items-center justify-between gap-1 text-sm text-gray-400">
-                                        <button class="" type="button" (click)="updateEquipmentValue(item.key, 1)"
-                                            [disabled]="!item.value.limit"><i class="ai-plus"></i></button>
-                                        <span>{{getEquipmentLimit(item.key)}}/{{item.value.limit}}</span>
-                                        <button class="" type="button" (click)="updateEquipmentValue(item.key, -1)"
-                                            [disabled]="!item.value.limit"><i class="ai-minus"></i></button>
-                                    </span>
-                                </div>
+                            <div class="rounded border border-gray-700 bg-gray-800 bg-opacity-75">
+                                <table class="w-full">
+                                    <tr class="border-b last-of-type:border-b-0 border-gray-700"
+                                        *ngFor="let item of equipment_available | keyvalue">
+                                        <td class="py-2 px-4">
+                                            <lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
+                                            {{item.key}}
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <div class="flex items-center justify-between gap-0.5 text-sm">
+                                                <button
+                                                    class="text-gray-300 rounded-full px-1 py-px hover:bg-gray-400/15 disabled:opacity-50"
+                                                    type="button" (click)="updateEquipmentValue(item.key, 1)"
+                                                    [disabled]="!item.value.limit"><i class="ai-plus"></i></button>
+                                                <span>{{getEquipmentLimit(item.key)}}/{{item.value.limit}}</span>
+                                                <button
+                                                    class="text-gray-300 rounded-full px-1 py-px hover:bg-gray-400/15 disabled:opacity-50"
+                                                    type="button" (click)="updateEquipmentValue(item.key, -1)"
+                                                    [disabled]="!item.value.limit"><i class="ai-minus"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
 
                             <div class="feedback">

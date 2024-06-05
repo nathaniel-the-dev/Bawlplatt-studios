@@ -1,17 +1,18 @@
 const fs = require('fs');
 const dotenv = require('dotenv');
 
-dotenv.config({ path: './.env' });
+const { parsed: env } = dotenv.config({ path: './.env' });
 
 const targetPath = './src/environments/environment.ts';
 
 const config = `
 export const environment = {
-    production: ${process.env['NODE_ENV'] === 'production'},
-    debug: ${process.env['DEBUG_MODE'] === 'true'},
-    SUPABASE_URL: '${process.env['SUPABASE_URL']}',
-    SUPABASE_KEY: '${process.env['SUPABASE_KEY']}',
-    SERVICE_ROLE_KEY: '${process.env['SERVICE_ROLE_KEY']}',
+    production: ${env['NODE_ENV'] === 'production'},
+    debug: ${env['DEBUG_MODE'] === 'true'},
+    SUPABASE_URL: '${env['SUPABASE_URL']}',
+    SUPABASE_KEY: '${env['SUPABASE_KEY']}',
+    SERVICE_ROLE_KEY: '${env['SERVICE_ROLE_KEY']}',
+    BRAINTREE_SDK_TOKEN: '${env['BRAINTREE_SDK_TOKEN']}',
 };
 `;
 

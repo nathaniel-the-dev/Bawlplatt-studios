@@ -100,7 +100,7 @@ export class ApiService {
 
             this.user$.next(user || null);
             this.isCustomerAuthenticated$.next(
-                user?.user_metadata?.['profile'].role === 'customer'
+                user?.user_metadata?.['profile'].role.title === 'customer'
             );
         });
     }

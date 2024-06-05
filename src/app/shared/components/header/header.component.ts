@@ -55,4 +55,8 @@ export class HeaderComponent implements AfterViewInit {
             this.prevScrollPosition = currentPosition;
         });
     }
+
+    logout() {
+        this.apiService.logout('/');
+    }
 }

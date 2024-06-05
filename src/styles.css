@@ -134,6 +134,22 @@ body {
     .avatar {
         @apply aspect-square object-cover h-10 rounded-full;
     }
+
+    /* Nav */
+    .nav-link {
+        background-image: linear-gradient(to right, #e24141, #e24141);
+        background-repeat: no-repeat;
+        background-size: 0 2px;
+        background-position: 50% 100%;
+
+        display: inline-block;
+        padding-bottom: 3px;
+        transition: background-size 0.3s ease-in-out;
+    }
+    .nav-link:hover,
+    .nav-link.active {
+        background-size: 100% 2px;
+    }
 }
 
 input[type="number"]::-webkit-inner-spin-button,
