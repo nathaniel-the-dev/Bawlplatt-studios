@@ -67,6 +67,8 @@ export class ApiService {
     public supabase = supabase;
     public superAdmin = superAdminClient;
 
+    public data$ = new BehaviorSubject<any>(null);
+
     constructor(private router: Router) {
         this.handleAuthStateChanges();
     }

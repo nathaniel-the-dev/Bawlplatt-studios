@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { ValidatorService } from 'src/app/shared/services/validator.service';
@@ -19,13 +19,6 @@ export class ForgotPasswordPage implements OnInit {
         email: '',
     };
 
-    verifyForm = this.fb.group({
-        otp: ['', [Validators.required, Validators.minLength(6)]],
-    });
-    verifyErrors = {
-        otp: '',
-    };
-
     resetForm = this.fb.group({
         password: ['', [Validators.required]],
         confirmPassword: ['', [Validators.required]],
@@ -35,24 +28,41 @@ export class ForgotPasswordPage implements OnInit {
         confirmPassword: '',
     };
 
-    formMode: 'forgot' | 'verify' | 'reset' = 'forgot';
+    formMode: 'forgot' | 'sent' | 'reset' = 'forgot';
     public formStatus: any = '';
 
     constructor(
         private apiService: ApiService,
         private validatorService: ValidatorService,
-        private router: Router,
         private fb: FormBuilder,
-        private toast: ToastService
+        private toast: ToastService,
+        private router: Router,
+        private route: ActivatedRoute
     ) {}
 
     ngOnInit(): void {
         this.validatorService.validateOnInput(this.forgotForm, (errors) => {
             this.forgotErrors = errors;
         });
-        this.validatorService.validateOnInput(this.verifyForm, (errors) => {
-            this.verifyErrors = errors;
+
+        this.validatorService.validateOnInput(this.resetForm, (errors) => {
+            this.resetErrors = errors;
         });
+
+        // Get info from url
+        const urlInfo = this.route.snapshot.fragment;
+        if (urlInfo) {
+            const urlParsed = new URLSearchParams(urlInfo);
+
+            if (urlParsed.get('mode') === 'reset') {
+                if (urlParsed.get('error_description')) {
+                    this.forgotErrors.email =
+                        urlParsed.get('error_description') ?? '';
+                } else {
+                }
+                this.formMode = 'reset';
+            }
+        }
     }
 
     async sendForgotPasswordEmail() {
@@ -67,95 +77,41 @@ export class ForgotPasswordPage implements OnInit {
 
             this.formStatus = 'loading';
 
-            // Check if email is a unique email
-            const { data: profile, error: profileError } =
-                await this.apiService.supabase
-                    .from('profiles')
-                    .select('id, roles!inner(title)')
-                    .eq('email', this.forgotForm.value.email)
-                    .eq('roles.title', 'customer')
-                    .maybeSingle();
-            if (profileError) throw profileError;
+            // // Check if email is a unique email
+            // const { data: profile, error: profileError } =
+            //     await this.apiService.supabase
+            //         .from('profiles')
+            //         .select('id, roles!inner(title)')
+            //         .eq('email', this.forgotForm.value.email)
+            //         .eq('roles.title', 'customer')
+            //         .maybeSingle();
+            // if (profileError) throw profileError;
 
-            if (!profile) {
-                this.formStatus = 'error';
-                this.forgotForm.controls.email.setErrors({
-                    not_found: true,
-                });
-                this.forgotErrors.email =
-                    errorMessages.validations['email']['not_found'];
-                return;
-            }
+            // if (!profile) {
+            //     this.formStatus = 'error';
+            //     this.forgotForm.controls.email.setErrors({
+            //         not_found: true,
+            //     });
+            //     this.forgotErrors.email =
+            //         errorMessages.validations['email']['not_found'];
+            //     return;
+            // }
 
-            const response = await this.apiService.supabase.auth.signInWithOtp({
-                email: this.forgotForm.value.email!,
-                options: {
-                    shouldCreateUser: false,
-                },
-            });
+            const response =
+                await this.apiService.supabase.auth.resetPasswordForEmail(
+                    this.forgotForm.value.email!,
+                    {
+                        redirectTo: window.location.origin + '/forgot-password',
+                    }
+                );
             if (response.error) throw response.error;
 
             this.formStatus = '';
-            this.formMode = 'verify';
+            this.formMode = 'sent';
         } catch (error: any) {
             this.formStatus = 'error';
 
-            if (error.message.includes('Signups not allowed for otp')) {
-                this.forgotForm.controls.email.setErrors({
-                    not_found: true,
-                });
-                this.forgotForm.controls.email.updateValueAndValidity();
-                this.forgotErrors.email =
-                    errorMessages.validations['email']['not_found'];
-            }
-        }
-    }
-
-    async verifyOTP() {
-        try {
-            // Run validations
-            const formResponse = this.validatorService.validateForm<
-                typeof this.verifyForm
-            >(this.verifyForm);
-            if (!formResponse.valid) {
-                this.verifyErrors = formResponse.errors;
-                return;
-            }
-
-            this.formStatus = 'loading';
-            const response = await this.apiService.supabase.auth.verifyOtp({
-                email: this.forgotForm.value.email!,
-                token: this.verifyForm.value.otp!,
-                type: 'email',
-            });
-            if (response.error) throw response.error;
-
-            this.formStatus = '';
-            this.formMode = 'reset';
-        } catch (error) {
-            this.formStatus = 'error';
-            this.verifyErrors.otp = errorMessages.validations['otp']['invalid'];
-        }
-    }
-
-    async resendCode() {
-        try {
-            this.formStatus = 'loading';
-            const res = await this.apiService.supabase.auth.signInWithOtp({
-                email: this.forgotForm.value.email!,
-                options: {
-                    shouldCreateUser: false,
-                },
-            });
-            if (res.error) throw res.error;
-            this.formStatus = '';
-        } catch (error: any) {
-            this.formStatus = 'error';
-            this.toast.createToast(
-                'Something went wrong',
-                'There was an error sending your token. Please try again in a minute.',
-                'error'
-            );
+            console.log(error);
         }
     }
 
@@ -169,6 +125,8 @@ export class ForgotPasswordPage implements OnInit {
                 this.resetErrors = formResponse.errors;
                 return;
             }
+
+            console.log(this.resetForm.value);
 
             this.formStatus = 'loading';
             // TODO: Fix password not being updated
@@ -208,7 +166,6 @@ export class ForgotPasswordPage implements OnInit {
     }
 
     public back() {
-        this.verifyForm.reset();
         this.formMode = 'forgot';
     }
 }

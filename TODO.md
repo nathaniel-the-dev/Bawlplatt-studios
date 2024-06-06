@@ -75,8 +75,8 @@
 -   [ ] Profile
 
 -   [ ] FAQ
--   [ ] Privacy Policy
--   [ ] Terms and Conditions
+-   [x] Privacy Policy
+-   [x] Terms and Conditions
 
 #### Audit log example
 
