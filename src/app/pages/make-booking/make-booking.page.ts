@@ -122,6 +122,15 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         this.customerForm.controls.booked_for.setValue(userID);
     }
 
+    get listRequirements() {
+        return Object.entries(
+            this.requirementsForm.value.additional_requirements!
+        )
+            .filter(([_, value]) => +value > 0)
+            .map(([e, value]) => `${value} ${e}`)
+            .join(', ');
+    }
+
     next(formName: 'customer' | 'session' | 'requirements'): void {
         const form = this.bookingForm.get(formName) as FormGroup | null;
 

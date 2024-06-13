@@ -4,11 +4,11 @@
     <div class="py-24">
         <h1 class="text-h2 mb-4 text-center">Book a session</h1>
 
-        <div class="rounded-lg w-full max-w-xl px-12 pb-4 pt-10 mx-auto bg-gray-800 bg-opacity-50">
+        <div class="w-full max-w-xl px-12 pt-10 pb-4 mx-auto bg-gray-800 bg-opacity-50 rounded-lg">
             <div class="" [formGroup]="bookingForm">
                 <div class="flex items-center justify-between gap-4 mb-8">
                     <div class="relative">
-                        <p class="text-center absolute -top-6 left-1/2 -translate-x-1/2 text-sm">Customer</p>
+                        <p class="-top-6 left-1/2 absolute text-sm text-center -translate-x-1/2">Customer</p>
                         <span
                             class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
                             [class.bg-bright-red-500]="currentStep >= 1">1</span>
@@ -17,7 +17,7 @@
                     <hr class="border-bright-red-500 grow border-2">
 
                     <div class="relative">
-                        <p class="text-center absolute -top-6 left-1/2 -translate-x-1/2 text-sm">Session</p>
+                        <p class="-top-6 left-1/2 absolute text-sm text-center -translate-x-1/2">Session</p>
                         <span
                             class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
                             [class.bg-bright-red-500]="currentStep >= 2">2</span>
@@ -26,7 +26,7 @@
                     <hr class="border-bright-red-500 grow border-2">
 
                     <div class="relative">
-                        <p class="text-center absolute -top-6 left-1/2 -translate-x-1/2 text-sm">Requirements</p>
+                        <p class="-top-6 left-1/2 absolute text-sm text-center -translate-x-1/2">Requirements</p>
                         <span
                             class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
                             [class.bg-bright-red-500]="currentStep >= 3">3</span>
@@ -35,7 +35,7 @@
                     <hr class="border-bright-red-500 grow border-2">
 
                     <div class="relative">
-                        <p class="text-center absolute -top-6 left-1/2 -translate-x-1/2 text-sm">Confirmation</p>
+                        <p class="-top-6 left-1/2 absolute text-sm text-center -translate-x-1/2">Confirmation</p>
                         <span
                             class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
                             [class.bg-bright-red-500]="currentStep >= 4">4</span>
@@ -55,21 +55,21 @@
                                         [value]="type.id" class="peer sr-only" formControlName="customer_type">
 
                                     <div
-                                        class="rounded-lg  peer-checked:-translate-y-4 peer-checked:outline-4 peer-focus-visible:outline-gray-100/10 outline-dashed peer-checked:outline-red-500 outline-0 transition relative">
+                                        class="peer-checked:-translate-y-4 peer-checked:outline-4 peer-focus-visible:outline-gray-100/10 outline-dashed peer-checked:outline-red-500 outline-0 relative transition rounded-lg">
                                         <img class="rounded-lg h-[13rem]" [src]="type.image" [alt]="type.name">
-                                        <p class="text-center absolute -bottom-8 left-1/2 -translate-x-1/2">{{type.name
+                                        <p class="-bottom-8 left-1/2 absolute text-center -translate-x-1/2">{{type.name
                                             | titlecase}}</p>
                                     </div>
                                 </label>
                             </ng-container>
                             <ng-template #skeleton>
-                                <div class="flex flex-col items-center gap-4 animate-pulse">
+                                <div class="animate-pulse flex flex-col items-center gap-4">
                                     <div class="size-52 bg-gray-500/20 rounded-lg"></div>
-                                    <span class="h-5 w-20 rounded bg-gray-400/10"></span>
+                                    <span class="bg-gray-400/10 w-20 h-5 rounded"></span>
                                 </div>
-                                <div class="flex flex-col items-center gap-4 animate-pulse">
+                                <div class="animate-pulse flex flex-col items-center gap-4">
                                     <div class="size-52 bg-gray-500/20 rounded-lg"></div>
-                                    <span class="h-5 w-20 rounded bg-gray-400/10"></span>
+                                    <span class="bg-gray-400/10 w-20 h-5 rounded"></span>
                                 </div>
                             </ng-template>
                         </div>
@@ -124,7 +124,7 @@
                                         id="duration-{{duration.value}}" [value]="duration.value"
                                         formControlName="duration_in_minutes">
                                     <span
-                                        class="peer-checked:bg-red-500 peer-checked:text-white inline-block px-4 py-2 text-red-500 transition border-2 border-red-500 rounded hover:bg-red-100/5">{{duration.label}}</span>
+                                        class="peer-checked:bg-red-500 peer-checked:text-white hover:bg-red-100/5 inline-block px-4 py-2 text-red-500 transition border-2 border-red-500 rounded">{{duration.label}}</span>
                                 </label>
                             </div>
 
@@ -160,23 +160,23 @@
                         <fieldset class="form-control">
                             <legend class="label mb-4">Equipment Needed</legend>
 
-                            <div class="rounded border border-gray-700 bg-gray-800 bg-opacity-75">
+                            <div class="bg-gray-800 bg-opacity-75 border border-gray-700 rounded">
                                 <table class="w-full">
-                                    <tr class="border-b last-of-type:border-b-0 border-gray-700"
+                                    <tr class="last-of-type:border-b-0 border-b border-gray-700"
                                         *ngFor="let item of equipment_available | keyvalue">
-                                        <td class="py-2 px-4">
+                                        <td class="px-4 py-2 font-bold">
                                             <lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
                                             {{item.key}}
                                         </td>
-                                        <td class="py-2 px-4">
+                                        <td class="px-4 py-2">
                                             <div class="flex items-center justify-between gap-0.5 text-sm">
                                                 <button
-                                                    class="text-gray-300 rounded-full px-1 py-px hover:bg-gray-400/15 disabled:opacity-50"
+                                                    class="hover:bg-gray-400/15 disabled:opacity-50 px-1 py-px text-gray-300 rounded-full"
                                                     type="button" (click)="updateEquipmentValue(item.key, 1)"
                                                     [disabled]="!item.value.limit"><i class="ai-plus"></i></button>
                                                 <span>{{getEquipmentLimit(item.key)}}/{{item.value.limit}}</span>
                                                 <button
-                                                    class="text-gray-300 rounded-full px-1 py-px hover:bg-gray-400/15 disabled:opacity-50"
+                                                    class="hover:bg-gray-400/15 disabled:opacity-50 px-1 py-px text-gray-300 rounded-full"
                                                     type="button" (click)="updateEquipmentValue(item.key, -1)"
                                                     [disabled]="!item.value.limit"><i class="ai-minus"></i></button>
                                             </div>
@@ -220,7 +220,36 @@
 
                             <p class="mb-4">Please confirm your booking details below.</p>
 
-                            <!-- <base-table [data]="bookingData"></base-table> -->
+                            <table class="w-full text-start">
+                                <tr>
+                                    <td class="p-2">Type</td>
+                                    <td>{{customerForm.value.customer_type}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2">Booking Date</td>
+                                    <td>{{sessionForm.value.date_booked! | dateTime: 'date'}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2">Booking Time</td>
+                                    <td>{{sessionForm.value.time_booked! | dateTime: 'time'}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2">Duration</td>
+                                    <td>{{+sessionForm.value.duration_in_minutes! | duration}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2">Num. of Musicians</td>
+                                    <td>{{requirementsForm.value.num_of_musicians}}</td>
+                                </tr>
+                                <tr *ngIf="listRequirements.length">
+                                    <td class="p-2">Instruments</td>
+                                    <td>{{listRequirements}}</td>
+                                </tr>
+                                <tr *ngIf="requirementsForm.value.additional_requirements">
+                                    <td class="p-2">Additional Requirements</td>
+                                    <td>{{requirementsForm.value.additional_requirements}}</td>
+                                </tr>
+                            </table>
 
                             <div class="flex justify-end gap-2 mt-8">
                                 <button class="btn btn-ghost bg-gray-600/10" type="button"

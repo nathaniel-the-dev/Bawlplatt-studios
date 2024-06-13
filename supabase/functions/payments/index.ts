@@ -3,22 +3,17 @@
 // This enables autocomplete, go to definition, etc.
 
 // Setup type definitions for built-in Supabase Runtime APIs
-/// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
+/// <reference types="https://esm.sh/v135/@supabase/functions-js@2.4.1/src/edge-runtime.d.ts" />
 
-import dotenv from 'https://deno.land/std@0.224.0/dotenv/mod.ts';
-import { promisify } from 'https://deno.land/x/promisify/mod.ts';
+import { load } from 'https://deno.land/std@0.224.0/dotenv/mod.ts';
+import { promisify } from 'https://deno.land/x/promisify@v0.1.0/mod.ts';
 import braintree from 'npm:braintree@3';
-import supabase from 'https://esm.sh/@supabase/supabase-js';
+import supabase from 'https://esm.sh/@supabase/supabase-js@2.43.4';
 
-const env = await dotenv.load();
-
-const supabaseClient = supabase.createClient(
-    env['SUPABASE_URL'],
-    env['SUPABASE_KEY']
-);
+const env = await load();
 
 Deno.serve(async (req) => {
-    const { paymentMethodNonce, totalAmount, bookingId } = await req.json();
+    const data = await req.json();
 
     const gateway = new braintree.BraintreeGateway({
         environment: braintree.Environment.Sandbox,
@@ -56,6 +51,10 @@ Deno.serve(async (req) => {
 
         if (result) {
             // Create a new transaction in your database
+            const supabaseClient = supabase.createClient(
+                env['SUPABASE_URL'],
+                env['SUPABASE_KEY']
+            );
             await supabaseClient.from('transactions').insert({
                 booking: data.bookingId,
                 amount: data.totalAmount,

@@ -4,6 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "npm run config && ng serve --port=4202",
+        "start:serverless": "npx supabase start",
         "build": "npm run config && ng build --configuration production",
         "watch": "ng build --watch --configuration development",
         "test": "ng test",

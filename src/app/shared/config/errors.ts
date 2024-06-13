@@ -1,3 +1,5 @@
+import { MAX_MUSICIANS_COUNT } from './constants';
+
 interface Errors {
     validations: {
         [key: string]: {
@@ -48,12 +50,14 @@ export default <Errors>{
         },
         time_booked: {
             required: 'Please select a time',
+            range: 'Time can only be between 8:00AM to 8:00PM',
         },
         duration_in_minutes: {
             required: 'Please select a duration',
         },
         num_of_musicians: {
             required: 'Please enter an amount',
+            max: `Can only facilitate a maximum of ${MAX_MUSICIANS_COUNT} musicians`,
         },
     },
 };

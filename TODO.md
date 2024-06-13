@@ -69,7 +69,8 @@
 -   Login / Register
 
     -   [x] Verify email
-    -   [ ] Forgot password
+    -   [x] Forgot password
+    -   [ ] Social logins
 
 -   [ ] My Bookings
 -   [ ] Profile
