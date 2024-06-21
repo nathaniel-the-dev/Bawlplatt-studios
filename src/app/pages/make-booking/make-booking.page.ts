@@ -42,9 +42,9 @@ type EquipmentNeeded = Partial<
     ],
 })
 export class MakeBookingPage implements OnInit, OnDestroy {
-    currentStep: 1 | 2 | 3 | 4 | 5 = 1;
+    public currentStep: 1 | 2 | 3 | 4 | 5 = 1;
 
-    bookingForm = this.fb.group({
+    public bookingForm = this.fb.group({
         // Customer type
         customer: this.fb.group({
             customer_type: [null as string | null, [Validators.required]],
@@ -56,7 +56,13 @@ export class MakeBookingPage implements OnInit, OnDestroy {
             date_booked: [null as string | null, [Validators.required]],
             time_booked: [
                 null as string | null,
-                [Validators.required, ValidateTime('08:00', '20:00')],
+                [
+                    Validators.required,
+                    ValidateTime(
+                        this.apiService.settings['office_hours'].start,
+                        this.apiService.settings['office_hours'].end
+                    ),
+                ],
             ],
             duration_in_minutes: [null as string | null, [Validators.required]],
         }),
@@ -72,7 +78,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         }),
     });
 
-    errors = {
+    public errors = {
         customer: {} as FormErrors<typeof this.customerForm>,
         session: {} as FormErrors<typeof this.sessionForm>,
         requirements: {} as FormErrors<typeof this.requirementsForm>,
@@ -95,7 +101,17 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     }
 
     get minDate() {
-        return tempo.format(tempo.addDay(tempo.date(), 1), 'YYYY-MM-DD');
+        let today = tempo.date();
+        return tempo.format(tempo.addDay(today, 1), 'YYYY-MM-DD');
+    }
+    get maxMusicians() {
+        return MAX_MUSICIANS_COUNT;
+    }
+    get listEquipment() {
+        return Object.entries(this.requirementsForm.value.equipment_needed!)
+            .filter(([_, value]) => +value > 0)
+            .map(([key, value]) => `${value} ${key}`)
+            .join(', ');
     }
 
     constructor(
@@ -110,7 +126,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         this.setDefaultFormValues();
 
         // Get customer types
-        this.getCustomerTypes();
+        this.getFormSettings();
     }
 
     ngOnDestroy(): void {
@@ -118,17 +134,9 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     }
 
     private setDefaultFormValues() {
+        // Set booked_for to current user
         let userID = this.apiService.user?.user_metadata['profile']?.id;
         this.customerForm.controls.booked_for.setValue(userID);
-    }
-
-    get listRequirements() {
-        return Object.entries(
-            this.requirementsForm.value.additional_requirements!
-        )
-            .filter(([_, value]) => +value > 0)
-            .map(([e, value]) => `${value} ${e}`)
-            .join(', ');
     }
 
     next(formName: 'customer' | 'session' | 'requirements'): void {
@@ -144,33 +152,31 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         }
 
         this.currentStep = Math.min(5, this.currentStep + 1) as 1 | 2 | 3 | 4;
+        this.clearErrors();
     }
 
     back() {
         this.currentStep = Math.max(1, this.currentStep - 1) as 1 | 2 | 3;
     }
 
-    toCheckout() {
-        this.router.navigateByUrl('/booking/new/checkout');
-    }
-
-    private async getCustomerTypes() {
+    private async getFormSettings() {
+        // Get customer types
         const { data } = await this.apiService.supabase
             .from('customer_type')
             .select('*');
-        if (!data?.length) return;
+        if (data?.length) {
+            data.forEach(async (type: any) => {
+                const {
+                    data: { publicUrl },
+                } = this.apiService.supabase.storage
+                    .from('customer_types')
+                    .getPublicUrl(type.image);
 
-        data.forEach(async (type: any) => {
-            const {
-                data: { publicUrl },
-            } = this.apiService.supabase.storage
-                .from('customer_types')
-                .getPublicUrl(type.image);
+                type.image = publicUrl;
+            });
 
-            type.image = publicUrl;
-        });
-
-        this.customer_types = data;
+            this.customer_types = data;
+        }
     }
 
     getEquipmentLimit(key: string): number {
@@ -183,7 +189,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     updateEquipmentValue(key: string, value: number) {
         const control = this.requirementsForm.controls.equipment_needed;
 
-        control.setValue({
+        control.patchValue({
             ...control.value,
             [key]: Math.min(
                 Math.max(this.getEquipmentLimit(key) + value, 0),
@@ -195,15 +201,43 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     }
 
     async onBookingFormSubmit(): Promise<void> {
-        // TODO: Show confirmation page and proceed to payment
-        try {
-            let booking = {
-                ...this.customerForm.value,
-                ...this.sessionForm.value,
-                ...this.requirementsForm.value,
-            };
-        } catch (error) {
-            console.error(error);
-        }
+        // Show confirmation page and proceed to checkout
+        let booking = {
+            ...this.customerForm.value,
+            ...this.sessionForm.value,
+            ...this.requirementsForm.value,
+        };
+
+        this.apiService.data$.next(booking);
+        this.router.navigateByUrl('/booking/new/checkout');
+    }
+
+    clearErrors() {
+        this.errors = {
+            customer: {} as FormErrors<typeof this.customerForm>,
+            session: {} as FormErrors<typeof this.sessionForm>,
+            requirements: {} as FormErrors<typeof this.requirementsForm>,
+        };
+
+        this.bookingForm.markAsPristine();
+        this.bookingForm.markAsUntouched();
+    }
+
+    getAvailableSlots() {
+        // TODO: Get available slots
+    }
+
+    getNextAvailableSlot() {
+        this.sessionForm.patchValue(
+            {
+                date_booked: this.minDate,
+                time_booked: this.apiService.settings['office_hours'].start,
+            },
+            { emitEvent: false }
+        );
+    }
+
+    getCustomerTypeName(id: number) {
+        return this.customer_types.find((type) => type.id === id)?.name;
     }
 }

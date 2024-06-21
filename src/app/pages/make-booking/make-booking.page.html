@@ -2,11 +2,11 @@
 
 <div class="min-h-screen">
     <div class="py-24">
-        <h1 class="text-h2 mb-4 text-center">Book a session</h1>
+        <h1 class="text-h3 mb-6 text-center">Book a Session</h1>
 
         <div class="w-full max-w-xl px-12 pt-10 pb-4 mx-auto bg-gray-800 bg-opacity-50 rounded-lg">
             <div class="" [formGroup]="bookingForm">
-                <div class="flex items-center justify-between gap-4 mb-8">
+                <div class="flex items-center justify-between gap-4 mb-8" *ngIf="currentStep < 4">
                     <div class="relative">
                         <p class="-top-6 left-1/2 absolute text-sm text-center -translate-x-1/2">Customer</p>
                         <span
@@ -31,21 +31,12 @@
                             class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
                             [class.bg-bright-red-500]="currentStep >= 3">3</span>
                     </div>
-
-                    <hr class="border-bright-red-500 grow border-2">
-
-                    <div class="relative">
-                        <p class="-top-6 left-1/2 absolute text-sm text-center -translate-x-1/2">Confirmation</p>
-                        <span
-                            class="text-h6 aspect-square border-bright-red-500 flex items-center justify-center h-12 border-4 rounded-full"
-                            [class.bg-bright-red-500]="currentStep >= 4">4</span>
-                    </div>
                 </div>
 
                 <div class="min-h-[25rem] relative">
                     <form [formGroup]="customerForm" (ngSubmit)="next('customer')" @changeSlide class="slide"
                         *ngIf="currentStep === 1">
-                        <h1 class="text-h5 mb-8 text-center">Who are you booking for?</h1>
+                        <h2 class="text-h5 mb-8 text-center">Who are you booking for?</h2>
 
                         <div class="flex justify-center gap-8">
                             <ng-container *ngIf="customer_types.length; else skeleton">
@@ -88,7 +79,7 @@
 
                     <form [formGroup]="sessionForm" (ngSubmit)="next('session')" @changeSlide class="slide"
                         *ngIf="currentStep === 2">
-                        <h1 class="text-h5 mb-6">About The Session</h1>
+                        <h2 class="text-h5 mb-6">About The Session</h2>
 
                         <div class="form-control required">
                             <label class="label" for="date_booked">Session Date</label>
@@ -100,6 +91,14 @@
                                     {{errors.session.date_booked}}
                                 </base-error>
                             </div>
+
+                            <p class="text-sm -mt-1">
+                                <button type="button"
+                                    class="btn btn-ghost py-0.5 text-bright-red-100/75 hover:text-bright-red-100 transition"
+                                    (click)="getNextAvailableSlot()">
+                                    Get next available slot
+                                </button>
+                            </p>
                         </div>
 
                         <div class="form-control required">
@@ -143,12 +142,13 @@
 
                     <form [formGroup]="requirementsForm" (ngSubmit)="next('requirements')" @changeSlide class="slide"
                         *ngIf="currentStep === 3">
-                        <h1 class="text-h5 mb-6">Requirements</h1>
+                        <h2 class="text-h5 mb-6">Requirements</h2>
 
                         <div class="form-control required">
                             <label class="label" for="num_of_musicians">Number of Musicians</label>
                             <input class="input w-1/3" type="number" name="num_of_musicians" id="num_of_musicians"
                                 formControlName="num_of_musicians" required>
+                            <p class="text-xs text-gray-400">*Max. {{maxMusicians}}</p>
 
                             <div class="feedback">
                                 <base-error *ngIf="errors.requirements.num_of_musicians">
@@ -158,13 +158,13 @@
                         </div>
 
                         <fieldset class="form-control">
-                            <legend class="label mb-4">Equipment Needed</legend>
+                            <legend class="label mb-1">Equipment Needed</legend>
 
                             <div class="bg-gray-800 bg-opacity-75 border border-gray-700 rounded">
                                 <table class="w-full">
                                     <tr class="last-of-type:border-b-0 border-b border-gray-700"
                                         *ngFor="let item of equipment_available | keyvalue">
-                                        <td class="px-4 py-2 font-bold">
+                                        <td class="px-4 py-2 font-medium">
                                             <lucide-icon [name]="item.value.icon" class="inline-block" size="16" />
                                             {{item.key}}
                                         </td>
@@ -216,45 +216,54 @@
                         <div class="text-center">
                             <!-- <i class="ai-circle-check text-[4.5rem] text-bright-red-300"></i> -->
 
-                            <h1 class="text-h4 mt-2 mb-4">Confirm Your Booking</h1>
-
-                            <p class="mb-4">Please confirm your booking details below.</p>
+                            <h2 class="text-h5 font-medium mt-2 mb-2">Confirm your booking</h2>
+                            <p class="mb-6 text-gray-400 tex-sm">Please confirm your booking details below.</p>
 
                             <table class="w-full text-start">
-                                <tr>
-                                    <td class="p-2">Type</td>
-                                    <td>{{customerForm.value.customer_type}}</td>
+                                <tr class="border-t border-white/10">
+                                    <td class="py-2 px-2 font-medium">Type</td>
+                                    <td class="py-2 px-4">
+                                        {{getCustomerTypeName(+customerForm.value.customer_type!) |
+                                        titlecase}}</td>
                                 </tr>
-                                <tr>
-                                    <td class="p-2">Booking Date</td>
-                                    <td>{{sessionForm.value.date_booked! | dateTime: 'date'}}</td>
+                                <tr class="border-t border-white/10">
+                                    <td class="py-2 px-2 font-medium">Booking Date</td>
+                                    <td class="py-2 px-4">{{sessionForm.value.date_booked! | dateTime:
+                                        'date'}}</td>
                                 </tr>
-                                <tr>
-                                    <td class="p-2">Booking Time</td>
-                                    <td>{{sessionForm.value.time_booked! | dateTime: 'time'}}</td>
+                                <tr class="border-t border-white/10">
+                                    <td class="py-2 px-2 font-medium">Booking Time</td>
+                                    <td class="py-2 px-4">{{sessionForm.value.time_booked! | dateTime:
+                                        'time'}}</td>
                                 </tr>
-                                <tr>
-                                    <td class="p-2">Duration</td>
-                                    <td>{{+sessionForm.value.duration_in_minutes! | duration}}</td>
+                                <tr class="border-t border-white/10">
+                                    <td class="py-2 px-2 font-medium">Duration</td>
+                                    <td class="py-2 px-4">{{+sessionForm.value.duration_in_minutes! |
+                                        duration}}</td>
                                 </tr>
-                                <tr>
-                                    <td class="p-2">Num. of Musicians</td>
-                                    <td>{{requirementsForm.value.num_of_musicians}}</td>
+                                <tr class="border-t border-white/10">
+                                    <td class="py-2 px-2 font-medium">Num. of Musicians</td>
+                                    <td class="py-2 px-4">{{requirementsForm.value.num_of_musicians}}</td>
                                 </tr>
-                                <tr *ngIf="listRequirements.length">
-                                    <td class="p-2">Instruments</td>
-                                    <td>{{listRequirements}}</td>
+                                <tr class="border-t border-white/10" *ngIf="listEquipment.length">
+                                    <td class="py-2 px-2 font-medium">Instruments</td>
+                                    <td class="py-2 px-4">
+                                        <p class="break-words">{{listEquipment}}</p>
+                                    </td>
                                 </tr>
-                                <tr *ngIf="requirementsForm.value.additional_requirements">
-                                    <td class="p-2">Additional Requirements</td>
-                                    <td>{{requirementsForm.value.additional_requirements}}</td>
+                                <tr class="border-t border-white/10"
+                                    *ngIf="requirementsForm.value.additional_requirements">
+                                    <td class="py-2 px-2 font-medium">Additional Requirements</td>
+                                    <td class="py-2 px-4">
+                                        <p class="break-words">{{requirementsForm.value.additional_requirements}}</p>
+                                    </td>
                                 </tr>
                             </table>
 
-                            <div class="flex justify-end gap-2 mt-8">
+                            <div class="flex justify-center gap-2 mt-8">
                                 <button class="btn btn-ghost bg-gray-600/10" type="button"
                                     (click)="back()">Back</button>
-                                <button class="btn" (click)="toCheckout()">Proceed to checkout</button>
+                                <button class="btn" (click)="onBookingFormSubmit()">Proceed to checkout</button>
                             </div>
                         </div>
                     </section>

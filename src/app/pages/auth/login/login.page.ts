@@ -166,7 +166,7 @@ export class LoginPage implements OnInit {
                 await this.apiService.supabase.auth.signInWithOAuth({
                     provider,
                     options: {
-                        redirectTo: window.location.origin + '/login',
+                        redirectTo: window.location.origin + '/',
                     },
                 });
             if (response.error) throw response.error;

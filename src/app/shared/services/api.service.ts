@@ -68,9 +68,25 @@ export class ApiService {
     public superAdmin = superAdminClient;
 
     public data$ = new BehaviorSubject<any>(null);
+    public settings: Record<string, any> = {};
 
     constructor(private router: Router) {
         this.handleAuthStateChanges();
+    }
+
+    public async getSettings() {
+        const { data: settings } = await supabase
+            .from('settings')
+            .select('*')
+            .single();
+        if (settings) {
+            this.settings = settings;
+
+            if (this.settings['office_hours']) {
+                const [start, end] = this.settings['office_hours'].split('|');
+                this.settings['office_hours'] = { start, end };
+            }
+        }
     }
 
     private handleAuthStateChanges() {

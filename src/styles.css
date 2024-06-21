@@ -51,7 +51,7 @@ body {
 
     :is(input, select, textarea).input,
     ng-select.ng-select.select .ng-select-container {
-        @apply border-0 px-6 py-3 bg-gray-800 bg-opacity-75 rounded  shadow-sm;
+        @apply border-0 px-6 py-3 bg-gray-800 bg-opacity-75 rounded shadow-sm;
     }
 
     ng-select.ng-select.select .ng-value-container {

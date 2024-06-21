@@ -7,7 +7,9 @@ import { ApiService } from './shared/services/api.service';
     styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-    constructor(private _: ApiService) {}
+    constructor(private api: ApiService) {
+        this.api.getSettings();
+    }
 
     ngOnInit(): void {}
 }

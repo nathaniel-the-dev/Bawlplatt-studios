@@ -9,7 +9,7 @@ export const BOOKING_DURATIONS = [
 ];
 
 export const AVAILABLE_EQUIPMENT = {
-    microphones: { limit: 5, icon: 'mic2' },
+    mics: { limit: 5, icon: 'mic2' },
     guitars: {
         limit: 3,
         icon: 'guitar',

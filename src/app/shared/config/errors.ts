@@ -40,7 +40,7 @@ export default <Errors>{
 
         // Bookings
         customer_type: {
-            required: 'Please select your customer type',
+            required: 'Please choose one',
         },
         booked_for: {
             required: 'Please select the customer',
