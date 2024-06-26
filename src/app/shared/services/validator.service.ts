@@ -127,11 +127,15 @@ export class ValidatorService implements OnDestroy {
             case 'required':
                 return `${fieldName} is required`;
             case 'email':
-                return `${fieldName} is not a valid email address`;
+                return `This is not a valid email address`;
             case 'minlength':
-                return `${fieldName} must be at least ${value.requiredLength} characters`;
+                return `Must be at least ${value.requiredLength} characters`;
             case 'maxlength':
-                return `${fieldName} must be at most ${value.requiredLength} characters`;
+                return `Must be at most ${value.requiredLength} characters`;
+            case 'max':
+                return `Cannot be more than ${value.max}`;
+            case 'min':
+                return `Cannot be less than ${value.min}`;
             case 'pattern':
             case 'async':
             case 'range':

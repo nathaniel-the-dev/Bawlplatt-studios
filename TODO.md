@@ -64,6 +64,7 @@
 
 -   [ ] Landing page
 -   [ ] About Us
+-   [ ] FAQ
 -   [ ] Contact Us
 
 -   Login / Register
@@ -73,9 +74,11 @@
     -   [ ] Social logins
 
 -   [ ] My Bookings
+    -   [x] Create booking
+    -   [ ] Make payment
+    -   [ ] View bookings
 -   [ ] Profile
 
--   [ ] FAQ
 -   [x] Privacy Policy
 -   [x] Terms and Conditions
 

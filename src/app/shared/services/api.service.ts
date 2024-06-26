@@ -71,6 +71,7 @@ export class ApiService {
     public settings: Record<string, any> = {};
 
     constructor(private router: Router) {
+        // this.getSettings();
         this.handleAuthStateChanges();
     }
 

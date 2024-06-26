@@ -19,79 +19,93 @@ import { RedirectOnlyGuard } from './admin/shared/guards/redirect-only.guard';
 import { FaqPage } from './pages/faq/faq.page';
 import { CustomerProfilePage } from './pages/customer-dashboard/profile/profile.page';
 import { ForgotPasswordPage } from './pages/auth/forgot-password/forgot-password.page';
+import { LoadSettingsGuard } from './shared/guards/load-settings.guard';
+import { UnknownErrorPage } from './pages/unknown-error/unknown-error.page';
 
 const routes: Routes = [
-    { path: 'home', component: HomePage },
-    { path: 'about', component: AboutPage, title: SITE_NAME + ' | About Us' },
-    { path: 'faq', component: FaqPage, title: SITE_NAME + ' | FAQ' },
     {
-        path: 'contact',
-        component: ContactPage,
-        title: SITE_NAME + ' | Contact Us',
-    },
-
-    { path: 'login', component: LoginPage },
-    { path: 'register', component: RegisterPage },
-    { path: 'forgot-password', component: ForgotPasswordPage },
-
-    {
-        path: 'booking/new/checkout',
-        component: CheckoutPage,
-        canActivate: [
-            RedirectOnlyGuard,
-            AuthRequiredGuard('/login'),
-            HasPermissionGuard('customer'),
-        ],
-    },
-    {
-        path: 'booking/new',
-        component: MakeBookingPage,
-        canActivate: [
-            AuthRequiredGuard('/login'),
-            HasPermissionGuard('customer'),
-        ],
-    },
-    {
-        path: 'dashboard',
-        component: CustomerDashboardPage,
+        path: '',
         children: [
+            { path: 'home', component: HomePage },
             {
-                path: 'bookings',
-                component: CustomerBookingsPage,
-                title: SITE_NAME + ' | My Bookings',
+                path: 'about',
+                component: AboutPage,
+                title: SITE_NAME + ' | About Us',
+            },
+            { path: 'faq', component: FaqPage, title: SITE_NAME + ' | FAQ' },
+            {
+                path: 'contact',
+                component: ContactPage,
+                title: SITE_NAME + ' | Contact Us',
+            },
+
+            { path: 'login', component: LoginPage },
+            { path: 'register', component: RegisterPage },
+            { path: 'forgot-password', component: ForgotPasswordPage },
+
+            {
+                path: 'booking/new/checkout',
+                component: CheckoutPage,
+                canActivate: [
+                    RedirectOnlyGuard,
+                    AuthRequiredGuard('/login'),
+                    HasPermissionGuard('customer'),
+                ],
             },
             {
-                path: 'profile',
-                component: CustomerProfilePage,
-                title: SITE_NAME + ' | My Profile',
+                path: 'booking/new',
+                component: MakeBookingPage,
+                canActivate: [
+                    AuthRequiredGuard('/login'),
+                    HasPermissionGuard('customer'),
+                ],
             },
-            { path: '', redirectTo: 'bookings', pathMatch: 'full' },
+            {
+                path: 'dashboard',
+                component: CustomerDashboardPage,
+                children: [
+                    {
+                        path: 'bookings',
+                        component: CustomerBookingsPage,
+                        title: SITE_NAME + ' | My Bookings',
+                    },
+                    {
+                        path: 'profile',
+                        component: CustomerProfilePage,
+                        title: SITE_NAME + ' | My Profile',
+                    },
+                    { path: '', redirectTo: 'bookings', pathMatch: 'full' },
+                ],
+                canActivate: [
+                    AuthRequiredGuard('/login'),
+                    HasPermissionGuard('customer'),
+                ],
+            },
+
+            {
+                path: 'admin',
+                loadChildren: () =>
+                    import('./admin/admin.module').then((m) => m.AdminModule),
+            },
+
+            {
+                path: 'privacy-policy',
+                component: PrivacyPolicyPage,
+                title: SITE_NAME + ' | Privacy Policy',
+            },
+            {
+                path: 'terms-and-conditions',
+                component: TermsAndCondPage,
+                title: SITE_NAME + ' | Terms and Conditions',
+            },
+
+            { path: '', redirectTo: 'home', pathMatch: 'full' },
         ],
-        canActivate: [
-            AuthRequiredGuard('/login'),
-            HasPermissionGuard('customer'),
-        ],
+        canActivate: [LoadSettingsGuard],
     },
 
-    {
-        path: 'admin',
-        loadChildren: () =>
-            import('./admin/admin.module').then((m) => m.AdminModule),
-    },
-
-    {
-        path: 'privacy-policy',
-        component: PrivacyPolicyPage,
-        title: SITE_NAME + ' | Privacy Policy',
-    },
-    {
-        path: 'terms-and-conditions',
-        component: TermsAndCondPage,
-        title: SITE_NAME + ' | Terms and Conditions',
-    },
-
+    { path: 'error', component: UnknownErrorPage, pathMatch: 'full' },
     { path: 'not-allowed', component: NotFoundPage },
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: NotFoundPage },
 ];
 

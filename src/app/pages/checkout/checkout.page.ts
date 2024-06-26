@@ -1,4 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { environment } from 'src/environments/environment';
 
@@ -8,17 +9,27 @@ import { environment } from 'src/environments/environment';
     styleUrls: ['./checkout.page.css'],
 })
 export class CheckoutPage implements AfterViewInit {
-    constructor(private apiService: ApiService) {}
+    get booking() {
+        return this.apiService.data$.getValue()?.booking;
+    }
+
+    constructor(private apiService: ApiService, private router: Router) {}
 
     ngAfterViewInit(): void {
-        this.addBraintreeSDK();
-        this.addDropInComponent();
+        if (!this.booking) {
+            this.router.navigate(['/booking/new']);
+        } else {
+            this.addBraintreeSDK();
+        }
     }
 
     private addBraintreeSDK() {
         const script = document.createElement('script');
         script.src =
             'https://js.braintreegateway.com/web/dropin/1.42.0/js/dropin.min.js';
+        script.onload = () => {
+            this.addDropInComponent();
+        };
         document.body.appendChild(script);
     }
 
@@ -50,8 +61,8 @@ export class CheckoutPage implements AfterViewInit {
                         },
                         body: JSON.stringify({ 
                             'paymentMethodNonce': payload.nonce,
-                            'totalAmount': ${data.totalAmount},
-                            'bookingId': ${data.bookingId}
+                            'totalAmount': ${data.booking.total_cost},
+                            'bookingId': ${data.booking.id}
                         })   
                     });
 
@@ -81,5 +92,13 @@ export class CheckoutPage implements AfterViewInit {
 
         script.innerHTML = braintreeSDK;
         document.body.appendChild(script);
+    }
+
+    public async cancelBooking() {
+        await this.apiService.supabase
+            .from('bookings')
+            .delete()
+            .eq('id', this.booking.id);
+        this.router.navigate(['/booking/new']);
     }
 }

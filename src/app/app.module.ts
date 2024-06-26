@@ -26,6 +26,7 @@ import { CheckoutPage } from './pages/checkout/checkout.page';
 import { FaqPage } from './pages/faq/faq.page';
 import { CustomerProfilePage } from './pages/customer-dashboard/profile/profile.page';
 import { ForgotPasswordPage } from './pages/auth/forgot-password/forgot-password.page';
+import { UnknownErrorPage } from './pages/unknown-error/unknown-error.page';
 
 @NgModule({
     declarations: [
@@ -46,6 +47,7 @@ import { ForgotPasswordPage } from './pages/auth/forgot-password/forgot-password
         FaqPage,
         CustomerProfilePage,
         ForgotPasswordPage,
+        UnknownErrorPage,
     ],
     imports: [
         BrowserModule,

@@ -71,11 +71,13 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         requirements: this.fb.group({
             num_of_musicians: [
                 null as string | null,
-                [Validators.required, Validators.max(MAX_MUSICIANS_COUNT)],
+                [Validators.required, Validators.max(this.maxMusicians)],
             ],
             equipment_needed: [{} as EquipmentNeeded],
             additional_requirements: [null as string | null],
         }),
+
+        total_cost: [null as number | null],
     });
 
     public errors = {
@@ -105,7 +107,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
         return tempo.format(tempo.addDay(today, 1), 'YYYY-MM-DD');
     }
     get maxMusicians() {
-        return MAX_MUSICIANS_COUNT;
+        return this.apiService.settings['max_num_of_musicians'];
     }
     get listEquipment() {
         return Object.entries(this.requirementsForm.value.equipment_needed!)
@@ -127,6 +129,18 @@ export class MakeBookingPage implements OnInit, OnDestroy {
 
         // Get customer types
         this.getFormSettings();
+
+        // Calculate total cost
+        this.subscriptions.add(
+            this.sessionForm.controls.duration_in_minutes.valueChanges.subscribe(
+                (value) => {
+                    if (!value) return;
+                    this.bookingForm.patchValue({
+                        total_cost: this.calculateTotal(+value),
+                    });
+                }
+            )
+        );
     }
 
     ngOnDestroy(): void {
@@ -151,7 +165,7 @@ export class MakeBookingPage implements OnInit, OnDestroy {
             return;
         }
 
-        this.currentStep = Math.min(5, this.currentStep + 1) as 1 | 2 | 3 | 4;
+        this.currentStep = Math.min(4, this.currentStep + 1) as 1 | 2 | 3 | 4;
         this.clearErrors();
     }
 
@@ -201,15 +215,36 @@ export class MakeBookingPage implements OnInit, OnDestroy {
     }
 
     async onBookingFormSubmit(): Promise<void> {
-        // Show confirmation page and proceed to checkout
-        let booking = {
-            ...this.customerForm.value,
-            ...this.sessionForm.value,
-            ...this.requirementsForm.value,
-        };
+        try {
+            // Create and save booking
+            let formData = {
+                ...this.customerForm.value,
+                ...this.sessionForm.value,
+                ...this.requirementsForm.value,
+                total_cost: this.bookingForm.value.total_cost,
+            };
 
-        this.apiService.data$.next(booking);
-        this.router.navigateByUrl('/booking/new/checkout');
+            let { data: booking, error } = await this.apiService.supabase
+                .from('bookings')
+                .insert(formData)
+                .select('*')
+                .single();
+            if (error) throw error;
+
+            // Proceed to checkout
+            this.apiService.data$.next({ booking });
+            this.router.navigateByUrl('/booking/new/checkout');
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    calculateTotal(duration: number) {
+        let total = (duration / 60) * this.apiService.settings['cost_per_hour'];
+
+        total += total * this.apiService.settings['gct_amount'];
+
+        return total;
     }
 
     clearErrors() {

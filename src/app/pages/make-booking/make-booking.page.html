@@ -47,7 +47,7 @@
 
                                     <div
                                         class="peer-checked:-translate-y-4 peer-checked:outline-4 peer-focus-visible:outline-gray-100/10 outline-dashed peer-checked:outline-red-500 outline-0 relative transition rounded-lg">
-                                        <img class="rounded-lg h-[13rem]" [src]="type.image" [alt]="type.name">
+                                        <img class="rounded-lg h-[13rem] min-w-10" [src]="type.image" [alt]="type.name">
                                         <p class="-bottom-8 left-1/2 absolute text-center -translate-x-1/2">{{type.name
                                             | titlecase}}</p>
                                     </div>
@@ -91,14 +91,6 @@
                                     {{errors.session.date_booked}}
                                 </base-error>
                             </div>
-
-                            <p class="text-sm -mt-1">
-                                <button type="button"
-                                    class="btn btn-ghost py-0.5 text-bright-red-100/75 hover:text-bright-red-100 transition"
-                                    (click)="getNextAvailableSlot()">
-                                    Get next available slot
-                                </button>
-                            </p>
                         </div>
 
                         <div class="form-control required">
@@ -111,6 +103,14 @@
                                     {{errors.session.time_booked}}
                                 </base-error>
                             </div>
+
+                            <p class="text-sm -mt-1">
+                                <button type="button"
+                                    class="btn btn-ghost py-0.5 text-bright-red-100/75 hover:text-bright-red-100 transition"
+                                    (click)="getNextAvailableSlot()">
+                                    Get next available slot
+                                </button>
+                            </p>
                         </div>
 
                         <fieldset class="form-control required">
@@ -148,7 +148,7 @@
                             <label class="label" for="num_of_musicians">Number of Musicians</label>
                             <input class="input w-1/3" type="number" name="num_of_musicians" id="num_of_musicians"
                                 formControlName="num_of_musicians" required>
-                            <p class="text-xs text-gray-400">*Max. {{maxMusicians}}</p>
+                            <p class="text-sm text-gray-400">Max. {{maxMusicians}}</p>
 
                             <div class="feedback">
                                 <base-error *ngIf="errors.requirements.num_of_musicians">
@@ -257,6 +257,10 @@
                                     <td class="py-2 px-4">
                                         <p class="break-words">{{requirementsForm.value.additional_requirements}}</p>
                                     </td>
+                                </tr>
+                                <tr class="border-t border-white/20">
+                                    <td class="py-2 px-2 font-medium">Total Cost</td>
+                                    <td class="py-2 px-4">{{bookingForm.value.total_cost | currency}}</td>
                                 </tr>
                             </table>
 

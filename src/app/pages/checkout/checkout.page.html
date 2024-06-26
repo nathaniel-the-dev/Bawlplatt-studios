@@ -1,5 +1,18 @@
-<div id="dropin-wrapper">
-    <div id="checkout-message"></div>
-    <div id="dropin-container"></div>
-    <button id="submit-button">Submit payment</button>
+<app-header></app-header>
+
+<div class="flex items-center justify-center min-h-screen">
+    <div class="container">
+        <h1 class="text-h3 mb-6 font-medium text-center">Checkout</h1>
+
+        <div id="dropin-wrapper">
+            <div id="checkout-message"></div>
+            <div id="dropin-container"></div>
+            <div class="flex items-center justify-end gap-3 mt-4">
+                <button class="btn btn-outline" id="cancel-button" (click)="cancelBooking()">Cancel</button>
+                <button class="btn btn-primary" id="submit-button">Submit payment</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<app-footer></app-footer>

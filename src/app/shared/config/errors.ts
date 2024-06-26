@@ -57,7 +57,6 @@ export default <Errors>{
         },
         num_of_musicians: {
             required: 'Please enter an amount',
-            max: `Can only facilitate a maximum of ${MAX_MUSICIANS_COUNT} musicians`,
         },
     },
 };
